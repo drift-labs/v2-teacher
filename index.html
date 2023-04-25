@@ -323,8 +323,17 @@
             <a href="#authentication" class="toc-h1 toc-link" data-title="Authentication">Authentication</a>
           </li>
           <li>
-            <a href="#kittens" class="toc-h1 toc-link" data-title="Kittens">Kittens</a>
+            <a href="#client" class="toc-h1 toc-link" data-title="Client">Client</a>
               <ul class="toc-list-h2">
+                  <li>
+                    <a href="#typescript" class="toc-h2 toc-link" data-title="Typescript">Typescript</a>
+                  </li>
+                  <li>
+                    <a href="#python" class="toc-h2 toc-link" data-title="Python">Python</a>
+                  </li>
+                  <li>
+                    <a href="#client-initialization" class="toc-h2 toc-link" data-title="Client Initialization">Client Initialization</a>
+                  </li>
                   <li>
                     <a href="#get-all-kittens" class="toc-h2 toc-link" data-title="Get All Kittens">Get All Kittens</a>
                   </li>
@@ -332,12 +341,15 @@
                     <a href="#get-a-specific-kitten" class="toc-h2 toc-link" data-title="Get a Specific Kitten">Get a Specific Kitten</a>
                   </li>
                   <li>
-                    <a href="#client-initialization" class="toc-h2 toc-link" data-title="Client Initialization">Client Initialization</a>
+                    <a href="#client-initialization-2" class="toc-h2 toc-link" data-title="Client Initialization">Client Initialization</a>
                   </li>
                   <li>
                     <a href="#delete-a-specific-kitten" class="toc-h2 toc-link" data-title="Delete a Specific Kitten">Delete a Specific Kitten</a>
                   </li>
               </ul>
+          </li>
+          <li>
+            <a href="#historical-data" class="toc-h1 toc-link" data-title="Historical Data">Historical Data</a>
           </li>
           <li>
             <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
@@ -354,30 +366,35 @@
         <h1 id='introduction'>Introduction</h1>
 <p>Drift Protocol is an open-sourced, decentralised exchange built on the Solana blockchain, enabling transparent and non-custodial trading on cryptocurrencies.</p>
 
-<p>We have language bindings in <a href="https://github.com/drift-labs/protocol-v2/tree/master/sdk">Typescript</a> and <a href="https://github.com/drift-labs/driftpy">Python</a>! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.</p>
+<p>There are language bindings in <a href="https://github.com/drift-labs/protocol-v2/tree/master/sdk">Typescript</a> and <a href="https://github.com/drift-labs/driftpy">Python</a>! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.</p>
 
-<p>This API documentation page is open sourced and available <a href="https://github.com/drift-labs/v2-teacher">here</a> was created with <a href="https://github.com/slatedocs/slate">Slate</a>. Feel free to submit raise <a href="https://github.com/drift-labs/v2-teacher/issues">Issues</a> or <a href="https://github.com/drift-labs/v2-teacher/pulls">submit PR</a>.</p>
+<p>This API documentation page is open sourced and available <a href="https://github.com/drift-labs/v2-teacher">here</a> was created with <a href="https://github.com/slatedocs/slate">Slate</a>. Feel free to submit questions/comments in <a href="https://github.com/drift-labs/v2-teacher/issues">Issues</a> or suggest changes as a <a href="https://github.com/drift-labs/v2-teacher/pulls">PR</a>.</p>
 <h1 id='authentication'>Authentication</h1>
 <p>To access and interact with a blockchain, such as Solana, you need a keypair, which consists of a public key and a private key. The private key should be kept secure and not shared with anyone else.</p>
 
 <p>To generate a new keypair, you can use the <a href="https://docs.solana.com/cli/install-solana-cli-tools">Solana Tool Suite</a> by running the following command on the command line:</p>
-<div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">solana</span><span class="o">-</span><span class="nx">keygen</span> <span class="k">new</span> <span class="o">--</span><span class="nx">outfile</span> <span class="o">~</span><span class="sr">/.config/</span><span class="nx">solana</span><span class="o">/</span><span class="nx">my</span><span class="o">-</span><span class="nx">keypair</span><span class="p">.</span><span class="nx">json</span>
+<div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="nx">solana</span><span class="o">-</span><span class="nx">keygen</span> <span class="k">new</span> <span class="o">--</span><span class="nx">outfile</span> <span class="o">~</span><span class="sr">/.config/</span><span class="nx">solana</span><span class="o">/</span><span class="nx">my</span><span class="o">-</span><span class="nx">keypair</span><span class="p">.</span><span class="nx">json</span>
 </code></pre></div>
 <p>This command will create a new keypair and store it in a JSON file located at ~/.config/solana/my-keypair.json.</p>
 
 <p>To allow SDK code to use this keypair for authentication, you need to set the ANCHOR_WALLET environment variable to the path of the JSON file that contains the keypair. You can do this by running the following command:</p>
-<div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="k">export</span> <span class="nx">ANCHOR_WALLET</span><span class="o">=~</span><span class="sr">/.config/</span><span class="nx">solana</span><span class="o">/</span><span class="nx">my</span><span class="o">-</span><span class="nx">keypair</span><span class="p">.</span><span class="nx">json</span>
+<div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">export</span> <span class="nx">ANCHOR_WALLET</span><span class="o">=~</span><span class="sr">/.config/</span><span class="nx">solana</span><span class="o">/</span><span class="nx">my</span><span class="o">-</span><span class="nx">keypair</span><span class="p">.</span><span class="nx">json</span>
 </code></pre></div>
 <p>This command sets the ANCHOR_WALLET environment variable to the path of the JSON file that contains your keypair, so that SDK code can access it when needed.</p>
 
 <aside class="notice">
-You must replace <code>~/.config/solana/my-keypair.json</code> with your personal key.
+  You must replace <code>~/.config/solana/my-keypair.json</code> with your personal key.
 </aside>
-<h1 id='kittens'>Kittens</h1><h2 id='get-all-kittens'>Get All Kittens</h2><div class="highlight"><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'kittn'</span>
+<h1 id='client'>Client</h1><h2 id='typescript'>Typescript</h2>
+<p>Install @drift-labs/sdk from <a href="https://www.npmjs.com/package/@drift-labs/sdk">npm</a> using yarn:</p>
 
-<span class="n">api</span> <span class="o">=</span> <span class="no">Kittn</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="nf">kittens</span><span class="p">.</span><span class="nf">get</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">kittn</span>
+<p><code>yarn add @drift-labs/sdk</code></p>
+<h2 id='python'>Python</h2>
+<p>Install driftpy from PyPI using pip:</p>
+
+<p><code>pip install driftpy</code></p>
+<h2 id='client-initialization'>Client Initialization</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="k">import</span> <span class="p">{</span><span class="nx">DriftClient</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
+</code></pre></div><h2 id='get-all-kittens'>Get All Kittens</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">kittn</span>
 
 <span class="n">api</span> <span class="o">=</span> <span class="n">kittn</span><span class="p">.</span><span class="n">authorize</span><span class="p">(</span><span class="s">'meowmeowmeow'</span><span class="p">)</span>
 <span class="n">api</span><span class="p">.</span><span class="n">kittens</span><span class="p">.</span><span class="n">get</span><span class="p">()</span>
@@ -477,7 +494,7 @@ Remember — a happy kitten is an authenticated kitten!
 <td>The ID of the kitten to retrieve</td>
 </tr>
 </tbody></table>
-<h2 id='client-initialization'>Client Initialization</h2><h2 id='delete-a-specific-kitten'>Delete a Specific Kitten</h2><div class="highlight"><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'kittn'</span>
+<h2 id='client-initialization-2'>Client Initialization</h2><h2 id='delete-a-specific-kitten'>Delete a Specific Kitten</h2><div class="highlight"><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'kittn'</span>
 
 <span class="n">api</span> <span class="o">=</span> <span class="no">Kittn</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
 <span class="n">api</span><span class="p">.</span><span class="nf">kittens</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -514,6 +531,89 @@ Remember — a happy kitten is an authenticated kitten!
 <tr>
 <td>ID</td>
 <td>The ID of the kitten to delete</td>
+</tr>
+</tbody></table>
+<h1 id='historical-data'>Historical Data</h1>
+<p>mainnet-beta url prefix: &#39;https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/&#39;</p>
+
+<p>devnet url prefix: &#39;https://drift-historical-data.s3.us-east-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/&#39;</p>
+
+<table><thead>
+<tr>
+<th>recordType</th>
+<th>url suffix</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>trades</td>
+<td><code>user/${accountKey}/trades/${year}/${month}</code></td>
+</tr>
+<tr>
+<td>market-trades</td>
+<td><code>market/${marketSymbol}/trades/${year}/${month}/${day}</code></td>
+</tr>
+<tr>
+<td>funding-rates</td>
+<td><code>market/${marketSymbol}/funding-rates/${year}/${month}</code></td>
+</tr>
+<tr>
+<td>funding-payments</td>
+<td><code>user/${accountKey}/funding-payments/${year}/${month}</code></td>
+</tr>
+<tr>
+<td>deposits</td>
+<td><code>user/${accountKey}/deposits/${year}/${month}</code></td>
+</tr>
+<tr>
+<td>liquidations</td>
+<td><code>user/${accountKey}/liquidations/${year}/${month}</code></td>
+</tr>
+<tr>
+<td>candles</td>
+<td><code>market/${marketSymbol}/candles/${year}/${month}/resolution/${candleResolution}</code></td>
+</tr>
+<tr>
+<td>settle-pnl-records</td>
+<td><code>user/${accountKey}/settlePnls/${year}/${month}</code></td>
+</tr>
+</tbody></table>
+
+<table><thead>
+<tr>
+<th>variable</th>
+<th>description</th>
+<th>example</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>accountKey</td>
+<td>user sub account public key (not authority)</td>
+<td></td>
+</tr>
+<tr>
+<td>marketSymbol</td>
+<td>market name</td>
+<td>SOL-PERP</td>
+</tr>
+<tr>
+<td>year</td>
+<td></td>
+<td>2023</td>
+</tr>
+<tr>
+<td>month</td>
+<td></td>
+<td>4</td>
+</tr>
+<tr>
+<td>day</td>
+<td>utc time</td>
+<td>25</td>
+</tr>
+<tr>
+<td>candleResolution</td>
+<td></td>
+<td>1M</td>
 </tr>
 </tbody></table>
 <h1 id='errors'>Errors</h1>
