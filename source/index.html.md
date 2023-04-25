@@ -1,16 +1,14 @@
 ---
-title: API Reference
+title: protocol-v2 API
 
 language_tabs: # must be one of https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers
-  - shell
-  - ruby
+  - typescript
   - python
-  - javascript
+  - https
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/slatedocs/slate'>Documentation Powered by Slate</a>
-
+  - <a href='https://github.com/drift-labs/protocol-v2/releases/'> release history </a>
+  - <a href='https://docs.drift.trade/'> Read more about Drift Protocol in Archbee</a>
 includes:
   - errors
 
@@ -20,55 +18,38 @@ code_clipboard: true
 
 meta:
   - name: description
-    content: Documentation for the Kittn API
+    content: Documentation for drift protocol-v2
 ---
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Drift Protocol is an open-sourced, decentralised exchange built on the Solana blockchain, enabling transparent and non-custodial trading on cryptocurrencies.
 
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+We have language bindings in [Typescript](https://github.com/drift-labs/protocol-v2/tree/master/sdk) and [Python](https://github.com/drift-labs/driftpy)! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
 
-This example API documentation page was created with [Slate](https://github.com/slatedocs/slate). Feel free to edit it and use it as a base for your own API's documentation.
+This API documentation page is open sourced and available [here](https://github.com/drift-labs/v2-teacher) was created with [Slate](https://github.com/slatedocs/slate). Feel free to submit raise [Issues](https://github.com/drift-labs/v2-teacher/issues) or [submit PR](https://github.com/drift-labs/v2-teacher/pulls).
 
 # Authentication
+To access and interact with a blockchain, such as Solana, you need a keypair, which consists of a public key and a private key. The private key should be kept secure and not shared with anyone else.
 
-> To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here" \
-  -H "Authorization: meowmeowmeow"
-```
+To generate a new keypair, you can use the [Solana Tool Suite](https://docs.solana.com/cli/install-solana-cli-tools) by running the following command on the command line:
 
 ```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
+solana-keygen new --outfile ~/.config/solana/my-keypair.json
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
+This command will create a new keypair and store it in a JSON file located at ~/.config/solana/my-keypair.json.
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+To allow SDK code to use this keypair for authentication, you need to set the ANCHOR_WALLET environment variable to the path of the JSON file that contains the keypair. You can do this by running the following command:
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
+```javascript
+export ANCHOR_WALLET=~/.config/solana/my-keypair.json
+```
 
-`Authorization: meowmeowmeow`
+This command sets the ANCHOR_WALLET environment variable to the path of the JSON file that contains your keypair, so that SDK code can access it when needed.
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You must replace <code>~/.config/solana/my-keypair.json</code> with your personal key.
 </aside>
 
 # Kittens
@@ -192,6 +173,9 @@ This endpoint retrieves a specific kitten.
 Parameter | Description
 --------- | -----------
 ID | The ID of the kitten to retrieve
+
+## Client Initialization
+
 
 ## Delete a Specific Kitten
 
