@@ -10,6 +10,7 @@ toc_footers:
   - <a href='https://github.com/drift-labs/protocol-v2/releases/'> release history </a>
   - <a href='https://docs.drift.trade/'> Read more about Drift Protocol in Archbee</a>
 includes:
+  - historicaldata
   - errors
 
 search: true
@@ -25,16 +26,16 @@ meta:
 
 Drift Protocol is an open-sourced, decentralised exchange built on the Solana blockchain, enabling transparent and non-custodial trading on cryptocurrencies.
 
-We have language bindings in [Typescript](https://github.com/drift-labs/protocol-v2/tree/master/sdk) and [Python](https://github.com/drift-labs/driftpy)! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+There are language bindings in [Typescript](https://github.com/drift-labs/protocol-v2/tree/master/sdk) and [Python](https://github.com/drift-labs/driftpy)! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
 
-This API documentation page is open sourced and available [here](https://github.com/drift-labs/v2-teacher) was created with [Slate](https://github.com/slatedocs/slate). Feel free to submit raise [Issues](https://github.com/drift-labs/v2-teacher/issues) or [submit PR](https://github.com/drift-labs/v2-teacher/pulls).
+This API documentation page is open sourced and available [here](https://github.com/drift-labs/v2-teacher) was created with [Slate](https://github.com/slatedocs/slate). Feel free to submit questions/comments in [Issues](https://github.com/drift-labs/v2-teacher/issues) or suggest changes as a [PR](https://github.com/drift-labs/v2-teacher/pulls).
 
 # Authentication
 To access and interact with a blockchain, such as Solana, you need a keypair, which consists of a public key and a private key. The private key should be kept secure and not shared with anyone else.
 
 To generate a new keypair, you can use the [Solana Tool Suite](https://docs.solana.com/cli/install-solana-cli-tools) by running the following command on the command line:
 
-```javascript
+```typescript
 solana-keygen new --outfile ~/.config/solana/my-keypair.json
 ```
 
@@ -42,26 +43,36 @@ This command will create a new keypair and store it in a JSON file located at ~/
 
 To allow SDK code to use this keypair for authentication, you need to set the ANCHOR_WALLET environment variable to the path of the JSON file that contains the keypair. You can do this by running the following command:
 
-```javascript
+```typescript
 export ANCHOR_WALLET=~/.config/solana/my-keypair.json
 ```
 
 This command sets the ANCHOR_WALLET environment variable to the path of the JSON file that contains your keypair, so that SDK code can access it when needed.
 
 <aside class="notice">
-You must replace <code>~/.config/solana/my-keypair.json</code> with your personal key.
+  You must replace <code>~/.config/solana/my-keypair.json</code> with your personal key.
 </aside>
 
-# Kittens
+# Client
+
+## Typescript
+Install @drift-labs/sdk from [npm](https://www.npmjs.com/package/@drift-labs/sdk) using yarn:
+
+`yarn add @drift-labs/sdk`
+
+## Python
+Install driftpy from PyPI using pip:
+
+`pip install driftpy`
+
+## Client Initialization
+
+```typescript
+  import {DriftClient} from "@drift-labs/sdk";
+```
 
 ## Get All Kittens
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
 
 ```python
 import kittn
