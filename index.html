@@ -341,15 +341,23 @@
                     <a href="#get-a-specific-kitten" class="toc-h2 toc-link" data-title="Get a Specific Kitten">Get a Specific Kitten</a>
                   </li>
                   <li>
-                    <a href="#client-initialization-2" class="toc-h2 toc-link" data-title="Client Initialization">Client Initialization</a>
-                  </li>
-                  <li>
                     <a href="#delete-a-specific-kitten" class="toc-h2 toc-link" data-title="Delete a Specific Kitten">Delete a Specific Kitten</a>
                   </li>
               </ul>
           </li>
           <li>
             <a href="#historical-data" class="toc-h1 toc-link" data-title="Historical Data">Historical Data</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#url-prefix" class="toc-h2 toc-link" data-title="URL Prefix">URL Prefix</a>
+                  </li>
+                  <li>
+                    <a href="#url-suffix" class="toc-h2 toc-link" data-title="URL Suffix">URL Suffix</a>
+                  </li>
+                  <li>
+                    <a href="#examples" class="toc-h2 toc-link" data-title="Examples">Examples</a>
+                  </li>
+              </ul>
           </li>
           <li>
             <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
@@ -389,11 +397,16 @@
 <p>Install @drift-labs/sdk from <a href="https://www.npmjs.com/package/@drift-labs/sdk">npm</a> using yarn:</p>
 
 <p><code>yarn add @drift-labs/sdk</code></p>
+
+<p>auto-generated documentation here: https://drift-labs.github.io/protocol-v2/sdk/</p>
 <h2 id='python'>Python</h2>
 <p>Install driftpy from PyPI using pip:</p>
 
 <p><code>pip install driftpy</code></p>
+
+<p>auto-generated documentation here: https://drift-labs.github.io/driftpy/</p>
 <h2 id='client-initialization'>Client Initialization</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="k">import</span> <span class="p">{</span><span class="nx">DriftClient</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="kn">import</span> <span class="nn">driftpy</span><span class="p">;</span>
 </code></pre></div><h2 id='get-all-kittens'>Get All Kittens</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">kittn</span>
 
 <span class="n">api</span> <span class="o">=</span> <span class="n">kittn</span><span class="p">.</span><span class="n">authorize</span><span class="p">(</span><span class="s">'meowmeowmeow'</span><span class="p">)</span>
@@ -494,7 +507,7 @@ Remember — a happy kitten is an authenticated kitten!
 <td>The ID of the kitten to retrieve</td>
 </tr>
 </tbody></table>
-<h2 id='client-initialization-2'>Client Initialization</h2><h2 id='delete-a-specific-kitten'>Delete a Specific Kitten</h2><div class="highlight"><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'kittn'</span>
+<h2 id='delete-a-specific-kitten'>Delete a Specific Kitten</h2><div class="highlight"><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'kittn'</span>
 
 <span class="n">api</span> <span class="o">=</span> <span class="no">Kittn</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
 <span class="n">api</span><span class="p">.</span><span class="nf">kittens</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -534,10 +547,13 @@ Remember — a happy kitten is an authenticated kitten!
 </tr>
 </tbody></table>
 <h1 id='historical-data'>Historical Data</h1>
-<p>mainnet-beta url prefix: &#39;https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/&#39;</p>
+<p>Snapshots are collected by parsing on-chain transaction logs. For convience the below are parsed logs collected, stored as a CSV, and stored off-chain (~99% of records). </p>
 
-<p>devnet url prefix: &#39;https://drift-historical-data.s3.us-east-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/&#39;</p>
-
+<p>Please share any transaction signatures or time ranges you believe might be missing in Drift Protocol Discord.</p>
+<h2 id='url-prefix'>URL Prefix</h2>
+<p>mainnet-beta:  <code>https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/</code>
+devnet: <code>https://drift-historical-data.s3.us-east-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/</code></p>
+<h2 id='url-suffix'>URL Suffix</h2><h3 id='schema'>Schema</h3>
 <table><thead>
 <tr>
 <th>recordType</th>
@@ -577,7 +593,7 @@ Remember — a happy kitten is an authenticated kitten!
 <td><code>user/${accountKey}/settlePnls/${year}/${month}</code></td>
 </tr>
 </tbody></table>
-
+<h3 id='variables'>Variables</h3>
 <table><thead>
 <tr>
 <th>variable</th>
@@ -616,62 +632,1263 @@ Remember — a happy kitten is an authenticated kitten!
 <td>1M</td>
 </tr>
 </tbody></table>
-<h1 id='errors'>Errors</h1>
+<h2 id='examples'>Examples</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">outcsv</span> <span class="o">=</span> <span class="n">requets</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/user/2dy78vpWpquDgAoLB8w8Ewfns9WXYzQx4CGt3HSgZLEe/trades/2023/4'</span><span class="p">)</span><span class="s">'
+</span></code></pre></div><div class="highlight"><pre class="highlight plaintext"><code>curl https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/user/2dy78vpWpquDgAoLB8w8Ewfns9WXYzQx4CGt3HSgZLEe/trades/2023/4 --output out.csv.gz
+</code></pre></div><h1 id='errors'>Errors</h1>
 <aside class="notice">
-This error section is stored in a separate file in <code>includes/_errors.md</code>. Slate allows you to optionally separate out your docs into many files...just save them to the <code>includes</code> folder and add them to the top of your <code>index.md</code>'s frontmatter. Files are included in the order listed.
+This is a table of program errors as described in the programs IDL.
 </aside>
 
-<p>The Kittn API uses the following error codes:</p>
+<p>Drift Protocol uses has following error codes:</p>
 
 <table><thead>
 <tr>
-<th>Error Code</th>
-<th>Meaning</th>
+<th style="text-align: right">code</th>
+<th style="text-align: left">name</th>
+<th style="text-align: left">msg</th>
 </tr>
 </thead><tbody>
 <tr>
-<td>400</td>
-<td>Bad Request -- Your request is invalid.</td>
+<td style="text-align: right">6000</td>
+<td style="text-align: left">InvalidSpotMarketAuthority</td>
+<td style="text-align: left">Invalid Spot Market Authority</td>
 </tr>
 <tr>
-<td>401</td>
-<td>Unauthorized -- Your API key is wrong.</td>
+<td style="text-align: right">6001</td>
+<td style="text-align: left">InvalidInsuranceFundAuthority</td>
+<td style="text-align: left">Clearing house not insurance fund authority</td>
 </tr>
 <tr>
-<td>403</td>
-<td>Forbidden -- The kitten requested is hidden for administrators only.</td>
+<td style="text-align: right">6002</td>
+<td style="text-align: left">InsufficientDeposit</td>
+<td style="text-align: left">Insufficient deposit</td>
 </tr>
 <tr>
-<td>404</td>
-<td>Not Found -- The specified kitten could not be found.</td>
+<td style="text-align: right">6003</td>
+<td style="text-align: left">InsufficientCollateral</td>
+<td style="text-align: left">Insufficient collateral</td>
 </tr>
 <tr>
-<td>405</td>
-<td>Method Not Allowed -- You tried to access a kitten with an invalid method.</td>
+<td style="text-align: right">6004</td>
+<td style="text-align: left">SufficientCollateral</td>
+<td style="text-align: left">Sufficient collateral</td>
 </tr>
 <tr>
-<td>406</td>
-<td>Not Acceptable -- You requested a format that isn&#39;t json.</td>
+<td style="text-align: right">6005</td>
+<td style="text-align: left">MaxNumberOfPositions</td>
+<td style="text-align: left">Max number of positions taken</td>
 </tr>
 <tr>
-<td>410</td>
-<td>Gone -- The kitten requested has been removed from our servers.</td>
+<td style="text-align: right">6006</td>
+<td style="text-align: left">AdminControlsPricesDisabled</td>
+<td style="text-align: left">Admin Controls Prices Disabled</td>
 </tr>
 <tr>
-<td>418</td>
-<td>I&#39;m a teapot.</td>
+<td style="text-align: right">6007</td>
+<td style="text-align: left">MarketDelisted</td>
+<td style="text-align: left">Market Delisted</td>
 </tr>
 <tr>
-<td>429</td>
-<td>Too Many Requests -- You&#39;re requesting too many kittens! Slow down!</td>
+<td style="text-align: right">6008</td>
+<td style="text-align: left">MarketIndexAlreadyInitialized</td>
+<td style="text-align: left">Market Index Already Initialized</td>
 </tr>
 <tr>
-<td>500</td>
-<td>Internal Server Error -- We had a problem with our server. Try again later.</td>
+<td style="text-align: right">6009</td>
+<td style="text-align: left">UserAccountAndUserPositionsAccountMismatch</td>
+<td style="text-align: left">User Account And User Positions Account Mismatch</td>
 </tr>
 <tr>
-<td>503</td>
-<td>Service Unavailable -- We&#39;re temporarily offline for maintenance. Please try again later.</td>
+<td style="text-align: right">6010</td>
+<td style="text-align: left">UserHasNoPositionInMarket</td>
+<td style="text-align: left">User Has No Position In Market</td>
+</tr>
+<tr>
+<td style="text-align: right">6011</td>
+<td style="text-align: left">InvalidInitialPeg</td>
+<td style="text-align: left">Invalid Initial Peg</td>
+</tr>
+<tr>
+<td style="text-align: right">6012</td>
+<td style="text-align: left">InvalidRepegRedundant</td>
+<td style="text-align: left">AMM repeg already configured with amt given</td>
+</tr>
+<tr>
+<td style="text-align: right">6013</td>
+<td style="text-align: left">InvalidRepegDirection</td>
+<td style="text-align: left">AMM repeg incorrect repeg direction</td>
+</tr>
+<tr>
+<td style="text-align: right">6014</td>
+<td style="text-align: left">InvalidRepegProfitability</td>
+<td style="text-align: left">AMM repeg out of bounds pnl</td>
+</tr>
+<tr>
+<td style="text-align: right">6015</td>
+<td style="text-align: left">SlippageOutsideLimit</td>
+<td style="text-align: left">Slippage Outside Limit Price</td>
+</tr>
+<tr>
+<td style="text-align: right">6016</td>
+<td style="text-align: left">OrderSizeTooSmall</td>
+<td style="text-align: left">Order Size Too Small</td>
+</tr>
+<tr>
+<td style="text-align: right">6017</td>
+<td style="text-align: left">InvalidUpdateK</td>
+<td style="text-align: left">Price change too large when updating K</td>
+</tr>
+<tr>
+<td style="text-align: right">6018</td>
+<td style="text-align: left">AdminWithdrawTooLarge</td>
+<td style="text-align: left">Admin tried to withdraw amount larger than fees collected</td>
+</tr>
+<tr>
+<td style="text-align: right">6019</td>
+<td style="text-align: left">MathError</td>
+<td style="text-align: left">Math Error</td>
+</tr>
+<tr>
+<td style="text-align: right">6020</td>
+<td style="text-align: left">BnConversionError</td>
+<td style="text-align: left">Conversion to u128/u64 failed with an overflow or underflow</td>
+</tr>
+<tr>
+<td style="text-align: right">6021</td>
+<td style="text-align: left">ClockUnavailable</td>
+<td style="text-align: left">Clock unavailable</td>
+</tr>
+<tr>
+<td style="text-align: right">6022</td>
+<td style="text-align: left">UnableToLoadOracle</td>
+<td style="text-align: left">Unable To Load Oracles</td>
+</tr>
+<tr>
+<td style="text-align: right">6023</td>
+<td style="text-align: left">PriceBandsBreached</td>
+<td style="text-align: left">Price Bands Breached</td>
+</tr>
+<tr>
+<td style="text-align: right">6024</td>
+<td style="text-align: left">ExchangePaused</td>
+<td style="text-align: left">Exchange is paused</td>
+</tr>
+<tr>
+<td style="text-align: right">6025</td>
+<td style="text-align: left">InvalidWhitelistToken</td>
+<td style="text-align: left">Invalid whitelist token</td>
+</tr>
+<tr>
+<td style="text-align: right">6026</td>
+<td style="text-align: left">WhitelistTokenNotFound</td>
+<td style="text-align: left">Whitelist token not found</td>
+</tr>
+<tr>
+<td style="text-align: right">6027</td>
+<td style="text-align: left">InvalidDiscountToken</td>
+<td style="text-align: left">Invalid discount token</td>
+</tr>
+<tr>
+<td style="text-align: right">6028</td>
+<td style="text-align: left">DiscountTokenNotFound</td>
+<td style="text-align: left">Discount token not found</td>
+</tr>
+<tr>
+<td style="text-align: right">6029</td>
+<td style="text-align: left">ReferrerNotFound</td>
+<td style="text-align: left">Referrer not found</td>
+</tr>
+<tr>
+<td style="text-align: right">6030</td>
+<td style="text-align: left">ReferrerStatsNotFound</td>
+<td style="text-align: left">ReferrerNotFound</td>
+</tr>
+<tr>
+<td style="text-align: right">6031</td>
+<td style="text-align: left">ReferrerMustBeWritable</td>
+<td style="text-align: left">ReferrerMustBeWritable</td>
+</tr>
+<tr>
+<td style="text-align: right">6032</td>
+<td style="text-align: left">ReferrerStatsMustBeWritable</td>
+<td style="text-align: left">ReferrerMustBeWritable</td>
+</tr>
+<tr>
+<td style="text-align: right">6033</td>
+<td style="text-align: left">ReferrerAndReferrerStatsAuthorityUnequal</td>
+<td style="text-align: left">ReferrerAndReferrerStatsAuthorityUnequal</td>
+</tr>
+<tr>
+<td style="text-align: right">6034</td>
+<td style="text-align: left">InvalidReferrer</td>
+<td style="text-align: left">InvalidReferrer</td>
+</tr>
+<tr>
+<td style="text-align: right">6035</td>
+<td style="text-align: left">InvalidOracle</td>
+<td style="text-align: left">InvalidOracle</td>
+</tr>
+<tr>
+<td style="text-align: right">6036</td>
+<td style="text-align: left">OracleNotFound</td>
+<td style="text-align: left">OracleNotFound</td>
+</tr>
+<tr>
+<td style="text-align: right">6037</td>
+<td style="text-align: left">LiquidationsBlockedByOracle</td>
+<td style="text-align: left">Liquidations Blocked By Oracle</td>
+</tr>
+<tr>
+<td style="text-align: right">6038</td>
+<td style="text-align: left">MaxDeposit</td>
+<td style="text-align: left">Can not deposit more than max deposit</td>
+</tr>
+<tr>
+<td style="text-align: right">6039</td>
+<td style="text-align: left">CantDeleteUserWithCollateral</td>
+<td style="text-align: left">Can not delete user that still has collateral</td>
+</tr>
+<tr>
+<td style="text-align: right">6040</td>
+<td style="text-align: left">InvalidFundingProfitability</td>
+<td style="text-align: left">AMM funding out of bounds pnl</td>
+</tr>
+<tr>
+<td style="text-align: right">6041</td>
+<td style="text-align: left">CastingFailure</td>
+<td style="text-align: left">Casting Failure</td>
+</tr>
+<tr>
+<td style="text-align: right">6042</td>
+<td style="text-align: left">InvalidOrder</td>
+<td style="text-align: left">InvalidOrder</td>
+</tr>
+<tr>
+<td style="text-align: right">6043</td>
+<td style="text-align: left">InvalidOrderMaxTs</td>
+<td style="text-align: left">InvalidOrderMaxTs</td>
+</tr>
+<tr>
+<td style="text-align: right">6044</td>
+<td style="text-align: left">InvalidOrderMarketType</td>
+<td style="text-align: left">InvalidOrderMarketType</td>
+</tr>
+<tr>
+<td style="text-align: right">6045</td>
+<td style="text-align: left">InvalidOrderForInitialMarginReq</td>
+<td style="text-align: left">InvalidOrderForInitialMarginReq</td>
+</tr>
+<tr>
+<td style="text-align: right">6046</td>
+<td style="text-align: left">InvalidOrderNotRiskReducing</td>
+<td style="text-align: left">InvalidOrderNotRiskReducing</td>
+</tr>
+<tr>
+<td style="text-align: right">6047</td>
+<td style="text-align: left">InvalidOrderSizeTooSmall</td>
+<td style="text-align: left">InvalidOrderSizeTooSmall</td>
+</tr>
+<tr>
+<td style="text-align: right">6048</td>
+<td style="text-align: left">InvalidOrderNotStepSizeMultiple</td>
+<td style="text-align: left">InvalidOrderNotStepSizeMultiple</td>
+</tr>
+<tr>
+<td style="text-align: right">6049</td>
+<td style="text-align: left">InvalidOrderBaseQuoteAsset</td>
+<td style="text-align: left">InvalidOrderBaseQuoteAsset</td>
+</tr>
+<tr>
+<td style="text-align: right">6050</td>
+<td style="text-align: left">InvalidOrderIOC</td>
+<td style="text-align: left">InvalidOrderIOC</td>
+</tr>
+<tr>
+<td style="text-align: right">6051</td>
+<td style="text-align: left">InvalidOrderPostOnly</td>
+<td style="text-align: left">InvalidOrderPostOnly</td>
+</tr>
+<tr>
+<td style="text-align: right">6052</td>
+<td style="text-align: left">InvalidOrderIOCPostOnly</td>
+<td style="text-align: left">InvalidOrderIOCPostOnly</td>
+</tr>
+<tr>
+<td style="text-align: right">6053</td>
+<td style="text-align: left">InvalidOrderTrigger</td>
+<td style="text-align: left">InvalidOrderTrigger</td>
+</tr>
+<tr>
+<td style="text-align: right">6054</td>
+<td style="text-align: left">InvalidOrderAuction</td>
+<td style="text-align: left">InvalidOrderAuction</td>
+</tr>
+<tr>
+<td style="text-align: right">6055</td>
+<td style="text-align: left">InvalidOrderOracleOffset</td>
+<td style="text-align: left">InvalidOrderOracleOffset</td>
+</tr>
+<tr>
+<td style="text-align: right">6056</td>
+<td style="text-align: left">InvalidOrderMinOrderSize</td>
+<td style="text-align: left">InvalidOrderMinOrderSize</td>
+</tr>
+<tr>
+<td style="text-align: right">6057</td>
+<td style="text-align: left">PlacePostOnlyLimitFailure</td>
+<td style="text-align: left">Failed to Place Post-Only Limit Order</td>
+</tr>
+<tr>
+<td style="text-align: right">6058</td>
+<td style="text-align: left">UserHasNoOrder</td>
+<td style="text-align: left">User has no order</td>
+</tr>
+<tr>
+<td style="text-align: right">6059</td>
+<td style="text-align: left">OrderAmountTooSmall</td>
+<td style="text-align: left">Order Amount Too Small</td>
+</tr>
+<tr>
+<td style="text-align: right">6060</td>
+<td style="text-align: left">MaxNumberOfOrders</td>
+<td style="text-align: left">Max number of orders taken</td>
+</tr>
+<tr>
+<td style="text-align: right">6061</td>
+<td style="text-align: left">OrderDoesNotExist</td>
+<td style="text-align: left">Order does not exist</td>
+</tr>
+<tr>
+<td style="text-align: right">6062</td>
+<td style="text-align: left">OrderNotOpen</td>
+<td style="text-align: left">Order not open</td>
+</tr>
+<tr>
+<td style="text-align: right">6063</td>
+<td style="text-align: left">FillOrderDidNotUpdateState</td>
+<td style="text-align: left">FillOrderDidNotUpdateState</td>
+</tr>
+<tr>
+<td style="text-align: right">6064</td>
+<td style="text-align: left">ReduceOnlyOrderIncreasedRisk</td>
+<td style="text-align: left">Reduce only order increased risk</td>
+</tr>
+<tr>
+<td style="text-align: right">6065</td>
+<td style="text-align: left">UnableToLoadAccountLoader</td>
+<td style="text-align: left">Unable to load AccountLoader</td>
+</tr>
+<tr>
+<td style="text-align: right">6066</td>
+<td style="text-align: left">TradeSizeTooLarge</td>
+<td style="text-align: left">Trade Size Too Large</td>
+</tr>
+<tr>
+<td style="text-align: right">6067</td>
+<td style="text-align: left">UserCantReferThemselves</td>
+<td style="text-align: left">User cant refer themselves</td>
+</tr>
+<tr>
+<td style="text-align: right">6068</td>
+<td style="text-align: left">DidNotReceiveExpectedReferrer</td>
+<td style="text-align: left">Did not receive expected referrer</td>
+</tr>
+<tr>
+<td style="text-align: right">6069</td>
+<td style="text-align: left">CouldNotDeserializeReferrer</td>
+<td style="text-align: left">Could not deserialize referrer</td>
+</tr>
+<tr>
+<td style="text-align: right">6070</td>
+<td style="text-align: left">CouldNotDeserializeReferrerStats</td>
+<td style="text-align: left">Could not deserialize referrer stats</td>
+</tr>
+<tr>
+<td style="text-align: right">6071</td>
+<td style="text-align: left">UserOrderIdAlreadyInUse</td>
+<td style="text-align: left">User Order Id Already In Use</td>
+</tr>
+<tr>
+<td style="text-align: right">6072</td>
+<td style="text-align: left">NoPositionsLiquidatable</td>
+<td style="text-align: left">No positions liquidatable</td>
+</tr>
+<tr>
+<td style="text-align: right">6073</td>
+<td style="text-align: left">InvalidMarginRatio</td>
+<td style="text-align: left">Invalid Margin Ratio</td>
+</tr>
+<tr>
+<td style="text-align: right">6074</td>
+<td style="text-align: left">CantCancelPostOnlyOrder</td>
+<td style="text-align: left">Cant Cancel Post Only Order</td>
+</tr>
+<tr>
+<td style="text-align: right">6075</td>
+<td style="text-align: left">InvalidOracleOffset</td>
+<td style="text-align: left">InvalidOracleOffset</td>
+</tr>
+<tr>
+<td style="text-align: right">6076</td>
+<td style="text-align: left">CantExpireOrders</td>
+<td style="text-align: left">CantExpireOrders</td>
+</tr>
+<tr>
+<td style="text-align: right">6077</td>
+<td style="text-align: left">CouldNotLoadMarketData</td>
+<td style="text-align: left">CouldNotLoadMarketData</td>
+</tr>
+<tr>
+<td style="text-align: right">6078</td>
+<td style="text-align: left">PerpMarketNotFound</td>
+<td style="text-align: left">PerpMarketNotFound</td>
+</tr>
+<tr>
+<td style="text-align: right">6079</td>
+<td style="text-align: left">InvalidMarketAccount</td>
+<td style="text-align: left">InvalidMarketAccount</td>
+</tr>
+<tr>
+<td style="text-align: right">6080</td>
+<td style="text-align: left">UnableToLoadPerpMarketAccount</td>
+<td style="text-align: left">UnableToLoadMarketAccount</td>
+</tr>
+<tr>
+<td style="text-align: right">6081</td>
+<td style="text-align: left">MarketWrongMutability</td>
+<td style="text-align: left">MarketWrongMutability</td>
+</tr>
+<tr>
+<td style="text-align: right">6082</td>
+<td style="text-align: left">UnableToCastUnixTime</td>
+<td style="text-align: left">UnableToCastUnixTime</td>
+</tr>
+<tr>
+<td style="text-align: right">6083</td>
+<td style="text-align: left">CouldNotFindSpotPosition</td>
+<td style="text-align: left">CouldNotFindSpotPosition</td>
+</tr>
+<tr>
+<td style="text-align: right">6084</td>
+<td style="text-align: left">NoSpotPositionAvailable</td>
+<td style="text-align: left">NoSpotPositionAvailable</td>
+</tr>
+<tr>
+<td style="text-align: right">6085</td>
+<td style="text-align: left">InvalidSpotMarketInitialization</td>
+<td style="text-align: left">InvalidSpotMarketInitialization</td>
+</tr>
+<tr>
+<td style="text-align: right">6086</td>
+<td style="text-align: left">CouldNotLoadSpotMarketData</td>
+<td style="text-align: left">CouldNotLoadSpotMarketData</td>
+</tr>
+<tr>
+<td style="text-align: right">6087</td>
+<td style="text-align: left">SpotMarketNotFound</td>
+<td style="text-align: left">SpotMarketNotFound</td>
+</tr>
+<tr>
+<td style="text-align: right">6088</td>
+<td style="text-align: left">InvalidSpotMarketAccount</td>
+<td style="text-align: left">InvalidSpotMarketAccount</td>
+</tr>
+<tr>
+<td style="text-align: right">6089</td>
+<td style="text-align: left">UnableToLoadSpotMarketAccount</td>
+<td style="text-align: left">UnableToLoadSpotMarketAccount</td>
+</tr>
+<tr>
+<td style="text-align: right">6090</td>
+<td style="text-align: left">SpotMarketWrongMutability</td>
+<td style="text-align: left">SpotMarketWrongMutability</td>
+</tr>
+<tr>
+<td style="text-align: right">6091</td>
+<td style="text-align: left">SpotMarketInterestNotUpToDate</td>
+<td style="text-align: left">SpotInterestNotUpToDate</td>
+</tr>
+<tr>
+<td style="text-align: right">6092</td>
+<td style="text-align: left">SpotMarketInsufficientDeposits</td>
+<td style="text-align: left">SpotMarketInsufficientDeposits</td>
+</tr>
+<tr>
+<td style="text-align: right">6093</td>
+<td style="text-align: left">UserMustSettleTheirOwnPositiveUnsettledPNL</td>
+<td style="text-align: left">UserMustSettleTheirOwnPositiveUnsettledPNL</td>
+</tr>
+<tr>
+<td style="text-align: right">6094</td>
+<td style="text-align: left">CantUpdatePoolBalanceType</td>
+<td style="text-align: left">CantUpdatePoolBalanceType</td>
+</tr>
+<tr>
+<td style="text-align: right">6095</td>
+<td style="text-align: left">InsufficientCollateralForSettlingPNL</td>
+<td style="text-align: left">InsufficientCollateralForSettlingPNL</td>
+</tr>
+<tr>
+<td style="text-align: right">6096</td>
+<td style="text-align: left">AMMNotUpdatedInSameSlot</td>
+<td style="text-align: left">AMMNotUpdatedInSameSlot</td>
+</tr>
+<tr>
+<td style="text-align: right">6097</td>
+<td style="text-align: left">AuctionNotComplete</td>
+<td style="text-align: left">AuctionNotComplete</td>
+</tr>
+<tr>
+<td style="text-align: right">6098</td>
+<td style="text-align: left">MakerNotFound</td>
+<td style="text-align: left">MakerNotFound</td>
+</tr>
+<tr>
+<td style="text-align: right">6099</td>
+<td style="text-align: left">MakerStatsNotFound</td>
+<td style="text-align: left">MakerNotFound</td>
+</tr>
+<tr>
+<td style="text-align: right">6100</td>
+<td style="text-align: left">MakerMustBeWritable</td>
+<td style="text-align: left">MakerMustBeWritable</td>
+</tr>
+<tr>
+<td style="text-align: right">6101</td>
+<td style="text-align: left">MakerStatsMustBeWritable</td>
+<td style="text-align: left">MakerMustBeWritable</td>
+</tr>
+<tr>
+<td style="text-align: right">6102</td>
+<td style="text-align: left">MakerOrderNotFound</td>
+<td style="text-align: left">MakerOrderNotFound</td>
+</tr>
+<tr>
+<td style="text-align: right">6103</td>
+<td style="text-align: left">CouldNotDeserializeMaker</td>
+<td style="text-align: left">CouldNotDeserializeMaker</td>
+</tr>
+<tr>
+<td style="text-align: right">6104</td>
+<td style="text-align: left">CouldNotDeserializeMakerStats</td>
+<td style="text-align: left">CouldNotDeserializeMaker</td>
+</tr>
+<tr>
+<td style="text-align: right">6105</td>
+<td style="text-align: left">AuctionPriceDoesNotSatisfyMaker</td>
+<td style="text-align: left">AuctionPriceDoesNotSatisfyMaker</td>
+</tr>
+<tr>
+<td style="text-align: right">6106</td>
+<td style="text-align: left">MakerCantFulfillOwnOrder</td>
+<td style="text-align: left">MakerCantFulfillOwnOrder</td>
+</tr>
+<tr>
+<td style="text-align: right">6107</td>
+<td style="text-align: left">MakerOrderMustBePostOnly</td>
+<td style="text-align: left">MakerOrderMustBePostOnly</td>
+</tr>
+<tr>
+<td style="text-align: right">6108</td>
+<td style="text-align: left">CantMatchTwoPostOnlys</td>
+<td style="text-align: left">CantMatchTwoPostOnlys</td>
+</tr>
+<tr>
+<td style="text-align: right">6109</td>
+<td style="text-align: left">OrderBreachesOraclePriceLimits</td>
+<td style="text-align: left">OrderBreachesOraclePriceLimits</td>
+</tr>
+<tr>
+<td style="text-align: right">6110</td>
+<td style="text-align: left">OrderMustBeTriggeredFirst</td>
+<td style="text-align: left">OrderMustBeTriggeredFirst</td>
+</tr>
+<tr>
+<td style="text-align: right">6111</td>
+<td style="text-align: left">OrderNotTriggerable</td>
+<td style="text-align: left">OrderNotTriggerable</td>
+</tr>
+<tr>
+<td style="text-align: right">6112</td>
+<td style="text-align: left">OrderDidNotSatisfyTriggerCondition</td>
+<td style="text-align: left">OrderDidNotSatisfyTriggerCondition</td>
+</tr>
+<tr>
+<td style="text-align: right">6113</td>
+<td style="text-align: left">PositionAlreadyBeingLiquidated</td>
+<td style="text-align: left">PositionAlreadyBeingLiquidated</td>
+</tr>
+<tr>
+<td style="text-align: right">6114</td>
+<td style="text-align: left">PositionDoesntHaveOpenPositionOrOrders</td>
+<td style="text-align: left">PositionDoesntHaveOpenPositionOrOrders</td>
+</tr>
+<tr>
+<td style="text-align: right">6115</td>
+<td style="text-align: left">AllOrdersAreAlreadyLiquidations</td>
+<td style="text-align: left">AllOrdersAreAlreadyLiquidations</td>
+</tr>
+<tr>
+<td style="text-align: right">6116</td>
+<td style="text-align: left">CantCancelLiquidationOrder</td>
+<td style="text-align: left">CantCancelLiquidationOrder</td>
+</tr>
+<tr>
+<td style="text-align: right">6117</td>
+<td style="text-align: left">UserIsBeingLiquidated</td>
+<td style="text-align: left">UserIsBeingLiquidated</td>
+</tr>
+<tr>
+<td style="text-align: right">6118</td>
+<td style="text-align: left">LiquidationsOngoing</td>
+<td style="text-align: left">LiquidationsOngoing</td>
+</tr>
+<tr>
+<td style="text-align: right">6119</td>
+<td style="text-align: left">WrongSpotBalanceType</td>
+<td style="text-align: left">WrongSpotBalanceType</td>
+</tr>
+<tr>
+<td style="text-align: right">6120</td>
+<td style="text-align: left">UserCantLiquidateThemself</td>
+<td style="text-align: left">UserCantLiquidateThemself</td>
+</tr>
+<tr>
+<td style="text-align: right">6121</td>
+<td style="text-align: left">InvalidPerpPositionToLiquidate</td>
+<td style="text-align: left">InvalidPerpPositionToLiquidate</td>
+</tr>
+<tr>
+<td style="text-align: right">6122</td>
+<td style="text-align: left">InvalidBaseAssetAmountForLiquidatePerp</td>
+<td style="text-align: left">InvalidBaseAssetAmountForLiquidatePerp</td>
+</tr>
+<tr>
+<td style="text-align: right">6123</td>
+<td style="text-align: left">InvalidPositionLastFundingRate</td>
+<td style="text-align: left">InvalidPositionLastFundingRate</td>
+</tr>
+<tr>
+<td style="text-align: right">6124</td>
+<td style="text-align: left">InvalidPositionDelta</td>
+<td style="text-align: left">InvalidPositionDelta</td>
+</tr>
+<tr>
+<td style="text-align: right">6125</td>
+<td style="text-align: left">UserBankrupt</td>
+<td style="text-align: left">UserBankrupt</td>
+</tr>
+<tr>
+<td style="text-align: right">6126</td>
+<td style="text-align: left">UserNotBankrupt</td>
+<td style="text-align: left">UserNotBankrupt</td>
+</tr>
+<tr>
+<td style="text-align: right">6127</td>
+<td style="text-align: left">UserHasInvalidBorrow</td>
+<td style="text-align: left">UserHasInvalidBorrow</td>
+</tr>
+<tr>
+<td style="text-align: right">6128</td>
+<td style="text-align: left">DailyWithdrawLimit</td>
+<td style="text-align: left">DailyWithdrawLimit</td>
+</tr>
+<tr>
+<td style="text-align: right">6129</td>
+<td style="text-align: left">DefaultError</td>
+<td style="text-align: left">DefaultError</td>
+</tr>
+<tr>
+<td style="text-align: right">6130</td>
+<td style="text-align: left">InsufficientLPTokens</td>
+<td style="text-align: left">Insufficient LP tokens</td>
+</tr>
+<tr>
+<td style="text-align: right">6131</td>
+<td style="text-align: left">CantLPWithPerpPosition</td>
+<td style="text-align: left">Cant LP with a market position</td>
+</tr>
+<tr>
+<td style="text-align: right">6132</td>
+<td style="text-align: left">UnableToBurnLPTokens</td>
+<td style="text-align: left">Unable to burn LP tokens</td>
+</tr>
+<tr>
+<td style="text-align: right">6133</td>
+<td style="text-align: left">TryingToRemoveLiquidityTooFast</td>
+<td style="text-align: left">Trying to remove liqudity too fast after adding it</td>
+</tr>
+<tr>
+<td style="text-align: right">6134</td>
+<td style="text-align: left">InvalidSpotMarketVault</td>
+<td style="text-align: left">Invalid Spot Market Vault</td>
+</tr>
+<tr>
+<td style="text-align: right">6135</td>
+<td style="text-align: left">InvalidSpotMarketState</td>
+<td style="text-align: left">Invalid Spot Market State</td>
+</tr>
+<tr>
+<td style="text-align: right">6136</td>
+<td style="text-align: left">InvalidSerumProgram</td>
+<td style="text-align: left">InvalidSerumProgram</td>
+</tr>
+<tr>
+<td style="text-align: right">6137</td>
+<td style="text-align: left">InvalidSerumMarket</td>
+<td style="text-align: left">InvalidSerumMarket</td>
+</tr>
+<tr>
+<td style="text-align: right">6138</td>
+<td style="text-align: left">InvalidSerumBids</td>
+<td style="text-align: left">InvalidSerumBids</td>
+</tr>
+<tr>
+<td style="text-align: right">6139</td>
+<td style="text-align: left">InvalidSerumAsks</td>
+<td style="text-align: left">InvalidSerumAsks</td>
+</tr>
+<tr>
+<td style="text-align: right">6140</td>
+<td style="text-align: left">InvalidSerumOpenOrders</td>
+<td style="text-align: left">InvalidSerumOpenOrders</td>
+</tr>
+<tr>
+<td style="text-align: right">6141</td>
+<td style="text-align: left">FailedSerumCPI</td>
+<td style="text-align: left">FailedSerumCPI</td>
+</tr>
+<tr>
+<td style="text-align: right">6142</td>
+<td style="text-align: left">FailedToFillOnExternalMarket</td>
+<td style="text-align: left">FailedToFillOnExternalMarket</td>
+</tr>
+<tr>
+<td style="text-align: right">6143</td>
+<td style="text-align: left">InvalidFulfillmentConfig</td>
+<td style="text-align: left">InvalidFulfillmentConfig</td>
+</tr>
+<tr>
+<td style="text-align: right">6144</td>
+<td style="text-align: left">InvalidFeeStructure</td>
+<td style="text-align: left">InvalidFeeStructure</td>
+</tr>
+<tr>
+<td style="text-align: right">6145</td>
+<td style="text-align: left">InsufficientIFShares</td>
+<td style="text-align: left">Insufficient IF shares</td>
+</tr>
+<tr>
+<td style="text-align: right">6146</td>
+<td style="text-align: left">MarketActionPaused</td>
+<td style="text-align: left">the Market has paused this action</td>
+</tr>
+<tr>
+<td style="text-align: right">6147</td>
+<td style="text-align: left">MarketPlaceOrderPaused</td>
+<td style="text-align: left">the Market status doesnt allow placing orders</td>
+</tr>
+<tr>
+<td style="text-align: right">6148</td>
+<td style="text-align: left">MarketFillOrderPaused</td>
+<td style="text-align: left">the Market status doesnt allow filling orders</td>
+</tr>
+<tr>
+<td style="text-align: right">6149</td>
+<td style="text-align: left">MarketWithdrawPaused</td>
+<td style="text-align: left">the Market status doesnt allow withdraws</td>
+</tr>
+<tr>
+<td style="text-align: right">6150</td>
+<td style="text-align: left">ProtectedAssetTierViolation</td>
+<td style="text-align: left">Action violates the Protected Asset Tier rules</td>
+</tr>
+<tr>
+<td style="text-align: right">6151</td>
+<td style="text-align: left">IsolatedAssetTierViolation</td>
+<td style="text-align: left">Action violates the Isolated Asset Tier rules</td>
+</tr>
+<tr>
+<td style="text-align: right">6152</td>
+<td style="text-align: left">UserCantBeDeleted</td>
+<td style="text-align: left">User Cant Be Deleted</td>
+</tr>
+<tr>
+<td style="text-align: right">6153</td>
+<td style="text-align: left">ReduceOnlyWithdrawIncreasedRisk</td>
+<td style="text-align: left">Reduce Only Withdraw Increased Risk</td>
+</tr>
+<tr>
+<td style="text-align: right">6154</td>
+<td style="text-align: left">MaxOpenInterest</td>
+<td style="text-align: left">Max Open Interest</td>
+</tr>
+<tr>
+<td style="text-align: right">6155</td>
+<td style="text-align: left">CantResolvePerpBankruptcy</td>
+<td style="text-align: left">Cant Resolve Perp Bankruptcy</td>
+</tr>
+<tr>
+<td style="text-align: right">6156</td>
+<td style="text-align: left">LiquidationDoesntSatisfyLimitPrice</td>
+<td style="text-align: left">Liquidation Doesnt Satisfy Limit Price</td>
+</tr>
+<tr>
+<td style="text-align: right">6157</td>
+<td style="text-align: left">MarginTradingDisabled</td>
+<td style="text-align: left">Margin Trading Disabled</td>
+</tr>
+<tr>
+<td style="text-align: right">6158</td>
+<td style="text-align: left">InvalidMarketStatusToSettlePnl</td>
+<td style="text-align: left">Invalid Market Status to Settle Perp Pnl</td>
+</tr>
+<tr>
+<td style="text-align: right">6159</td>
+<td style="text-align: left">PerpMarketNotInSettlement</td>
+<td style="text-align: left">PerpMarketNotInSettlement</td>
+</tr>
+<tr>
+<td style="text-align: right">6160</td>
+<td style="text-align: left">PerpMarketNotInReduceOnly</td>
+<td style="text-align: left">PerpMarketNotInReduceOnly</td>
+</tr>
+<tr>
+<td style="text-align: right">6161</td>
+<td style="text-align: left">PerpMarketSettlementBufferNotReached</td>
+<td style="text-align: left">PerpMarketSettlementBufferNotReached</td>
+</tr>
+<tr>
+<td style="text-align: right">6162</td>
+<td style="text-align: left">PerpMarketSettlementUserHasOpenOrders</td>
+<td style="text-align: left">PerpMarketSettlementUserHasOpenOrders</td>
+</tr>
+<tr>
+<td style="text-align: right">6163</td>
+<td style="text-align: left">PerpMarketSettlementUserHasActiveLP</td>
+<td style="text-align: left">PerpMarketSettlementUserHasActiveLP</td>
+</tr>
+<tr>
+<td style="text-align: right">6164</td>
+<td style="text-align: left">UnableToSettleExpiredUserPosition</td>
+<td style="text-align: left">UnableToSettleExpiredUserPosition</td>
+</tr>
+<tr>
+<td style="text-align: right">6165</td>
+<td style="text-align: left">UnequalMarketIndexForSpotTransfer</td>
+<td style="text-align: left">UnequalMarketIndexForSpotTransfer</td>
+</tr>
+<tr>
+<td style="text-align: right">6166</td>
+<td style="text-align: left">InvalidPerpPositionDetected</td>
+<td style="text-align: left">InvalidPerpPositionDetected</td>
+</tr>
+<tr>
+<td style="text-align: right">6167</td>
+<td style="text-align: left">InvalidSpotPositionDetected</td>
+<td style="text-align: left">InvalidSpotPositionDetected</td>
+</tr>
+<tr>
+<td style="text-align: right">6168</td>
+<td style="text-align: left">InvalidAmmDetected</td>
+<td style="text-align: left">InvalidAmmDetected</td>
+</tr>
+<tr>
+<td style="text-align: right">6169</td>
+<td style="text-align: left">InvalidAmmForFillDetected</td>
+<td style="text-align: left">InvalidAmmForFillDetected</td>
+</tr>
+<tr>
+<td style="text-align: right">6170</td>
+<td style="text-align: left">InvalidAmmLimitPriceOverride</td>
+<td style="text-align: left">InvalidAmmLimitPriceOverride</td>
+</tr>
+<tr>
+<td style="text-align: right">6171</td>
+<td style="text-align: left">InvalidOrderFillPrice</td>
+<td style="text-align: left">InvalidOrderFillPrice</td>
+</tr>
+<tr>
+<td style="text-align: right">6172</td>
+<td style="text-align: left">SpotMarketBalanceInvariantViolated</td>
+<td style="text-align: left">SpotMarketBalanceInvariantViolated</td>
+</tr>
+<tr>
+<td style="text-align: right">6173</td>
+<td style="text-align: left">SpotMarketVaultInvariantViolated</td>
+<td style="text-align: left">SpotMarketVaultInvariantViolated</td>
+</tr>
+<tr>
+<td style="text-align: right">6174</td>
+<td style="text-align: left">InvalidPDA</td>
+<td style="text-align: left">InvalidPDA</td>
+</tr>
+<tr>
+<td style="text-align: right">6175</td>
+<td style="text-align: left">InvalidPDASigner</td>
+<td style="text-align: left">InvalidPDASigner</td>
+</tr>
+<tr>
+<td style="text-align: right">6176</td>
+<td style="text-align: left">RevenueSettingsCannotSettleToIF</td>
+<td style="text-align: left">RevenueSettingsCannotSettleToIF</td>
+</tr>
+<tr>
+<td style="text-align: right">6177</td>
+<td style="text-align: left">NoRevenueToSettleToIF</td>
+<td style="text-align: left">NoRevenueToSettleToIF</td>
+</tr>
+<tr>
+<td style="text-align: right">6178</td>
+<td style="text-align: left">NoAmmPerpPnlDeficit</td>
+<td style="text-align: left">NoAmmPerpPnlDeficit</td>
+</tr>
+<tr>
+<td style="text-align: right">6179</td>
+<td style="text-align: left">SufficientPerpPnlPool</td>
+<td style="text-align: left">SufficientPerpPnlPool</td>
+</tr>
+<tr>
+<td style="text-align: right">6180</td>
+<td style="text-align: left">InsufficientPerpPnlPool</td>
+<td style="text-align: left">InsufficientPerpPnlPool</td>
+</tr>
+<tr>
+<td style="text-align: right">6181</td>
+<td style="text-align: left">PerpPnlDeficitBelowThreshold</td>
+<td style="text-align: left">PerpPnlDeficitBelowThreshold</td>
+</tr>
+<tr>
+<td style="text-align: right">6182</td>
+<td style="text-align: left">MaxRevenueWithdrawPerPeriodReached</td>
+<td style="text-align: left">MaxRevenueWithdrawPerPeriodReached</td>
+</tr>
+<tr>
+<td style="text-align: right">6183</td>
+<td style="text-align: left">MaxIFWithdrawReached</td>
+<td style="text-align: left">InvalidSpotPositionDetected</td>
+</tr>
+<tr>
+<td style="text-align: right">6184</td>
+<td style="text-align: left">NoIFWithdrawAvailable</td>
+<td style="text-align: left">NoIFWithdrawAvailable</td>
+</tr>
+<tr>
+<td style="text-align: right">6185</td>
+<td style="text-align: left">InvalidIFUnstake</td>
+<td style="text-align: left">InvalidIFUnstake</td>
+</tr>
+<tr>
+<td style="text-align: right">6186</td>
+<td style="text-align: left">InvalidIFUnstakeSize</td>
+<td style="text-align: left">InvalidIFUnstakeSize</td>
+</tr>
+<tr>
+<td style="text-align: right">6187</td>
+<td style="text-align: left">InvalidIFUnstakeCancel</td>
+<td style="text-align: left">InvalidIFUnstakeCancel</td>
+</tr>
+<tr>
+<td style="text-align: right">6188</td>
+<td style="text-align: left">InvalidIFForNewStakes</td>
+<td style="text-align: left">InvalidIFForNewStakes</td>
+</tr>
+<tr>
+<td style="text-align: right">6189</td>
+<td style="text-align: left">InvalidIFRebase</td>
+<td style="text-align: left">InvalidIFRebase</td>
+</tr>
+<tr>
+<td style="text-align: right">6190</td>
+<td style="text-align: left">InvalidInsuranceUnstakeSize</td>
+<td style="text-align: left">InvalidInsuranceUnstakeSize</td>
+</tr>
+<tr>
+<td style="text-align: right">6191</td>
+<td style="text-align: left">InvalidOrderLimitPrice</td>
+<td style="text-align: left">InvalidOrderLimitPrice</td>
+</tr>
+<tr>
+<td style="text-align: right">6192</td>
+<td style="text-align: left">InvalidIFDetected</td>
+<td style="text-align: left">InvalidIFDetected</td>
+</tr>
+<tr>
+<td style="text-align: right">6193</td>
+<td style="text-align: left">InvalidAmmMaxSpreadDetected</td>
+<td style="text-align: left">InvalidAmmMaxSpreadDetected</td>
+</tr>
+<tr>
+<td style="text-align: right">6194</td>
+<td style="text-align: left">InvalidConcentrationCoef</td>
+<td style="text-align: left">InvalidConcentrationCoef</td>
+</tr>
+<tr>
+<td style="text-align: right">6195</td>
+<td style="text-align: left">InvalidSrmVault</td>
+<td style="text-align: left">InvalidSrmVault</td>
+</tr>
+<tr>
+<td style="text-align: right">6196</td>
+<td style="text-align: left">InvalidVaultOwner</td>
+<td style="text-align: left">InvalidVaultOwner</td>
+</tr>
+<tr>
+<td style="text-align: right">6197</td>
+<td style="text-align: left">InvalidMarketStatusForFills</td>
+<td style="text-align: left">InvalidMarketStatusForFills</td>
+</tr>
+<tr>
+<td style="text-align: right">6198</td>
+<td style="text-align: left">IFWithdrawRequestInProgress</td>
+<td style="text-align: left">IFWithdrawRequestInProgress</td>
+</tr>
+<tr>
+<td style="text-align: right">6199</td>
+<td style="text-align: left">NoIFWithdrawRequestInProgress</td>
+<td style="text-align: left">NoIFWithdrawRequestInProgress</td>
+</tr>
+<tr>
+<td style="text-align: right">6200</td>
+<td style="text-align: left">IFWithdrawRequestTooSmall</td>
+<td style="text-align: left">IFWithdrawRequestTooSmall</td>
+</tr>
+<tr>
+<td style="text-align: right">6201</td>
+<td style="text-align: left">IncorrectSpotMarketAccountPassed</td>
+<td style="text-align: left">IncorrectSpotMarketAccountPassed</td>
+</tr>
+<tr>
+<td style="text-align: right">6202</td>
+<td style="text-align: left">BlockchainClockInconsistency</td>
+<td style="text-align: left">BlockchainClockInconsistency</td>
+</tr>
+<tr>
+<td style="text-align: right">6203</td>
+<td style="text-align: left">InvalidIFSharesDetected</td>
+<td style="text-align: left">InvalidIFSharesDetected</td>
+</tr>
+<tr>
+<td style="text-align: right">6204</td>
+<td style="text-align: left">NewLPSizeTooSmall</td>
+<td style="text-align: left">NewLPSizeTooSmall</td>
+</tr>
+<tr>
+<td style="text-align: right">6205</td>
+<td style="text-align: left">MarketStatusInvalidForNewLP</td>
+<td style="text-align: left">MarketStatusInvalidForNewLP</td>
+</tr>
+<tr>
+<td style="text-align: right">6206</td>
+<td style="text-align: left">InvalidMarkTwapUpdateDetected</td>
+<td style="text-align: left">InvalidMarkTwapUpdateDetected</td>
+</tr>
+<tr>
+<td style="text-align: right">6207</td>
+<td style="text-align: left">MarketSettlementAttemptOnActiveMarket</td>
+<td style="text-align: left">MarketSettlementAttemptOnActiveMarket</td>
+</tr>
+<tr>
+<td style="text-align: right">6208</td>
+<td style="text-align: left">MarketSettlementRequiresSettledLP</td>
+<td style="text-align: left">MarketSettlementRequiresSettledLP</td>
+</tr>
+<tr>
+<td style="text-align: right">6209</td>
+<td style="text-align: left">MarketSettlementAttemptTooEarly</td>
+<td style="text-align: left">MarketSettlementAttemptTooEarly</td>
+</tr>
+<tr>
+<td style="text-align: right">6210</td>
+<td style="text-align: left">MarketSettlementTargetPriceInvalid</td>
+<td style="text-align: left">MarketSettlementTargetPriceInvalid</td>
+</tr>
+<tr>
+<td style="text-align: right">6211</td>
+<td style="text-align: left">UnsupportedSpotMarket</td>
+<td style="text-align: left">UnsupportedSpotMarket</td>
+</tr>
+<tr>
+<td style="text-align: right">6212</td>
+<td style="text-align: left">SpotOrdersDisabled</td>
+<td style="text-align: left">SpotOrdersDisabled</td>
+</tr>
+<tr>
+<td style="text-align: right">6213</td>
+<td style="text-align: left">MarketBeingInitialized</td>
+<td style="text-align: left">Market Being Initialized</td>
+</tr>
+<tr>
+<td style="text-align: right">6214</td>
+<td style="text-align: left">InvalidUserSubAccountId</td>
+<td style="text-align: left">Invalid Sub Account Id</td>
+</tr>
+<tr>
+<td style="text-align: right">6215</td>
+<td style="text-align: left">InvalidTriggerOrderCondition</td>
+<td style="text-align: left">Invalid Trigger Order Condition</td>
+</tr>
+<tr>
+<td style="text-align: right">6216</td>
+<td style="text-align: left">InvalidSpotPosition</td>
+<td style="text-align: left">Invalid Spot Position</td>
+</tr>
+<tr>
+<td style="text-align: right">6217</td>
+<td style="text-align: left">CantTransferBetweenSameUserAccount</td>
+<td style="text-align: left">Cant transfer between same user account</td>
+</tr>
+<tr>
+<td style="text-align: right">6218</td>
+<td style="text-align: left">InvalidPerpPosition</td>
+<td style="text-align: left">Invalid Perp Position</td>
+</tr>
+<tr>
+<td style="text-align: right">6219</td>
+<td style="text-align: left">UnableToGetLimitPrice</td>
+<td style="text-align: left">Unable To Get Limit Price</td>
+</tr>
+<tr>
+<td style="text-align: right">6220</td>
+<td style="text-align: left">InvalidLiquidation</td>
+<td style="text-align: left">Invalid Liquidation</td>
+</tr>
+<tr>
+<td style="text-align: right">6221</td>
+<td style="text-align: left">SpotFulfillmentConfigDisabled</td>
+<td style="text-align: left">Spot Fulfullment Config Disabled</td>
+</tr>
+<tr>
+<td style="text-align: right">6222</td>
+<td style="text-align: left">InvalidMaker</td>
+<td style="text-align: left">Invalid Maker</td>
+</tr>
+<tr>
+<td style="text-align: right">6223</td>
+<td style="text-align: left">FailedUnwrap</td>
+<td style="text-align: left">Failed Unwrap</td>
+</tr>
+<tr>
+<td style="text-align: right">6224</td>
+<td style="text-align: left">MaxNumberOfUsers</td>
+<td style="text-align: left">Max Number Of Users</td>
+</tr>
+<tr>
+<td style="text-align: right">6225</td>
+<td style="text-align: left">InvalidOracleForSettlePnl</td>
+<td style="text-align: left">InvalidOracleForSettlePnl</td>
+</tr>
+<tr>
+<td style="text-align: right">6226</td>
+<td style="text-align: left">MarginOrdersOpen</td>
+<td style="text-align: left">MarginOrdersOpen</td>
+</tr>
+<tr>
+<td style="text-align: right">6227</td>
+<td style="text-align: left">TierViolationLiquidatingPerpPnl</td>
+<td style="text-align: left">TierViolationLiquidatingPerpPnl</td>
+</tr>
+<tr>
+<td style="text-align: right">6228</td>
+<td style="text-align: left">CouldNotLoadUserData</td>
+<td style="text-align: left">CouldNotLoadUserData</td>
+</tr>
+<tr>
+<td style="text-align: right">6229</td>
+<td style="text-align: left">UserWrongMutability</td>
+<td style="text-align: left">UserWrongMutability</td>
+</tr>
+<tr>
+<td style="text-align: right">6230</td>
+<td style="text-align: left">InvalidUserAccount</td>
+<td style="text-align: left">InvalidUserAccount</td>
+</tr>
+<tr>
+<td style="text-align: right">6231</td>
+<td style="text-align: left">CouldNotLoadUserStatsData</td>
+<td style="text-align: left">CouldNotLoadUserData</td>
+</tr>
+<tr>
+<td style="text-align: right">6232</td>
+<td style="text-align: left">UserStatsWrongMutability</td>
+<td style="text-align: left">UserWrongMutability</td>
+</tr>
+<tr>
+<td style="text-align: right">6233</td>
+<td style="text-align: left">InvalidUserStatsAccount</td>
+<td style="text-align: left">InvalidUserAccount</td>
+</tr>
+<tr>
+<td style="text-align: right">6234</td>
+<td style="text-align: left">UserNotFound</td>
+<td style="text-align: left">UserNotFound</td>
+</tr>
+<tr>
+<td style="text-align: right">6235</td>
+<td style="text-align: left">UnableToLoadUserAccount</td>
+<td style="text-align: left">UnableToLoadUserAccount</td>
+</tr>
+<tr>
+<td style="text-align: right">6236</td>
+<td style="text-align: left">UserStatsNotFound</td>
+<td style="text-align: left">UserStatsNotFound</td>
+</tr>
+<tr>
+<td style="text-align: right">6237</td>
+<td style="text-align: left">UnableToLoadUserStatsAccount</td>
+<td style="text-align: left">UnableToLoadUserStatsAccount</td>
+</tr>
+<tr>
+<td style="text-align: right">6238</td>
+<td style="text-align: left">UserNotInactive</td>
+<td style="text-align: left">User Not Inactive</td>
+</tr>
+<tr>
+<td style="text-align: right">6239</td>
+<td style="text-align: left">RevertFill</td>
+<td style="text-align: left">RevertFill</td>
+</tr>
+<tr>
+<td style="text-align: right">6240</td>
+<td style="text-align: left">InvalidMarketAccountforDeletion</td>
+<td style="text-align: left">Invalid MarketAccount for Deletion</td>
+</tr>
+<tr>
+<td style="text-align: right">6241</td>
+<td style="text-align: left">InvalidSpotFulfillmentParams</td>
+<td style="text-align: left">Invalid Spot Fulfillment Params</td>
+</tr>
+<tr>
+<td style="text-align: right">6242</td>
+<td style="text-align: left">FailedToGetMint</td>
+<td style="text-align: left">Failed to Get Mint</td>
+</tr>
+<tr>
+<td style="text-align: right">6243</td>
+<td style="text-align: left">FailedPhoenixCPI</td>
+<td style="text-align: left">FailedPhoenixCPI</td>
+</tr>
+<tr>
+<td style="text-align: right">6244</td>
+<td style="text-align: left">FailedToDeserializePhoenixMarket</td>
+<td style="text-align: left">FailedToDeserializePhoenixMarket</td>
+</tr>
+<tr>
+<td style="text-align: right">6245</td>
+<td style="text-align: left">InvalidPricePrecision</td>
+<td style="text-align: left">InvalidPricePrecision</td>
+</tr>
+<tr>
+<td style="text-align: right">6246</td>
+<td style="text-align: left">InvalidPhoenixProgram</td>
+<td style="text-align: left">InvalidPhoenixProgram</td>
+</tr>
+<tr>
+<td style="text-align: right">6247</td>
+<td style="text-align: left">InvalidPhoenixMarket</td>
+<td style="text-align: left">InvalidPhoenixMarket</td>
 </tr>
 </tbody></table>
 
