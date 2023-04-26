@@ -60,15 +60,22 @@ Install @drift-labs/sdk from [npm](https://www.npmjs.com/package/@drift-labs/sdk
 
 `yarn add @drift-labs/sdk`
 
+auto-generated documentation here: https://drift-labs.github.io/protocol-v2/sdk/
+
 ## Python
 Install driftpy from PyPI using pip:
 
 `pip install driftpy`
 
+auto-generated documentation here: https://drift-labs.github.io/driftpy/
+
 ## Client Initialization
 
 ```typescript
   import {DriftClient} from "@drift-labs/sdk";
+```
+```python
+  import driftpy;
 ```
 
 ## Get All Kittens
@@ -184,9 +191,6 @@ This endpoint retrieves a specific kitten.
 Parameter | Description
 --------- | -----------
 ID | The ID of the kitten to retrieve
-
-## Client Initialization
-
 
 ## Delete a Specific Kitten
 
