@@ -221,6 +221,29 @@ driftClient.withdraw(
 
 Withdrawing can lead to a borrow if the user has no deposits in the market and the user has enough margin to cover it.
 
+## Transferring Deposits
+
+```typescript
+const marketIndex = 0;
+const amount = driftClient.convertToSpotPrecision(marketIndex, 100);
+const fromSubAccountId = 0;
+const toSubAccountId = 1;
+
+driftClient.transferDeposit(
+  amount,
+  marketIndex,
+  fromSubAccountId,
+  toSubAccountId,
+);
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| amount | The amount to transfer in spot market's token mint precision  | No | |
+| marketIndex   | The spot market index you're transferring deposits in | No | |
+| fromSubAccountId | The sub account you're withdrawing from  | No | |
+| toSubAccountId | The sub account you're depositing too  | No | |
+
 ## Getting Deposit/Borrow Amounts
 
 ```typescript
