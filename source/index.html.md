@@ -146,3 +146,21 @@ const driftClient = new DriftClient({
 | authoritySubAccountMap   | Map of authority to sub account ids to subscribe to. Only necessary if using multiple delegate accounts. If this and subAccountIds are empty, subscribes to all sub account ids. | Yes | {} |
 | includeDelegates   | Whether or not to subscribe to delegates when subAccountIds and authoritySubAccountMap are empty | Yes | false |
 | userStats   | Whether or not to listen subscribe to user stats account. | Yes | false |
+
+## User Initialization
+```typescript
+const [txSig, userPublickKey] = await driftClient.initializeUser(
+  0,
+  "toly"
+);
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| subAccountId | The sub account id for the new user account.  | Yes | 0 |
+| name   | Display name for the user account    | Yes | Main Account |
+| referrerInfo   | The address of the referrer and referrer stats accounts | Yes | |
+
+Sub account ids are monotonic. The first user account created will have sub account id 0, the second will have sub account id 1, etc.
+The next sub account id can be found by calling `driftClient.getNextSubAccountId()`.
+
