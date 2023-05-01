@@ -348,6 +348,9 @@
                   <li>
                     <a href="#client-initialization" class="toc-h2 toc-link" data-title="Client Initialization">Client Initialization</a>
                   </li>
+                  <li>
+                    <a href="#user-initialization" class="toc-h2 toc-link" data-title="User Initialization">User Initialization</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -567,6 +570,41 @@
 <td>false</td>
 </tr>
 </tbody></table>
+<h2 id='user-initialization'>User Initialization</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="p">[</span><span class="nx">txSig</span><span class="p">,</span> <span class="nx">userPublickKey</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">initializeUser</span><span class="p">(</span>
+  <span class="mi">0</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">toly</span><span class="dl">"</span>
+<span class="p">);</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>subAccountId</td>
+<td>The sub account id for the new user account.</td>
+<td>Yes</td>
+<td>0</td>
+</tr>
+<tr>
+<td>name</td>
+<td>Display name for the user account</td>
+<td>Yes</td>
+<td>Main Account</td>
+</tr>
+<tr>
+<td>referrerInfo</td>
+<td>The address of the referrer and referrer stats accounts</td>
+<td>Yes</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<p>Sub account ids are monotonic. The first user account created will have sub account id 0, the second will have sub account id 1, etc.
+The next sub account id can be found by calling <code>driftClient.getNextSubAccountId()</code>.</p>
 <h1 id='api-endpoints'>API Endpoints</h1><h2 id='contracts'>Contracts</h2>
 <p>Contracts endpoint gives a high level overview of all the markets available in the protocol.</p>
 <h3 id='http-request'>HTTP Request</h3>
