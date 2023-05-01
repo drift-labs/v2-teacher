@@ -92,6 +92,29 @@ Install driftpy from PyPI using pip:
 
 auto-generated documentation here: https://drift-labs.github.io/driftpy/
 
+## Connection
+
+  ```typescript
+import {Connection} from "@solana/web3.js";
+
+const connection = new Connection('https://api.mainnet-beta.solana.com');
+````
+
+The connection object is used to send transactions to the Solana blockchain. It is used by the DriftClient to send transactions to the blockchain.
+
+## Wallet
+
+The wallet used to sign solana transactions. The wallet can be created from a private key or from a keypair file.
+
+  ```typescript
+import {Wallet, loadKeypair} from "@drift-labs/sdk";
+
+const keyPairFile = '~/.config/solana/my-keypair.json';
+const wallet = new Wallet(loadKeypair(privateKeyFile));
+````
+
+The connection object is used to send transactions to the Solana blockchain. It is used by the DriftClient to send transactions to the blockchain.
+
 ## Client Initialization
 
 ```typescript
