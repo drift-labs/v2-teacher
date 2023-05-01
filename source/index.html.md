@@ -30,6 +30,19 @@ There are language bindings in [Typescript](https://github.com/drift-labs/protoc
 
 This API documentation page is open sourced and available [here](https://github.com/drift-labs/v2-teacher) was created with [Slate](https://github.com/slatedocs/slate). Feel free to submit questions/comments in [Issues](https://github.com/drift-labs/v2-teacher/issues) or suggest changes as a [PR](https://github.com/drift-labs/v2-teacher/pulls).
 
+
+## Program Addresses
+
+<aside class="notice">
+  All documented descriptions are for the following deployed programs IDs of the protocol.
+</aside>
+
+Enviroment | Program ID 
+--------- | ------- |
+mainnet-beta | [dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH](https://solscan.io/account/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH)
+devnet | [dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH](https://solscan.io/account/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH?cluster=devnet) 
+
+
 # Authentication
 To access and interact with a blockchain, such as Solana, you need a keypair, which consists of a public key and a private key. The private key should be kept secure and not shared with anyone else.
 
@@ -78,167 +91,82 @@ auto-generated documentation here: https://drift-labs.github.io/driftpy/
   import driftpy;
 ```
 
-## Get All Kittens
+# API Endpoints
 
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens" \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
-
-This endpoint retrieves all kittens.
+## Contracts
+Contracts endpoint gives a high level overview of all the markets available in the protocol.
 
 ### HTTP Request
+`GET https://mainnet-beta.api.drift.trade/contracts`
 
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
 
 ```python
-import kittn
+import requests
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
+contracts = requests.get('https://mainnet-beta.api.drift.trade/contracts')
+contracts.json()
 ```
 
-```shell
-curl "http://example.com/api/kittens/2" \
-  -H "Authorization: meowmeowmeow"
+```https
+curl "https://mainnet-beta.api.drift.trade/contracts"
 ```
 
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
+```typescript
+import fetch from "node-fetch";
+const resp = await fetch(
+            "https://mainnet-beta.api.drift.trade/contracts",
+            {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                },
+            }
+        );
+const result = await resp.json();
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
-{
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+{"contracts":
+  [
+     {
+      "contract_index":0,
+      "ticker_id":"SOL-PERP",
+      "base_currency":"SOL",
+      "quote_currency":"USDC",
+      "last_price":"21.881487",
+      "base_volume":"110593.000000000",
+      "quote_volume":"1788085.901185",
+      "high":"23.852900",
+      "low":"21.759228",
+      "product_type":"PERP",
+      "open_interest":"119147.600000000",
+      "index_price":"21.887634",
+      "index_name":"SOL",
+      "index_currency":"USDC",
+      "start_timestamp":"1667560505000",
+      "end_timestamp":"1682956473378",
+      "funding_rate":"0.003867637",
+      "next_funding_rate":"0.00124",
+      "next_funding_rate_timestamp":"1682956805000"
+      },
+      ...
+  ]
 }
 ```
 
-This endpoint retrieves a specific kitten.
+### Response Values
 
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
-
-### HTTP Request
-
-`GET http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
+Value | Description
 --------- | -----------
-ID | The ID of the kitten to retrieve
+ticker_id | market name
+last_price | last trade price
+product_type | either PERP or SPOT
+open_interest | outstanding contracts opened in market, denominated in base currency
+index_price | referenced oracle price for market, used for trigger orders
+next_funding_rate | next predicted funding rate (in %) (based on oracle and market twap difference)
+next_funding_rate_timestamp | time of next funding rate
 
-## Delete a Specific Kitten
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2" \
-  -X DELETE \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "deleted" : ":("
-}
-```
-
-This endpoint deletes a specific kitten.
-
-### HTTP Request
-
-`DELETE http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
-
+This endpoint retrieves all contracts available within the protocol.
