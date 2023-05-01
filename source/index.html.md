@@ -29,7 +29,7 @@ By using any API provided by Drift Labs, you agree to the [Terms of Use](https:/
 
 # Introduction
 
-Drift Protocol is an open-sourced, decentralised exchange built on the Solana blockchain, enabling transparent and non-custodial trading on cryptocurrencies.
+Drift Protocol is an [open-sourced](https://github.com/drift-labs/protocol-v2/), decentralised exchange built on the [Solana](https://solana.com) blockchain, enabling transparent and non-custodial trading on cryptocurrencies.
 
 There are language bindings in [Typescript](https://github.com/drift-labs/protocol-v2/tree/master/sdk) and [Python](https://github.com/drift-labs/driftpy)! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
 
@@ -48,7 +48,7 @@ mainnet-beta | [dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH](https://solscan.io/
 devnet | [dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH](https://solscan.io/account/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH?cluster=devnet) | [app](https://beta.drift.trade) |
 
 <aside class="warning">
-  It is strictly against the (Terms of Use)[https://docs.drift.trade/terms-of-use] to use these interfaces from a Restricted Territory.
+  It is strictly against the [Terms of Use](https://docs.drift.trade/terms-of-use) to use these interfaces from a Restricted Territory.
 </aside>
 
 
