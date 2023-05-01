@@ -361,6 +361,9 @@
                     <a href="#withdrawing" class="toc-h2 toc-link" data-title="Withdrawing">Withdrawing</a>
                   </li>
                   <li>
+                    <a href="#transferring-deposits" class="toc-h2 toc-link" data-title="Transferring Deposits">Transferring Deposits</a>
+                  </li>
+                  <li>
                     <a href="#getting-deposit-borrow-amounts" class="toc-h2 toc-link" data-title="Getting Deposit/Borrow Amounts">Getting Deposit/Borrow Amounts</a>
                   </li>
               </ul>
@@ -735,6 +738,51 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tbody></table>
 
 <p>Withdrawing can lead to a borrow if the user has no deposits in the market and the user has enough margin to cover it.</p>
+<h2 id='transferring-deposits'>Transferring Deposits</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">amount</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToSpotPrecision</span><span class="p">(</span><span class="nx">marketIndex</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">fromSubAccountId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">toSubAccountId</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+<span class="nx">driftClient</span><span class="p">.</span><span class="nx">transferDeposit</span><span class="p">(</span>
+  <span class="nx">amount</span><span class="p">,</span>
+  <span class="nx">marketIndex</span><span class="p">,</span>
+  <span class="nx">fromSubAccountId</span><span class="p">,</span>
+  <span class="nx">toSubAccountId</span><span class="p">,</span>
+<span class="p">);</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>amount</td>
+<td>The amount to transfer in spot market&#39;s token mint precision</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>marketIndex</td>
+<td>The spot market index you&#39;re transferring deposits in</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>fromSubAccountId</td>
+<td>The sub account you&#39;re withdrawing from</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>toSubAccountId</td>
+<td>The sub account you&#39;re depositing too</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
 <h2 id='getting-deposit-borrow-amounts'>Getting Deposit/Borrow Amounts</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
 <span class="kd">const</span> <span class="nx">tokenAmount</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getTokenAmount</span><span class="p">(</span>
