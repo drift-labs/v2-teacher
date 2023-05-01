@@ -4,7 +4,7 @@ title: protocol-v2 API
 language_tabs: # must be one of https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers
   - typescript
   - python
-  - https
+  - shell
 
 toc_footers:
   - <a href='https://github.com/drift-labs/protocol-v2/releases/'> release history </a>
@@ -107,7 +107,7 @@ contracts = requests.get('https://mainnet-beta.api.drift.trade/contracts')
 contracts.json()
 ```
 
-```https
+```shell
 curl "https://mainnet-beta.api.drift.trade/contracts"
 ```
 
