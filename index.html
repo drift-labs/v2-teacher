@@ -340,6 +340,12 @@
                     <a href="#python" class="toc-h2 toc-link" data-title="Python">Python</a>
                   </li>
                   <li>
+                    <a href="#connection" class="toc-h2 toc-link" data-title="Connection">Connection</a>
+                  </li>
+                  <li>
+                    <a href="#wallet" class="toc-h2 toc-link" data-title="Wallet">Wallet</a>
+                  </li>
+                  <li>
                     <a href="#client-initialization" class="toc-h2 toc-link" data-title="Client Initialization">Client Initialization</a>
                   </li>
               </ul>
@@ -441,6 +447,19 @@
 <p><code>pip install driftpy</code></p>
 
 <p>auto-generated documentation here: https://drift-labs.github.io/driftpy/</p>
+<h2 id='connection'>Connection</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.mainnet-beta.solana.com</span><span class="dl">'</span><span class="p">);</span>
+</code></pre></div>
+<p>The connection object is used to send transactions to the Solana blockchain. It is used by the DriftClient to send transactions to the blockchain.</p>
+<h2 id='wallet'>Wallet</h2>
+<p>The wallet used to sign solana transactions. The wallet can be created from a private key or from a keypair file.</p>
+<div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">Wallet</span><span class="p">,</span> <span class="nx">loadKeypair</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">keyPairFile</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">~/.config/solana/my-keypair.json</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">wallet</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Wallet</span><span class="p">(</span><span class="nx">loadKeypair</span><span class="p">(</span><span class="nx">privateKeyFile</span><span class="p">));</span>
+</code></pre></div>
+<p>The connection object is used to send transactions to the Solana blockchain. It is used by the DriftClient to send transactions to the blockchain.</p>
 <h2 id='client-initialization'>Client Initialization</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">DriftClient</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
 
 <span class="kd">const</span> <span class="nx">driftClient</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DriftClient</span><span class="p">({</span>
