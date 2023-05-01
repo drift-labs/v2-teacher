@@ -318,6 +318,11 @@
       <ul id="toc" class="toc-list-h1">
           <li>
             <a href="#introduction" class="toc-h1 toc-link" data-title="Introduction">Introduction</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#program-addresses" class="toc-h2 toc-link" data-title="Program Addresses">Program Addresses</a>
+                  </li>
+              </ul>
           </li>
           <li>
             <a href="#authentication" class="toc-h1 toc-link" data-title="Authentication">Authentication</a>
@@ -334,14 +339,13 @@
                   <li>
                     <a href="#client-initialization" class="toc-h2 toc-link" data-title="Client Initialization">Client Initialization</a>
                   </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#api-endpoints" class="toc-h1 toc-link" data-title="API Endpoints">API Endpoints</a>
+              <ul class="toc-list-h2">
                   <li>
-                    <a href="#get-all-kittens" class="toc-h2 toc-link" data-title="Get All Kittens">Get All Kittens</a>
-                  </li>
-                  <li>
-                    <a href="#get-a-specific-kitten" class="toc-h2 toc-link" data-title="Get a Specific Kitten">Get a Specific Kitten</a>
-                  </li>
-                  <li>
-                    <a href="#delete-a-specific-kitten" class="toc-h2 toc-link" data-title="Delete a Specific Kitten">Delete a Specific Kitten</a>
+                    <a href="#contracts" class="toc-h2 toc-link" data-title="Contracts">Contracts</a>
                   </li>
               </ul>
           </li>
@@ -377,6 +381,26 @@
 <p>There are language bindings in <a href="https://github.com/drift-labs/protocol-v2/tree/master/sdk">Typescript</a> and <a href="https://github.com/drift-labs/driftpy">Python</a>! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.</p>
 
 <p>This API documentation page is open sourced and available <a href="https://github.com/drift-labs/v2-teacher">here</a> was created with <a href="https://github.com/slatedocs/slate">Slate</a>. Feel free to submit questions/comments in <a href="https://github.com/drift-labs/v2-teacher/issues">Issues</a> or suggest changes as a <a href="https://github.com/drift-labs/v2-teacher/pulls">PR</a>.</p>
+<h2 id='program-addresses'>Program Addresses</h2>
+<aside class="notice">
+  All documented descriptions are for the following deployed programs IDs of the protocol.
+</aside>
+
+<table><thead>
+<tr>
+<th>Enviroment</th>
+<th>Program ID</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>mainnet-beta</td>
+<td><a href="https://solscan.io/account/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH">dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH</a></td>
+</tr>
+<tr>
+<td>devnet</td>
+<td><a href="https://solscan.io/account/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH?cluster=devnet">dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH</a></td>
+</tr>
+</tbody></table>
 <h1 id='authentication'>Authentication</h1>
 <p>To access and interact with a blockchain, such as Solana, you need a keypair, which consists of a public key and a private key. The private key should be kept secure and not shared with anyone else.</p>
 
@@ -407,152 +431,102 @@
 <p>auto-generated documentation here: https://drift-labs.github.io/driftpy/</p>
 <h2 id='client-initialization'>Client Initialization</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="k">import</span> <span class="p">{</span><span class="nx">DriftClient</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="kn">import</span> <span class="nn">driftpy</span><span class="p">;</span>
-</code></pre></div><h2 id='get-all-kittens'>Get All Kittens</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">kittn</span>
-
-<span class="n">api</span> <span class="o">=</span> <span class="n">kittn</span><span class="p">.</span><span class="n">authorize</span><span class="p">(</span><span class="s">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="n">kittens</span><span class="p">.</span><span class="n">get</span><span class="p">()</span>
-</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"http://example.com/api/kittens"</span> <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Authorization: meowmeowmeow"</span>
-</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">kittn</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">kittn</span><span class="dl">'</span><span class="p">);</span>
-
-<span class="kd">let</span> <span class="nx">api</span> <span class="o">=</span> <span class="nx">kittn</span><span class="p">.</span><span class="nx">authorize</span><span class="p">(</span><span class="dl">'</span><span class="s1">meowmeowmeow</span><span class="dl">'</span><span class="p">);</span>
-<span class="kd">let</span> <span class="nx">kittens</span> <span class="o">=</span> <span class="nx">api</span><span class="p">.</span><span class="nx">kittens</span><span class="p">.</span><span class="kd">get</span><span class="p">();</span>
-</code></pre></div>
-<blockquote>
-<p>The above command returns JSON structured like this:</p>
-</blockquote>
-<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Fluffums"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"calico"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Max"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unknown"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
-  </span><span class="p">}</span><span class="w">
-</span><span class="p">]</span><span class="w">
-</span></code></pre></div>
-<p>This endpoint retrieves all kittens.</p>
+</code></pre></div><h1 id='api-endpoints'>API Endpoints</h1><h2 id='contracts'>Contracts</h2>
+<p>Contracts endpoint gives a high level overview of all the markets available in the protocol.</p>
 <h3 id='http-request'>HTTP Request</h3>
-<p><code>GET http://example.com/api/kittens</code></p>
-<h3 id='query-parameters'>Query Parameters</h3>
-<table><thead>
-<tr>
-<th>Parameter</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>include_cats</td>
-<td>false</td>
-<td>If set to true, the result will also include cats.</td>
-</tr>
-<tr>
-<td>available</td>
-<td>true</td>
-<td>If set to false, the result will include kittens that have already been adopted.</td>
-</tr>
-</tbody></table>
+<p><code>GET https://mainnet-beta.api.drift.trade/contracts</code></p>
+<div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
 
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-<h2 id='get-a-specific-kitten'>Get a Specific Kitten</h2><div class="highlight"><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'kittn'</span>
-
-<span class="n">api</span> <span class="o">=</span> <span class="no">Kittn</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="nf">kittens</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">kittn</span>
-
-<span class="n">api</span> <span class="o">=</span> <span class="n">kittn</span><span class="p">.</span><span class="n">authorize</span><span class="p">(</span><span class="s">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="n">kittens</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"http://example.com/api/kittens/2"</span> <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Authorization: meowmeowmeow"</span>
-</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">kittn</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">kittn</span><span class="dl">'</span><span class="p">);</span>
-
-<span class="kd">let</span> <span class="nx">api</span> <span class="o">=</span> <span class="nx">kittn</span><span class="p">.</span><span class="nx">authorize</span><span class="p">(</span><span class="dl">'</span><span class="s1">meowmeowmeow</span><span class="dl">'</span><span class="p">);</span>
-<span class="kd">let</span> <span class="nx">max</span> <span class="o">=</span> <span class="nx">api</span><span class="p">.</span><span class="nx">kittens</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">contracts</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'https://mainnet-beta.api.drift.trade/contracts'</span><span class="p">)</span>
+<span class="n">contracts</span><span class="p">.</span><span class="n">json</span><span class="p">()</span>
+</code></pre></div><div class="highlight"><pre class="highlight plaintext"><code>curl "https://mainnet-beta.api.drift.trade/contracts"
+</code></pre></div><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="nx">fetch</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">node-fetch</span><span class="dl">"</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">fetch</span><span class="p">(</span>
+            <span class="dl">"</span><span class="s2">https://mainnet-beta.api.drift.trade/contracts</span><span class="dl">"</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="na">method</span><span class="p">:</span> <span class="dl">"</span><span class="s2">GET</span><span class="dl">"</span><span class="p">,</span>
+                <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="na">Accept</span><span class="p">:</span> <span class="dl">"</span><span class="s2">application/json</span><span class="dl">"</span><span class="p">,</span>
+                <span class="p">},</span>
+            <span class="p">}</span>
+        <span class="p">);</span>
+<span class="kd">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
 </code></pre></div>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
 </blockquote>
-<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Max"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unknown"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="nl">"contracts"</span><span class="p">:</span><span class="w">
+  </span><span class="p">[</span><span class="w">
+     </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"contract_index"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"ticker_id"</span><span class="p">:</span><span class="s2">"SOL-PERP"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"base_currency"</span><span class="p">:</span><span class="s2">"SOL"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"quote_currency"</span><span class="p">:</span><span class="s2">"USDC"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"last_price"</span><span class="p">:</span><span class="s2">"21.881487"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"base_volume"</span><span class="p">:</span><span class="s2">"110593.000000000"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"quote_volume"</span><span class="p">:</span><span class="s2">"1788085.901185"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"high"</span><span class="p">:</span><span class="s2">"23.852900"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"low"</span><span class="p">:</span><span class="s2">"21.759228"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"product_type"</span><span class="p">:</span><span class="s2">"PERP"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"open_interest"</span><span class="p">:</span><span class="s2">"119147.600000000"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"index_price"</span><span class="p">:</span><span class="s2">"21.887634"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"index_name"</span><span class="p">:</span><span class="s2">"SOL"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"index_currency"</span><span class="p">:</span><span class="s2">"USDC"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"start_timestamp"</span><span class="p">:</span><span class="s2">"1667560505000"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"end_timestamp"</span><span class="p">:</span><span class="s2">"1682956473378"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"funding_rate"</span><span class="p">:</span><span class="s2">"0.003867637"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"next_funding_rate"</span><span class="p">:</span><span class="s2">"0.00124"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"next_funding_rate_timestamp"</span><span class="p">:</span><span class="s2">"1682956805000"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="err">...</span><span class="w">
+  </span><span class="p">]</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre></div>
-<p>This endpoint retrieves a specific kitten.</p>
-
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
-<h3 id='http-request-2'>HTTP Request</h3>
-<p><code>GET http://example.com/kittens/&lt;ID&gt;</code></p>
-<h3 id='url-parameters'>URL Parameters</h3>
+</span></code></pre></div><h3 id='response-values'>Response Values</h3>
 <table><thead>
 <tr>
-<th>Parameter</th>
+<th>Value</th>
 <th>Description</th>
 </tr>
 </thead><tbody>
 <tr>
-<td>ID</td>
-<td>The ID of the kitten to retrieve</td>
+<td>ticker_id</td>
+<td>market name</td>
+</tr>
+<tr>
+<td>last_price</td>
+<td>last trade price</td>
+</tr>
+<tr>
+<td>product_type</td>
+<td>either PERP or SPOT</td>
+</tr>
+<tr>
+<td>open_interest</td>
+<td>outstanding contracts opened in market, denominated in base currency</td>
+</tr>
+<tr>
+<td>index_price</td>
+<td>referenced oracle price for market, used for trigger orders</td>
+</tr>
+<tr>
+<td>next_funding_rate</td>
+<td>next predicted funding rate (in %) (based on oracle and market twap difference)</td>
+</tr>
+<tr>
+<td>next_funding_rate_timestamp</td>
+<td>time of next funding rate</td>
 </tr>
 </tbody></table>
-<h2 id='delete-a-specific-kitten'>Delete a Specific Kitten</h2><div class="highlight"><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'kittn'</span>
 
-<span class="n">api</span> <span class="o">=</span> <span class="no">Kittn</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="nf">kittens</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">kittn</span>
-
-<span class="n">api</span> <span class="o">=</span> <span class="n">kittn</span><span class="p">.</span><span class="n">authorize</span><span class="p">(</span><span class="s">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="n">kittens</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"http://example.com/api/kittens/2"</span> <span class="se">\</span>
-  <span class="nt">-X</span> DELETE <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Authorization: meowmeowmeow"</span>
-</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">kittn</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">kittn</span><span class="dl">'</span><span class="p">);</span>
-
-<span class="kd">let</span> <span class="nx">api</span> <span class="o">=</span> <span class="nx">kittn</span><span class="p">.</span><span class="nx">authorize</span><span class="p">(</span><span class="dl">'</span><span class="s1">meowmeowmeow</span><span class="dl">'</span><span class="p">);</span>
-<span class="kd">let</span> <span class="nx">max</span> <span class="o">=</span> <span class="nx">api</span><span class="p">.</span><span class="nx">kittens</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-</code></pre></div>
-<blockquote>
-<p>The above command returns JSON structured like this:</p>
-</blockquote>
-<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"deleted"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">":("</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre></div>
-<p>This endpoint deletes a specific kitten.</p>
-<h3 id='http-request-3'>HTTP Request</h3>
-<p><code>DELETE http://example.com/kittens/&lt;ID&gt;</code></p>
-<h3 id='url-parameters-2'>URL Parameters</h3>
-<table><thead>
-<tr>
-<th>Parameter</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>ID</td>
-<td>The ID of the kitten to delete</td>
-</tr>
-</tbody></table>
+<p>This endpoint retrieves all contracts available within the protocol.</p>
 <h1 id='historical-data'>Historical Data</h1>
 <p>Snapshots are collected by parsing on-chain transaction logs. For convience the below are parsed logs collected, stored as a CSV, and stored off-chain (~99% of records). </p>
 
 <p>Please share any transaction signatures or time ranges you believe might be missing in Drift Protocol Discord.</p>
 <h2 id='url-prefix'>URL Prefix</h2>
-<p>mainnet-beta:  <code>https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/</code>
-devnet: <code>https://drift-historical-data.s3.us-east-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/</code></p>
+<p>mainnet-beta:  <code>https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/</code></p>
+
+<p>devnet: <code>https://drift-historical-data.s3.us-east-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/</code></p>
 <h2 id='url-suffix'>URL Suffix</h2><h3 id='schema'>Schema</h3>
 <table><thead>
 <tr>
