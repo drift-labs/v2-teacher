@@ -148,6 +148,7 @@ const driftClient = new DriftClient({
 | userStats   | Whether or not to listen subscribe to user stats account. | Yes | false |
 
 ## User Initialization
+
 ```typescript
 const [txSig, userPublickKey] = await driftClient.initializeUser(
   0,
@@ -164,3 +165,59 @@ const [txSig, userPublickKey] = await driftClient.initializeUser(
 Sub account ids are monotonic. The first user account created will have sub account id 0, the second will have sub account id 1, etc.
 The next sub account id can be found by calling `driftClient.getNextSubAccountId()`.
 
+## Switching Sub Accounts
+```typescript
+driftClient.switchActiveUser(
+  1,
+);
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| subAccountId | The sub account to switch to  | No | 0 |
+| authority   | The authority of the sub account you're signing for. Only needed for delegate accounts | Yes | Current authority |
+
+## Depositing
+
+```typescript
+const marketIndex = 0;
+const amount = driftClient.convertToSpotPrecision(marketIndex, 100);
+const associatedTokenAccount = await driftClient.getAssociatedTokenAccount(marketIndex);
+
+driftClient.deposit(
+  amount,
+  marketIndex,
+  associatedTokenAccount,
+);
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| amount | The amount to deposit in spot market's token mint precision  | No | |
+| marketIndex   | The spot market index you're depositing into | No | |
+| associatedTokenAccount   | The public key of the token account you're depositing from. For sol, it can be the wallet's public key | No | |
+| subAccountId | The sub account you're depositing too  | Yes | active sub account |
+| reduceOnly | Whether the deposit should only reduce borrow  | Yes | false |
+
+## Withdrawing
+
+```typescript
+const marketIndex = 0;
+const amount = driftClient.convertToSpotPrecision(marketIndex, 100);
+const associatedTokenAccount = await driftClient.getAssociatedTokenAccount(marketIndex);
+
+driftClient.withdraw(
+  amount,
+  marketIndex,
+  associatedTokenAccount,
+);
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| amount | The amount to withdraw in spot market's token mint precision  | No | |
+| marketIndex   | The spot market index you're withdrawing from | No | |
+| associatedTokenAccount   | The public key of the token account you're withdrawing to. For sol, it can be the wallet's public key | No | |
+| reduceOnly | Whether the withdraw should only decrease a deposit and block a new borrow | Yes | false |
+
+Withdrawing can lead to a borrow if the user has no deposits in the market and the user has enough margin to cover it.
