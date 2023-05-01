@@ -360,6 +360,9 @@
                   <li>
                     <a href="#withdrawing" class="toc-h2 toc-link" data-title="Withdrawing">Withdrawing</a>
                   </li>
+                  <li>
+                    <a href="#getting-deposit-borrow-amounts" class="toc-h2 toc-link" data-title="Getting Deposit/Borrow Amounts">Getting Deposit/Borrow Amounts</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -732,6 +735,16 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tbody></table>
 
 <p>Withdrawing can lead to a borrow if the user has no deposits in the market and the user has enough margin to cover it.</p>
+<h2 id='getting-deposit-borrow-amounts'>Getting Deposit/Borrow Amounts</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">tokenAmount</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getTokenAmount</span><span class="p">(</span>
+  <span class="nx">amount</span><span class="p">,</span>
+<span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">isDeposit</span> <span class="o">=</span> <span class="nx">tokenAmount</span><span class="p">.</span><span class="nx">gte</span><span class="p">(</span><span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+<span class="kd">const</span> <span class="nx">isBorrow</span> <span class="o">=</span> <span class="nx">tokenAmount</span><span class="p">.</span><span class="nx">lt</span><span class="p">(</span><span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+</code></pre></div>
+<p>If token amount is greater than 0, it is a deposit. If less than zero, it is a borrow.</p>
 <h1 id='api-endpoints'>API Endpoints</h1><h2 id='contracts'>Contracts</h2>
 <p>Contracts endpoint gives a high level overview of all the markets available in the protocol.</p>
 <h3 id='http-request'>HTTP Request</h3>
