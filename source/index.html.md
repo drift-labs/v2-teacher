@@ -104,8 +104,6 @@ The connection object is used to send transactions to the Solana blockchain. It 
 
 ## Wallet
 
-The wallet used to sign solana transactions. The wallet can be created from a private key or from a keypair file.
-
   ```typescript
 import {Wallet, loadKeypair} from "@drift-labs/sdk";
 
@@ -113,7 +111,7 @@ const keyPairFile = '~/.config/solana/my-keypair.json';
 const wallet = new Wallet(loadKeypair(privateKeyFile));
 ````
 
-The connection object is used to send transactions to the Solana blockchain. It is used by the DriftClient to send transactions to the blockchain.
+The wallet used to sign solana transactions. The wallet can be created from a private key or from a keypair file.
 
 ## Client Initialization
 
