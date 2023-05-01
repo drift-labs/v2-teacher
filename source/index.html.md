@@ -220,3 +220,18 @@ driftClient.withdraw(
 | reduceOnly | Whether the withdraw should only decrease a deposit and block a new borrow | Yes | false |
 
 Withdrawing can lead to a borrow if the user has no deposits in the market and the user has enough margin to cover it.
+
+## Getting Deposit/Borrow Amounts
+
+```typescript
+const marketIndex = 0;
+
+const tokenAmount = driftClient.getTokenAmount(
+  amount,
+);
+
+const isDeposit = tokenAmount.gte(new BN(0));
+const isBorrow = tokenAmount.lt(new BN(0));
+```
+
+If token amount is greater than 0, it is a deposit. If less than zero, it is a borrow.
