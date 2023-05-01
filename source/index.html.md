@@ -42,10 +42,10 @@ This API documentation page is open sourced and available [here](https://github.
   All documented descriptions are for the following deployed programs IDs of the protocol.
 </aside>
 
-Enviroment | Program ID | User Interface
---------- | ------- | 
-mainnet-beta | [dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH](https://solscan.io/account/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH) | [app](https://app.drift.trade)
-devnet | [dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH](https://solscan.io/account/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH?cluster=devnet) | [app](https://beta.drift.trade)
+Enviroment | Program ID | User Interface |
+---------- | ----------- | -------- |
+mainnet-beta | [dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH](https://solscan.io/account/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH) | [app](https://app.drift.trade) |
+devnet | [dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH](https://solscan.io/account/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH?cluster=devnet) | [app](https://beta.drift.trade) |
 
 <aside class="warning">
   It is strictly against the (Terms of Use)[https://docs.drift.trade/terms-of-use] to use these interfaces from a Restricted Territory.
