@@ -121,7 +121,6 @@ import {DriftClient} from "@drift-labs/sdk";
 const driftClient = new DriftClient({
   connection,
   wallet,
-  programID: new PublicKey('dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH'),
   env: 'mainnet-beta',
 });
 ```
@@ -133,7 +132,7 @@ const driftClient = new DriftClient({
 | ----------- | ----------- | -------- | ------- |
 | connection      | Connection object specifying solana rpc url       | No | |
 | wallet   | The wallet used to sign transactions sent to solana blockchain       | No | |
-| programId   | Drift program id      | No | |
+| programId   | Drift program id      | Yes | dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH |
 | env   | `devnet` or `mainnet-beta`. Used to automatically derive market accounts to subscribe to if they're not explicitly set | Yes | |
 | perpMarketIndexes   | Which perp markets accounts to subscribe to. | Yes | Derived based on env|
 | spotMarketIndexes   | Which spot markets accounts to subscribe to. | Yes | Derived based on env|
