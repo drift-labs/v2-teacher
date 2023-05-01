@@ -95,8 +95,33 @@ auto-generated documentation here: https://drift-labs.github.io/driftpy/
 ## Client Initialization
 
 ```typescript
-  import {DriftClient} from "@drift-labs/sdk";
+import {DriftClient} from "@drift-labs/sdk";
+
+const driftClient = new DriftClient({
+  connection,
+  wallet,
+  programID: new PublicKey('dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH'),
+  env: 'mainnet-beta',
+});
 ```
 ```python
   import driftpy;
 ```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| connection      | Connection object specifying solana rpc url       | No | |
+| wallet   | The wallet used to sign transactions sent to solana blockchain       | No | |
+| programId   | Drift program id      | No | |
+| env   | `devnet` or `mainnet-beta`. Used to automatically derive market accounts to subscribe to if they're not explicitly set | Yes | |
+| perpMarketIndexes   | Which perp markets accounts to subscribe to. | Yes | Derived based on env|
+| spotMarketIndexes   | Which spot markets accounts to subscribe to. | Yes | Derived based on env|
+| oracleInfos   | Which oracles accounts to subscribe to. | Yes | Derived based on env|
+| accountSubscription   | Whether to use websocket or polling to subscribe to on-chain accounts e.g. markets, users, oracle.| Yes | Websockets |
+| opts   | Transaction confirmation status options | Yes | {preflightCommitment: "processed", commitment: "processed"} |
+| activeSubAccountId   | Which sub account to use initially | Yes | 0 |
+| subAccountIds   | All the sub account ids to subscribe to. If this and authoritySubAccountMap are empty, subscribes to all sub account ids. | Yes | [] |
+| authority   | Which user account authority you're signing for. Only set if you're signing for delegated account. | Yes | wallet.publicKey |
+| authoritySubAccountMap   | Map of authority to sub account ids to subscribe to. Only necessary if using multiple delegate accounts. If this and subAccountIds are empty, subscribes to all sub account ids. | Yes | {} |
+| includeDelegates   | Whether or not to subscribe to delegates when subAccountIds and authoritySubAccountMap are empty | Yes | false |
+| userStats   | Whether or not to listen subscribe to user stats account. | Yes | false |
