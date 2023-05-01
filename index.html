@@ -441,9 +441,116 @@
 <p><code>pip install driftpy</code></p>
 
 <p>auto-generated documentation here: https://drift-labs.github.io/driftpy/</p>
-<h2 id='client-initialization'>Client Initialization</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="k">import</span> <span class="p">{</span><span class="nx">DriftClient</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
+<h2 id='client-initialization'>Client Initialization</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">DriftClient</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">driftClient</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DriftClient</span><span class="p">({</span>
+  <span class="nx">connection</span><span class="p">,</span>
+  <span class="nx">wallet</span><span class="p">,</span>
+  <span class="na">programID</span><span class="p">:</span> <span class="k">new</span> <span class="nx">PublicKey</span><span class="p">(</span><span class="dl">'</span><span class="s1">dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH</span><span class="dl">'</span><span class="p">),</span>
+  <span class="na">env</span><span class="p">:</span> <span class="dl">'</span><span class="s1">mainnet-beta</span><span class="dl">'</span><span class="p">,</span>
+<span class="p">});</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="kn">import</span> <span class="nn">driftpy</span><span class="p">;</span>
-</code></pre></div><h1 id='api-endpoints'>API Endpoints</h1><h2 id='contracts'>Contracts</h2>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>connection</td>
+<td>Connection object specifying solana rpc url</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>wallet</td>
+<td>The wallet used to sign transactions sent to solana blockchain</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>programId</td>
+<td>Drift program id</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>env</td>
+<td><code>devnet</code> or <code>mainnet-beta</code>. Used to automatically derive market accounts to subscribe to if they&#39;re not explicitly set</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>perpMarketIndexes</td>
+<td>Which perp markets accounts to subscribe to.</td>
+<td>Yes</td>
+<td>Derived based on env</td>
+</tr>
+<tr>
+<td>spotMarketIndexes</td>
+<td>Which spot markets accounts to subscribe to.</td>
+<td>Yes</td>
+<td>Derived based on env</td>
+</tr>
+<tr>
+<td>oracleInfos</td>
+<td>Which oracles accounts to subscribe to.</td>
+<td>Yes</td>
+<td>Derived based on env</td>
+</tr>
+<tr>
+<td>accountSubscription</td>
+<td>Whether to use websocket or polling to subscribe to on-chain accounts e.g. markets, users, oracle.</td>
+<td>Yes</td>
+<td>Websockets</td>
+</tr>
+<tr>
+<td>opts</td>
+<td>Transaction confirmation status options</td>
+<td>Yes</td>
+<td>{preflightCommitment: &quot;processed&quot;, commitment: &quot;processed&quot;}</td>
+</tr>
+<tr>
+<td>activeSubAccountId</td>
+<td>Which sub account to use initially</td>
+<td>Yes</td>
+<td>0</td>
+</tr>
+<tr>
+<td>subAccountIds</td>
+<td>All the sub account ids to subscribe to. If this and authoritySubAccountMap are empty, subscribes to all sub account ids.</td>
+<td>Yes</td>
+<td>[]</td>
+</tr>
+<tr>
+<td>authority</td>
+<td>Which user account authority you&#39;re signing for. Only set if you&#39;re signing for delegated account.</td>
+<td>Yes</td>
+<td>wallet.publicKey</td>
+</tr>
+<tr>
+<td>authoritySubAccountMap</td>
+<td>Map of authority to sub account ids to subscribe to. Only necessary if using multiple delegate accounts. If this and subAccountIds are empty, subscribes to all sub account ids.</td>
+<td>Yes</td>
+<td>{}</td>
+</tr>
+<tr>
+<td>includeDelegates</td>
+<td>Whether or not to subscribe to delegates when subAccountIds and authoritySubAccountMap are empty</td>
+<td>Yes</td>
+<td>false</td>
+</tr>
+<tr>
+<td>userStats</td>
+<td>Whether or not to listen subscribe to user stats account.</td>
+<td>Yes</td>
+<td>false</td>
+</tr>
+</tbody></table>
+<h1 id='api-endpoints'>API Endpoints</h1><h2 id='contracts'>Contracts</h2>
 <p>Contracts endpoint gives a high level overview of all the markets available in the protocol.</p>
 <h3 id='http-request'>HTTP Request</h3>
 <p><code>GET https://mainnet-beta.api.drift.trade/contracts</code></p>
