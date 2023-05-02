@@ -393,6 +393,9 @@
                   <li>
                     <a href="#modifying-order-by-user-order-id" class="toc-h2 toc-link" data-title="Modifying Order By User Order Id">Modifying Order By User Order Id</a>
                   </li>
+                  <li>
+                    <a href="#settle-perp-pnl" class="toc-h2 toc-link" data-title="Settle Perp PNL">Settle Perp PNL</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -1463,6 +1466,41 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tbody></table>
 
 <p>Modify order cancels and places a new order.</p>
+<h2 id='settle-perp-pnl'>Settle Perp PNL</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span>  <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getUser</span><span class="p">();</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">settlePNL</span><span class="p">(</span>
+   <span class="nx">user</span><span class="p">.</span><span class="nx">userAccountPublicKey</span><span class="p">,</span> 
+   <span class="nx">user</span><span class="p">.</span><span class="nx">getUserAccount</span><span class="p">(),</span>
+   <span class="nx">marketIndex</span>
+<span class="p">);</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>settleeUserAccountPublicKey</td>
+<td>User address you&#39;re settling pnl for</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>settleeUserAccount</td>
+<td>User account data you&#39;re settling pnl for</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>marketIndex</td>
+<td>Market index for the perp market</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
 <h1 id='user'>User</h1><h2 id='get-user'>Get User</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>   <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getUser</span><span class="p">();</span>
 </code></pre></div>
 <table><thead>
