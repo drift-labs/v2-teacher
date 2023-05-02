@@ -282,6 +282,7 @@ await driftClient.placePerpOrder(orderParams);
 | baseAssetAmount | The amount of base asset to buy or sell  | No | |
 | marketType | The type of market order is for e.g. perp or spot  | Yes | perp |
 | price | The limit price for order | Yes | 0 |
+| userOrderId | Unique order id specified by user| Yes | 0 |
 | reduceOnly | If the order can only reduce positions| Yes | false |
 | postOnly | If the order can only be a maker | Yes | false |
 | triggerPrice | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders | Yes | |
@@ -315,6 +316,7 @@ await driftClient.placeSpotOrder(orderParams);
 | baseAssetAmount | The amount of base asset to buy or sell  | No | |
 | marketType | The type of market order is for e.g. perp or spot  | Yes | spot |
 | price | The limit price for order | Yes | 0 |
+| userOrderId | Unique order id specified by user| Yes | 0 |
 | reduceOnly | If the order can only reduce positions| Yes | false |
 | postOnly | If the order can only be a maker | Yes | false |
 | triggerPrice | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders | Yes | |
