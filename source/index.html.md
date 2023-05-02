@@ -497,6 +497,24 @@ await driftClient.modifyOrder(orderParams);
 
 Modify order cancels and places a new order.
 
+## Settle Perp PNL
+
+```typescript
+const marketIndex = 0;
+const user =  driftClient.getUser();
+await driftClient.settlePNL(
+   user.userAccountPublicKey, 
+   user.getUserAccount(),
+   marketIndex
+);
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| settleeUserAccountPublicKey | User address you're settling pnl for | No | |
+| settleeUserAccount | User account data you're settling pnl for | No | |
+| marketIndex | Market index for the perp market  | No | |
+
 # User
 
 ## Get User
