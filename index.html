@@ -366,6 +366,12 @@
                   <li>
                     <a href="#getting-deposit-borrow-amounts" class="toc-h2 toc-link" data-title="Getting Deposit/Borrow Amounts">Getting Deposit/Borrow Amounts</a>
                   </li>
+                  <li>
+                    <a href="#placing-perp-order" class="toc-h2 toc-link" data-title="Placing Perp Order">Placing Perp Order</a>
+                  </li>
+                  <li>
+                    <a href="#placing-spot-order" class="toc-h2 toc-link" data-title="Placing Spot Order">Placing Spot Order</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -793,6 +799,226 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <span class="kd">const</span> <span class="nx">isBorrow</span> <span class="o">=</span> <span class="nx">tokenAmount</span><span class="p">.</span><span class="nx">lt</span><span class="p">(</span><span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
 </code></pre></div>
 <p>If token amount is greater than 0, it is a deposit. If less than zero, it is a borrow.</p>
+<h2 id='placing-perp-order'>Placing Perp Order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
+<span class="kd">const</span> <span class="nx">orderParams</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span> 
+  <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
+  <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+  <span class="na">price</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">placePerpOrder</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">);</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>orderType</td>
+<td>The type of order e.g. market, limit</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>marketIndex</td>
+<td>The market to place order in</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>direction</td>
+<td>The direction of order e.g. long (bid) or short (ask)</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>baseAssetAmount</td>
+<td>The amount of base asset to buy or sell</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>marketType</td>
+<td>The type of market order is for e.g. perp or spot</td>
+<td>Yes</td>
+<td>perp</td>
+</tr>
+<tr>
+<td>price</td>
+<td>The limit price for order</td>
+<td>Yes</td>
+<td>0</td>
+</tr>
+<tr>
+<td>reduceOnly</td>
+<td>If the order can only reduce positions</td>
+<td>Yes</td>
+<td>false</td>
+</tr>
+<tr>
+<td>postOnly</td>
+<td>If the order can only be a maker</td>
+<td>Yes</td>
+<td>false</td>
+</tr>
+<tr>
+<td>triggerPrice</td>
+<td>at what price order is triggered. only applicable for triggerMarket and triggerLimit orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>triggerCondition</td>
+<td>whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>oraclePriceOffset</td>
+<td>priceOffset for oracle derived limit price. only applicable for limit and oracle orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>auctionDuration</td>
+<td>how many slots the auction lasts. only applicable for market and oracle orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>auctionStartPrice</td>
+<td>the price the auction starts at</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>auctionEndPrice</td>
+<td>the price the auction ends at</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>maxTs</td>
+<td>the max timestampe before the order expires</td>
+<td>Yes</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id='placing-spot-order'>Placing Spot Order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
+<span class="kd">const</span> <span class="nx">orderParams</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
+  <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
+  <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToSpotPrecision</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+  <span class="na">price</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">placeSpotOrder</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">);</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>orderType</td>
+<td>The type of order e.g. market, limit</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>marketIndex</td>
+<td>The market to place order in</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>direction</td>
+<td>The direction of order e.g. long (bid) or short (ask)</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>baseAssetAmount</td>
+<td>The amount of base asset to buy or sell</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>marketType</td>
+<td>The type of market order is for e.g. perp or spot</td>
+<td>Yes</td>
+<td>spot</td>
+</tr>
+<tr>
+<td>price</td>
+<td>The limit price for order</td>
+<td>Yes</td>
+<td>0</td>
+</tr>
+<tr>
+<td>reduceOnly</td>
+<td>If the order can only reduce positions</td>
+<td>Yes</td>
+<td>false</td>
+</tr>
+<tr>
+<td>postOnly</td>
+<td>If the order can only be a maker</td>
+<td>Yes</td>
+<td>false</td>
+</tr>
+<tr>
+<td>triggerPrice</td>
+<td>at what price order is triggered. only applicable for triggerMarket and triggerLimit orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>triggerCondition</td>
+<td>whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>oraclePriceOffset</td>
+<td>priceOffset for oracle derived limit price. only applicable for limit and oracle orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>auctionDuration</td>
+<td>how many slots the auction lasts. only applicable for market and oracle orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>auctionStartPrice</td>
+<td>the price the auction starts at</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>auctionEndPrice</td>
+<td>the price the auction ends at</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>maxTs</td>
+<td>the max timestampe before the order expires</td>
+<td>Yes</td>
+<td></td>
+</tr>
+</tbody></table>
 <h1 id='api-endpoints'>API Endpoints</h1><h2 id='contracts'>Contracts</h2>
 <p>Contracts endpoint gives a high level overview of all the markets available in the protocol.</p>
 <h3 id='http-request'>HTTP Request</h3>
