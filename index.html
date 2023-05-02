@@ -372,6 +372,15 @@
                   <li>
                     <a href="#placing-spot-order" class="toc-h2 toc-link" data-title="Placing Spot Order">Placing Spot Order</a>
                   </li>
+                  <li>
+                    <a href="#canceling-order" class="toc-h2 toc-link" data-title="Canceling Order">Canceling Order</a>
+                  </li>
+                  <li>
+                    <a href="#canceling-order-by-user-order-id" class="toc-h2 toc-link" data-title="Canceling Order By User Order Id">Canceling Order By User Order Id</a>
+                  </li>
+                  <li>
+                    <a href="#cancel-orders" class="toc-h2 toc-link" data-title="Cancel Orders">Cancel Orders</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -1031,6 +1040,79 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td></td>
 </tr>
 </tbody></table>
+<h2 id='canceling-order'>Canceling Order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
+<span class="kd">const</span> <span class="nx">orderId</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">cancelOrder</span><span class="p">(</span><span class="nx">orderId</span><span class="p">);</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>orderId</td>
+<td>The order being canceled</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id='canceling-order-by-user-order-id'>Canceling Order By User Order Id</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
+<span class="kd">const</span> <span class="nx">userOrderId</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">cancelOrder</span><span class="p">(</span><span class="nx">userOrderId</span><span class="p">);</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>userOrderId</td>
+<td>Unique order id specified by user when order was placed</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id='cancel-orders'>Cancel Orders</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
+<span class="kd">const</span> <span class="nx">marketType</span> <span class="o">=</span> <span class="nx">MarketType</span><span class="p">.</span><span class="nx">PERP</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">direction</span> <span class="o">=</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">;</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">cancelOrders</span><span class="p">(</span><span class="nx">marketType</span><span class="p">,</span> <span class="nx">marketIndex</span><span class="p">,</span> <span class="nx">direction</span><span class="p">);</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>marketType</td>
+<td>The market type of orders to cancel. Must be set if marketIndex set</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>marketIndex</td>
+<td>The market index of orders to cancel. Must be set if marketType set</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>direction</td>
+<td>The direction of orders to cancel.</td>
+<td>Yes</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<p>To cancel all orders, do not set any parameters.</p>
 <h1 id='api-endpoints'>API Endpoints</h1><h2 id='contracts'>Contracts</h2>
 <p>Contracts endpoint gives a high level overview of all the markets available in the protocol.</p>
 <h3 id='http-request'>HTTP Request</h3>
