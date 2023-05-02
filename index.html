@@ -370,12 +370,6 @@
                     <a href="#transferring-deposits" class="toc-h2 toc-link" data-title="Transferring Deposits">Transferring Deposits</a>
                   </li>
                   <li>
-                    <a href="#getting-deposit-borrow-amounts" class="toc-h2 toc-link" data-title="Getting Deposit/Borrow Amounts">Getting Deposit/Borrow Amounts</a>
-                  </li>
-                  <li>
-                    <a href="#get-perp-position" class="toc-h2 toc-link" data-title="Get Perp Position">Get Perp Position</a>
-                  </li>
-                  <li>
                     <a href="#order-types" class="toc-h2 toc-link" data-title="Order Types">Order Types</a>
                   </li>
                   <li>
@@ -398,6 +392,47 @@
                   </li>
                   <li>
                     <a href="#modifying-order-by-user-order-id" class="toc-h2 toc-link" data-title="Modifying Order By User Order Id">Modifying Order By User Order Id</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#user" class="toc-h1 toc-link" data-title="User">User</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#get-user" class="toc-h2 toc-link" data-title="Get User">Get User</a>
+                  </li>
+                  <li>
+                    <a href="#getting-deposit-borrow-amounts" class="toc-h2 toc-link" data-title="Getting Deposit/Borrow Amounts">Getting Deposit/Borrow Amounts</a>
+                  </li>
+                  <li>
+                    <a href="#get-perp-position" class="toc-h2 toc-link" data-title="Get Perp Position">Get Perp Position</a>
+                  </li>
+                  <li>
+                    <a href="#get-order" class="toc-h2 toc-link" data-title="Get Order">Get Order</a>
+                  </li>
+                  <li>
+                    <a href="#get-order-by-user-order-id" class="toc-h2 toc-link" data-title="Get Order By User Order Id">Get Order By User Order Id</a>
+                  </li>
+                  <li>
+                    <a href="#get-open-orders" class="toc-h2 toc-link" data-title="Get Open Orders">Get Open Orders</a>
+                  </li>
+                  <li>
+                    <a href="#get-unrealized-perp-pnl" class="toc-h2 toc-link" data-title="Get Unrealized Perp Pnl">Get Unrealized Perp Pnl</a>
+                  </li>
+                  <li>
+                    <a href="#get-unrealized-funding-pnl" class="toc-h2 toc-link" data-title="Get Unrealized Funding Pnl">Get Unrealized Funding Pnl</a>
+                  </li>
+                  <li>
+                    <a href="#get-total-collateral" class="toc-h2 toc-link" data-title="Get Total Collateral">Get Total Collateral</a>
+                  </li>
+                  <li>
+                    <a href="#get-margin-requirement" class="toc-h2 toc-link" data-title="Get Margin Requirement">Get Margin Requirement</a>
+                  </li>
+                  <li>
+                    <a href="#get-free-collateral" class="toc-h2 toc-link" data-title="Get Free Collateral">Get Free Collateral</a>
+                  </li>
+                  <li>
+                    <a href="#get-leverage" class="toc-h2 toc-link" data-title="Get Leverage">Get Leverage</a>
                   </li>
               </ul>
           </li>
@@ -874,26 +909,6 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td></td>
 </tr>
 </tbody></table>
-<h2 id='getting-deposit-borrow-amounts'>Getting Deposit/Borrow Amounts</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-
-<span class="kd">const</span> <span class="nx">tokenAmount</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getTokenAmount</span><span class="p">(</span>
-  <span class="nx">marketIndex</span><span class="p">,</span>
-<span class="p">);</span>
-
-<span class="kd">const</span> <span class="nx">isDeposit</span> <span class="o">=</span> <span class="nx">tokenAmount</span><span class="p">.</span><span class="nx">gte</span><span class="p">(</span><span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
-<span class="kd">const</span> <span class="nx">isBorrow</span> <span class="o">=</span> <span class="nx">tokenAmount</span><span class="p">.</span><span class="nx">lt</span><span class="p">(</span><span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
-</code></pre></div>
-<p>If token amount is greater than 0, it is a deposit. If less than zero, it is a borrow.</p>
-<h2 id='get-perp-position'>Get Perp Position</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-
-<span class="kd">const</span> <span class="nx">tokenAmount</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getTokenAmount</span><span class="p">(</span>
-  <span class="nx">marketIndex</span><span class="p">,</span>
-<span class="p">);</span>
-
-<span class="kd">const</span> <span class="nx">isDeposit</span> <span class="o">=</span> <span class="nx">tokenAmount</span><span class="p">.</span><span class="nx">gte</span><span class="p">(</span><span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
-<span class="kd">const</span> <span class="nx">isBorrow</span> <span class="o">=</span> <span class="nx">tokenAmount</span><span class="p">.</span><span class="nx">lt</span><span class="p">(</span><span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
-</code></pre></div>
-<p>If token amount is greater than 0, it is a deposit. If less than zero, it is a borrow.</p>
 <h2 id='order-types'>Order Types</h2>
 <p>MARKET, LIMIT, ORACLE orders all support auction parameters.</p>
 
@@ -1448,6 +1463,208 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tbody></table>
 
 <p>Modify order cancels and places a new order.</p>
+<h1 id='user'>User</h1><h2 id='get-user'>Get User</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>   <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getUser</span><span class="p">();</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>subAccountId</td>
+<td>The sub account id of user to get</td>
+<td>Yes</td>
+<td>active sub account</td>
+</tr>
+<tr>
+<td>authority</td>
+<td>The authority of user to get. Only necessary if using multiple delegate accounts</td>
+<td>Yes</td>
+<td>current authority</td>
+</tr>
+</tbody></table>
+<h2 id='getting-deposit-borrow-amounts'>Getting Deposit/Borrow Amounts</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">tokenAmount</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getTokenAmount</span><span class="p">(</span>
+  <span class="nx">marketIndex</span><span class="p">,</span>
+<span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">isDeposit</span> <span class="o">=</span> <span class="nx">tokenAmount</span><span class="p">.</span><span class="nx">gte</span><span class="p">(</span><span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+<span class="kd">const</span> <span class="nx">isBorrow</span> <span class="o">=</span> <span class="nx">tokenAmount</span><span class="p">.</span><span class="nx">lt</span><span class="p">(</span><span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>marketIndex</td>
+<td>Market index for the spot market</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<p>If token amount is greater than 0, it is a deposit. If less than zero, it is a borrow.</p>
+<h2 id='get-perp-position'>Get Perp Position</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">baseAssetAmount</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getPerpPosiiton</span><span class="p">(</span>
+  <span class="nx">marketIndex</span><span class="p">,</span>
+<span class="p">)?.</span><span class="nx">baseAssetAmount</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">isLong</span> <span class="o">=</span> <span class="nx">baseAssetAmount</span><span class="p">.</span><span class="nx">gte</span><span class="p">(</span><span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+<span class="kd">const</span> <span class="nx">isShort</span> <span class="o">=</span> <span class="nx">baseAssetAmount</span><span class="p">.</span><span class="nx">lt</span><span class="p">(</span><span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>marketIndex</td>
+<td>Market index for the perp market</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<p>If base amount is greater than 0, it is a long. If less than zero, it is a short.</p>
+<h2 id='get-order'>Get Order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">orderId</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">order</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getOrder</span><span class="p">(</span>
+  <span class="nx">orderId</span><span class="p">,</span>
+<span class="p">);</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>orderId</td>
+<td>Order id for the order you&#39;re getting</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id='get-order-by-user-order-id'>Get Order By User Order Id</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">userOrderId</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">order</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getOrderByUserOrderId</span><span class="p">(</span>
+  <span class="nx">userOrderId</span><span class="p">,</span>
+<span class="p">);</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>userOrderId</td>
+<td>User order id for the order you&#39;re getting</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id='get-open-orders'>Get Open Orders</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">order</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getOpenOrders</span><span class="p">();</span>
+</code></pre></div><h2 id='get-unrealized-perp-pnl'>Get Unrealized Perp Pnl</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>    <span class="kd">const</span> <span class="nx">pnl</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getUnrealizedPNL</span><span class="p">();</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>withFunding</td>
+<td>Whether to included unsettled funding payments</td>
+<td>Yes</td>
+<td>false</td>
+</tr>
+<tr>
+<td>marketIndex</td>
+<td>Whether to only return pnl for specific market</td>
+<td>Yes</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id='get-unrealized-funding-pnl'>Get Unrealized Funding Pnl</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>    <span class="kd">const</span> <span class="nx">pnl</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getUnrealizedFundingPNL</span><span class="p">();</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>marketIndex</td>
+<td>Whether to only return pnl for specific market</td>
+<td>Yes</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id='get-total-collateral'>Get Total Collateral</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>    <span class="kd">const</span> <span class="nx">totalCollateral</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getTotalCollateral</span><span class="p">();</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>marginCategory</td>
+<td>Initial or Maintenance</td>
+<td>Yes</td>
+<td>Initial</td>
+</tr>
+</tbody></table>
+
+<p>Asset weights vary based on whether you&#39;re checking the initial or maintenance margin requirement. Initial is used for initial leverage extension, maintenance for determining liquidations.</p>
+<h2 id='get-margin-requirement'>Get Margin Requirement</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>    <span class="kd">const</span> <span class="nx">marginRequirement</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getMarginRequirement</span><span class="p">();</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>marginCategory</td>
+<td>Initial or Maintenance</td>
+<td>Yes</td>
+<td>Initial</td>
+</tr>
+</tbody></table>
+
+<p>Liability weights (for borrows) and margin ratios (for perp positions) vary based on whether you&#39;re checking the initial or maintenance margin requirement. Initial is used for initial leverage extension, maintenance for determining liquidations.</p>
+<h2 id='get-free-collateral'>Get Free Collateral</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>    <span class="kd">const</span> <span class="nx">freeCollateral</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getFreeCollateral</span><span class="p">();</span>
+</code></pre></div>
+<p>Free collateral is the difference between your total collateral and your initial margin requirement.</p>
+<h2 id='get-leverage'>Get Leverage</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>    <span class="kd">const</span> <span class="nx">leverage</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getLeverage</span><span class="p">();</span>
+</code></pre></div>
+<p>Leverage is the total liability value (borrows plus total perp position) divided by net asset value (total assets plus total liabilities)</p>
 <h1 id='orderbook'>Orderbook</h1><h2 id='slot-subscription'>Slot Subscription</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>   <span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
    <span class="k">import</span> <span class="p">{</span><span class="nx">SlotSubscriber</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
 
