@@ -327,3 +327,44 @@ await driftClient.placeSpotOrder(orderParams);
 | auctionEndPrice | the price the auction ends at | Yes | |
 | maxTs | the max timestampe before the order expires | Yes | |
 
+## Canceling Order
+
+```typescript
+
+const orderId = 1;
+await driftClient.cancelOrder(orderId);
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| orderId | The order being canceled  | No | |
+
+## Canceling Order By User Order Id
+
+```typescript
+
+const userOrderId = 1;
+await driftClient.cancelOrder(userOrderId);
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| userOrderId | Unique order id specified by user when order was placed  | No | |
+
+## Cancel Orders
+
+```typescript
+
+const marketType = MarketType.PERP;
+const marketIndex = 0;
+const direction = PositionDirection.LONG;
+await driftClient.cancelOrders(marketType, marketIndex, direction);
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| marketType | The market type of orders to cancel. Must be set if marketIndex set | Yes | |
+| marketIndex | The market index of orders to cancel. Must be set if marketType set | Yes | |
+| direction | The direction of orders to cancel. | Yes | |
+
+To cancel all orders, do not set any parameters.
