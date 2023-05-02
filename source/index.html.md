@@ -10,7 +10,6 @@ toc_footers:
   - <a href='https://github.com/drift-labs/protocol-v2/releases/'> release history </a>
   - <a href='https://docs.drift.trade/'> Read more about Drift Protocol in Archbee</a>
 includes:
-  - apiendpoints
   - historicaldata
   - errors
 
