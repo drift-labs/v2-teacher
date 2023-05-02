@@ -118,7 +118,13 @@ Make sure this wallet has some SOL first. SOL is used to pay for transactions an
 ## Client Initialization
 
 ```typescript
-import {DriftClient} from "@drift-labs/sdk";
+import {Connection} from "@solana/web3.js";
+import {Wallet, loadKeypair, DriftClient} from "@drift-labs/sdk";
+
+const connection = new Connection('https://api.mainnet-beta.solana.com');
+
+const keyPairFile = '~/.config/solana/my-keypair.json';
+const wallet = new Wallet(loadKeypair(privateKeyFile))
 
 const driftClient = new DriftClient({
   connection,
@@ -519,3 +525,105 @@ await driftClient.modifyOrder(orderParams);
 | maxTs | the max timestampe before the order expires | Yes | |
 
 Modify order cancels and places a new order.
+
+# Orderbook
+
+## Slot Subscription
+
+```typescript
+   import {Connection} from "@solana/web3.js";
+   import {SlotSubscriber} from "@drift-labs/sdk";
+
+   const connection = new Connection("https://api.mainnet-beta.solana.com");
+   const slotSubscriber = new SlotSubscriber(connection);
+
+   await slotSubscriber.subscribe();
+   const slot = slotSubscriber.getSlot();
+
+   slotSubscriber.eventEmitter.on('newSlot', async (slot) => {
+      console.log('new slot', slot);
+   });
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| connection | Connection object specifying solana rpc url   | No | |
+
+The slot subscriber subscribes to the latest slot and updates the slot value every time a new slot is received. The state of the orderbook is dependent on the slot value, so to build the orderbook you must keep track of the slot value.
+
+## User Subscription
+
+```typescript
+   import {Connection} from "@solana/web3.js";
+   import {DriftClient, UserMap, Wallet, loadKeypair} from "@drift-labs/sdk";
+
+   const connection = new Connection("https://api.mainnet-beta.solana.com");
+
+   const keyPairFile = '~/.config/solana/my-keypair.json';
+   const wallet = new Wallet(loadKeypair(privateKeyFile))
+   
+   const driftClient = new DriftClient({
+     connection,
+     wallet,
+     env: 'mainnet-beta',
+   });
+
+   await driftClient.subscribe();
+   
+   const includeIdleUsers = false;
+   const userMap = new UserMap(driftClient, {type: 'websocket'}, false);
+   await userMap.subscribe();
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| driftClient | DriftClient object | No | |
+| accountSubscription | Whether to use websocket or polling to subscribe to users | No | |
+| includeIdle | Whether to include idle users. An idle user has had no orders, perp position or borrow for 7 days  | Yes | |
+
+Orders are stored on user accounts. To reconstruct the orderbook, you must keep track of the user accounts that have orders. 
+The user map subscribes to user account updates.  
+
+## Orderbook Subscription
+
+```typescript
+import {DLOBSubscriber} from "@drift-labs/sdk";
+
+// on-chain subscription to users
+const userMap = new UserMap(driftClient, {type: 'websocket'}, false);
+await userMap.subscribe();
+
+ const dlobSubscriber = new DLOBSubscriber({
+    driftClient,
+    dlobSource: userMap,
+    slotSource: slotSubscriber,
+    updateFrequency: 1000,
+ });
+ 
+await dlobSubscriber.subscribe();
+```
+
+```typescript
+import {DLOBApiClient, DLOBSubscriber} from "@drift-labs/sdk";
+
+ // Polling from api
+ const dlobApiClient = new DLOBApiClient({
+   url: 'https://dlob.drift.trade/orders/idlWithSlot',
+ });
+
+ const dlobSubscriber = new DLOBSubscriber({
+    driftClient,
+    dlobSource: dlobApiClient,
+    slotSource: slotSubscriber, 
+    updateFrequency: 1000,
+ });
+
+ await dlobSubscriber.subscribe();
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| driftClient | DriftClient object | No | |
+| dlobSource | Where to build the orderbook from. Can subscribe to user accounts on-chain using UserMap or request DLOB from api using DLOBApiClient | No | |
+| slotSource | Where to get slot from | No | |
+| updateFrequency | How often to rebuild the orderbook from the dlobSource in milliseconds | No | |
