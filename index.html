@@ -413,6 +413,12 @@
                   <li>
                     <a href="#orderbook-subscription" class="toc-h2 toc-link" data-title="Orderbook Subscription">Orderbook Subscription</a>
                   </li>
+                  <li>
+                    <a href="#get-l2-orderbook" class="toc-h2 toc-link" data-title="Get L2 Orderbook">Get L2 Orderbook</a>
+                  </li>
+                  <li>
+                    <a href="#get-l3-orderbook" class="toc-h2 toc-link" data-title="Get L3 Orderbook">Get L3 Orderbook</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -1585,6 +1591,91 @@ The user map subscribes to user account updates.  </p>
 <td></td>
 </tr>
 </tbody></table>
+<h2 id='get-l2-orderbook'>Get L2 Orderbook</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">l2</span> <span class="o">=</span> <span class="nx">dlobSubscriber</span><span class="p">.</span><span class="nx">getL2</span><span class="p">({</span>
+  <span class="na">marketName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">SOL-PERP</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">depth</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+<span class="p">});</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>marketName</td>
+<td>The market name of the orderbook to get. If not set, marketIndex and marketType must be set</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>marketIndex</td>
+<td>The market index of the orderbook to get. If not set, marketName must be set</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>marketType</td>
+<td>The market type of the orderbook to get. If not set, marketName must be set</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>depth</td>
+<td>The depth of the orderbook to get</td>
+<td>Yes</td>
+<td>10</td>
+</tr>
+<tr>
+<td>includeVamm</td>
+<td>Whether to include vAMM</td>
+<td>Yes</td>
+<td>false</td>
+</tr>
+<tr>
+<td>fallbackL2Generators</td>
+<td>L2OrderbookGenerators for fallback liquidity e.g. vAmm, openbook, phoenix. Unnecessary if includeVamm is true</td>
+<td>Yes</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<p>The L2 orderbook is an aggregate of drift dlob orders and, optionally, fallback liquidity.</p>
+<h2 id='get-l3-orderbook'>Get L3 Orderbook</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">l3</span> <span class="o">=</span> <span class="nx">dlobSubscriber</span><span class="p">.</span><span class="nx">getL3</span><span class="p">({</span>
+  <span class="na">marketName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">SOL-PERP</span><span class="dl">'</span><span class="p">,</span>
+<span class="p">});</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>marketName</td>
+<td>The market name of the orderbook to get. If not set, marketIndex and marketType must be set</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>marketIndex</td>
+<td>The market index of the orderbook to get. If not set, marketName must be set</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>marketType</td>
+<td>The market type of the orderbook to get. If not set, marketName must be set</td>
+<td>Yes</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<p>The L3 orderbook contains every maker order on drift dlob, including the address for the user that placed the order.</p>
 <h1 id='api-endpoints'>API Endpoints</h1><h2 id='contracts'>Contracts</h2>
 <p>Contracts endpoint gives a high level overview of all the markets available in the protocol.</p>
 <h3 id='http-request'>HTTP Request</h3>
