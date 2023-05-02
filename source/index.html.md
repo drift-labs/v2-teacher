@@ -98,7 +98,7 @@ auto-generated documentation here: https://drift-labs.github.io/driftpy/
 import {Connection} from "@solana/web3.js";
 
 const connection = new Connection('https://api.mainnet-beta.solana.com');
-````
+```
 
 The connection object is used to send transactions to the Solana blockchain. It is used by the DriftClient to send transactions to the blockchain.
 
@@ -109,9 +109,11 @@ import {Wallet, loadKeypair} from "@drift-labs/sdk";
 
 const keyPairFile = '~/.config/solana/my-keypair.json';
 const wallet = new Wallet(loadKeypair(privateKeyFile));
-````
+```
 
 The wallet used to sign solana transactions. The wallet can be created from a private key or from a keypair file.
+
+Make sure this wallet has some SOL first. SOL is used to pay for transactions and is required as rent for account intializations.
 
 ## Client Initialization
 
@@ -148,6 +150,10 @@ const driftClient = new DriftClient({
 
 ## User Initialization
 
+<aside class="notice">
+  initializing a new drift user account requires some rent (~.035 SOL). this can be reclaimed upon deletion.
+</aside>
+
 ```typescript
 const [txSig, userPublickKey] = await driftClient.initializeUser(
   0,
@@ -164,6 +170,31 @@ const [txSig, userPublickKey] = await driftClient.initializeUser(
 Sub account ids are monotonic. The first user account created will have sub account id 0, the second will have sub account id 1, etc.
 The next sub account id can be found by calling `driftClient.getNextSubAccountId()`.
 
+## Updating User
+Users accounts can update names, set custom max intial margin ratio, enable margin trading, and add a delegate account.
+
+```typescript
+const subaccountId = 0;
+
+// set max 1x intiial leverage
+await this.driftClient.updateUserCustomMarginRatio(
+  MARGIN_PRECISION, 
+  subaccountId
+);
+
+// enable spot margin trading
+await this.driftClient.updateUserMarginTradingEnabled(
+  true,
+  subaccountId
+);
+
+// add a delegate this user account
+await this.driftClient.updateUserDelegate(
+  new PublicKey('satoshi'),
+  subaccountId
+);
+```
+
 ## Switching Sub Accounts
 ```typescript
 driftClient.switchActiveUser(
@@ -175,6 +206,15 @@ driftClient.switchActiveUser(
 | ----------- | ----------- | -------- | ------- |
 | subAccountId | The sub account to switch to  | No | 0 |
 | authority   | The authority of the sub account you're signing for. Only needed for delegate accounts | Yes | Current authority |
+
+## Deleting User Account
+If an account contains no assets or liabilites, a user account can be deleted to reclaim rent.
+
+```typescript
+driftClient.deleteUser(
+  1,
+);
+```
 
 ## Depositing
 
@@ -250,7 +290,7 @@ driftClient.transferDeposit(
 const marketIndex = 0;
 
 const tokenAmount = driftClient.getTokenAmount(
-  amount,
+  marketIndex,
 );
 
 const isDeposit = tokenAmount.gte(new BN(0));
@@ -259,18 +299,69 @@ const isBorrow = tokenAmount.lt(new BN(0));
 
 If token amount is greater than 0, it is a deposit. If less than zero, it is a borrow.
 
+## Get Perp Position
+```typescript
+const marketIndex = 0;
+
+const tokenAmount = driftClient.getTokenAmount(
+  marketIndex,
+);
+
+const isDeposit = tokenAmount.gte(new BN(0));
+const isBorrow = tokenAmount.lt(new BN(0));
+```
+
+If token amount is greater than 0, it is a deposit. If less than zero, it is a borrow.
+
+## Order Types
+
+MARKET, LIMIT, ORACLE orders all support auction parameters.
+
+| Type	| Description |
+| ----- | ----------- | 
+| MARKET |	Market order. |
+| LIMIT |	Limit order. |
+| TRIGGER_MARKET |	Stop / Take-profit market order. |
+| TRIGGER_LIMIT |	 Stop / Take-profit limit order. |
+| ORACLE	| Market order using oracle offset for auction parameters. |
+
 ## Placing Perp Order
 
 ```typescript
 
+// market buy for 100 SOL-PERP @ $21.20->$21.30 over 60 slots (~30 seconds) 
+// after 60 slots, market buy 100 SOL-PERP @ $21.35 until maxTs
+const orderParams = {
+  orderType: OrderType.MARKET, 
+  marketIndex: 0,
+  direction: PositionDirection.LONG,
+  baseAssetAmount: driftClient.convertToPerpPrecision(100),
+  auctionStartPrice: driftClient.convertToPricePrecision(21.20),
+  auctionEndPrice: driftClient.convertToPricePrecision(21.30),
+  price: driftClient.convertToPricePrecision(21.35),
+  auctionDuration: 60,
+  maxTs: now + 100,
+}
+await driftClient.placePerpOrder(orderParams);
+
+// bid for 100 SOL-PERP @ $21.23 
 const orderParams = {
   orderType: OrderType.LIMIT, 
   marketIndex: 0,
   direction: PositionDirection.LONG,
   baseAssetAmount: driftClient.convertToPerpPrecision(100),
-  price: driftClient.convertToPricePrecision(100),
+  price: driftClient.convertToPricePrecision(21.23),
 }
+await driftClient.placePerpOrder(orderParams);
 
+// ask for 100 SOL-PERP @ ${OraclePrice} + .05
+const orderParams = {
+  orderType: OrderType.LIMIT, 
+  marketIndex: 0,
+  direction: PositionDirection.SHORT,
+  baseAssetAmount: driftClient.convertToPerpPrecision(100),
+  oraclePriceOffset: driftClient.convertToPricePrecision(.05).toNumber(),
+}
 await driftClient.placePerpOrder(orderParams);
 ```
 
@@ -280,7 +371,7 @@ await driftClient.placePerpOrder(orderParams);
 | marketIndex | The market to place order in  | No | |
 | direction | The direction of order e.g. long (bid) or short (ask)  | No | |
 | baseAssetAmount | The amount of base asset to buy or sell  | No | |
-| marketType | The type of market order is for e.g. perp or spot  | Yes | perp |
+| marketType | The type of market order is for e.g. PERP or SPOT  | Yes | PERP |
 | price | The limit price for order | Yes | 0 |
 | userOrderId | Unique order id specified by user| Yes | 0 |
 | reduceOnly | If the order can only reduce positions| Yes | false |
@@ -291,7 +382,7 @@ await driftClient.placePerpOrder(orderParams);
 | auctionDuration | how many slots the auction lasts. only applicable for market and oracle orders | Yes | |
 | auctionStartPrice | the price the auction starts at | Yes | |
 | auctionEndPrice | the price the auction ends at | Yes | |
-| maxTs | the max timestampe before the order expires | Yes | |
+| maxTs | the max timestamp (on-chain unix timestamp) before the order expires | Yes | |
 
 ## Placing Spot Order
 
@@ -314,7 +405,7 @@ await driftClient.placeSpotOrder(orderParams);
 | marketIndex | The market to place order in  | No | |
 | direction | The direction of order e.g. long (bid) or short (ask)  | No | |
 | baseAssetAmount | The amount of base asset to buy or sell  | No | |
-| marketType | The type of market order is for e.g. perp or spot  | Yes | spot |
+| marketType | The type of market order is for e.g. PERP or SPOT  | Yes | SPOT |
 | price | The limit price for order | Yes | 0 |
 | userOrderId | Unique order id specified by user| Yes | 0 |
 | reduceOnly | If the order can only reduce positions| Yes | false |
@@ -325,7 +416,7 @@ await driftClient.placeSpotOrder(orderParams);
 | auctionDuration | how many slots the auction lasts. only applicable for market and oracle orders | Yes | |
 | auctionStartPrice | the price the auction starts at | Yes | |
 | auctionEndPrice | the price the auction ends at | Yes | |
-| maxTs | the max timestampe before the order expires | Yes | |
+| maxTs | the max timestamp before the order expires | Yes | |
 
 ## Canceling Order
 
