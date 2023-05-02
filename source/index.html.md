@@ -258,3 +258,70 @@ const isBorrow = tokenAmount.lt(new BN(0));
 ```
 
 If token amount is greater than 0, it is a deposit. If less than zero, it is a borrow.
+
+## Placing Perp Order
+
+```typescript
+
+const orderParams = {
+  orderType: OrderType.LIMIT, 
+  marketIndex: 0,
+  direction: PositionDirection.LONG,
+  baseAssetAmount: driftClient.convertToPerpPrecision(100),
+  price: driftClient.convertToPricePrecision(100),
+}
+
+await driftClient.placePerpOrder(orderParams);
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| orderType | The type of order e.g. market, limit  | No | |
+| marketIndex | The market to place order in  | No | |
+| direction | The direction of order e.g. long (bid) or short (ask)  | No | |
+| baseAssetAmount | The amount of base asset to buy or sell  | No | |
+| marketType | The type of market order is for e.g. perp or spot  | Yes | perp |
+| price | The limit price for order | Yes | 0 |
+| reduceOnly | If the order can only reduce positions| Yes | false |
+| postOnly | If the order can only be a maker | Yes | false |
+| triggerPrice | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders | Yes | |
+| triggerCondition | whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders | Yes | |
+| oraclePriceOffset | priceOffset for oracle derived limit price. only applicable for limit and oracle orders  | Yes | |
+| auctionDuration | how many slots the auction lasts. only applicable for market and oracle orders | Yes | |
+| auctionStartPrice | the price the auction starts at | Yes | |
+| auctionEndPrice | the price the auction ends at | Yes | |
+| maxTs | the max timestampe before the order expires | Yes | |
+
+## Placing Spot Order
+
+```typescript
+
+const orderParams = {
+  orderType: OrderType.LIMIT,
+  marketIndex: 1,
+  direction: PositionDirection.LONG,
+  baseAssetAmount: driftClient.convertToSpotPrecision(1, 100),
+  price: driftClient.convertToPricePrecision(100),
+}
+
+await driftClient.placeSpotOrder(orderParams);
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| orderType | The type of order e.g. market, limit  | No | |
+| marketIndex | The market to place order in  | No | |
+| direction | The direction of order e.g. long (bid) or short (ask)  | No | |
+| baseAssetAmount | The amount of base asset to buy or sell  | No | |
+| marketType | The type of market order is for e.g. perp or spot  | Yes | spot |
+| price | The limit price for order | Yes | 0 |
+| reduceOnly | If the order can only reduce positions| Yes | false |
+| postOnly | If the order can only be a maker | Yes | false |
+| triggerPrice | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders | Yes | |
+| triggerCondition | whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders | Yes | |
+| oraclePriceOffset | priceOffset for oracle derived limit price. only applicable for limit and oracle orders  | Yes | |
+| auctionDuration | how many slots the auction lasts. only applicable for market and oracle orders | Yes | |
+| auctionStartPrice | the price the auction starts at | Yes | |
+| auctionEndPrice | the price the auction ends at | Yes | |
+| maxTs | the max timestampe before the order expires | Yes | |
+
