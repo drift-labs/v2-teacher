@@ -344,7 +344,7 @@ await driftClient.cancelOrder(orderId);
 ```typescript
 
 const userOrderId = 1;
-await driftClient.cancelOrder(userOrderId);
+await driftClient.cancelOrderByUserOrderId(userOrderId);
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -368,3 +368,63 @@ await driftClient.cancelOrders(marketType, marketIndex, direction);
 | direction | The direction of orders to cancel. | Yes | |
 
 To cancel all orders, do not set any parameters.
+
+## Modifying Order
+
+```typescript
+
+const updateParams = {
+  orderId: 1,
+  newBaseAssetAmount: driftClient.convertToPerpPrecision(200),
+}
+
+await driftClient.modifyOrder(orderParams);
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| orderId | The order id of order to modify  | No | |
+| newBaseAssetAmount | The amount of base asset to buy or sell  | Yes | |
+| newDirection | The direction of order e.g. long (bid) or short (ask)  | Yes | |
+| newLimitPrice | The limit price for order | Yes | |
+| reduceOnly | If the order can only reduce positions| Yes | |
+| postOnly | If the order can only be a maker | Yes | |
+| newTriggerPrice | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders | Yes | |
+| newTriggerCondition | whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders | Yes | |
+| newOraclePriceOffset | priceOffset for oracle derived limit price. only applicable for limit and oracle orders  | Yes | |
+| auctionDuration | how many slots the auction lasts. only applicable for market and oracle orders | Yes | |
+| auctionStartPrice | the price the auction starts at | Yes | |
+| auctionEndPrice | the price the auction ends at | Yes | |
+| maxTs | the max timestampe before the order expires | Yes | |
+
+Modify order cancels and places a new order.
+
+## Modifying Order By User Order Id
+
+```typescript
+
+const updateParams = {
+  userOrderId: 1,
+  newBaseAssetAmount: driftClient.convertToPerpPrecision(200),
+}
+
+await driftClient.modifyOrder(orderParams);
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| userOrderId | The user order id of order to modify  | No | |
+| newBaseAssetAmount | The amount of base asset to buy or sell  | Yes | |
+| newDirection | The direction of order e.g. long (bid) or short (ask)  | Yes | |
+| newLimitPrice | The limit price for order | Yes | |
+| reduceOnly | If the order can only reduce positions| Yes | |
+| postOnly | If the order can only be a maker | Yes | |
+| newTriggerPrice | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders | Yes | |
+| newTriggerCondition | whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders | Yes | |
+| newOraclePriceOffset | priceOffset for oracle derived limit price. only applicable for limit and oracle orders  | Yes | |
+| auctionDuration | how many slots the auction lasts. only applicable for market and oracle orders | Yes | |
+| auctionStartPrice | the price the auction starts at | Yes | |
+| auctionEndPrice | the price the auction ends at | Yes | |
+| maxTs | the max timestampe before the order expires | Yes | |
+
+Modify order cancels and places a new order.
