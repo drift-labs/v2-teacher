@@ -352,7 +352,13 @@
                     <a href="#user-initialization" class="toc-h2 toc-link" data-title="User Initialization">User Initialization</a>
                   </li>
                   <li>
+                    <a href="#updating-user" class="toc-h2 toc-link" data-title="Updating User">Updating User</a>
+                  </li>
+                  <li>
                     <a href="#switching-sub-accounts" class="toc-h2 toc-link" data-title="Switching Sub Accounts">Switching Sub Accounts</a>
+                  </li>
+                  <li>
+                    <a href="#deleting-user-account" class="toc-h2 toc-link" data-title="Deleting User Account">Deleting User Account</a>
                   </li>
                   <li>
                     <a href="#depositing" class="toc-h2 toc-link" data-title="Depositing">Depositing</a>
@@ -365,6 +371,12 @@
                   </li>
                   <li>
                     <a href="#getting-deposit-borrow-amounts" class="toc-h2 toc-link" data-title="Getting Deposit/Borrow Amounts">Getting Deposit/Borrow Amounts</a>
+                  </li>
+                  <li>
+                    <a href="#get-perp-position" class="toc-h2 toc-link" data-title="Get Perp Position">Get Perp Position</a>
+                  </li>
+                  <li>
+                    <a href="#order-types" class="toc-h2 toc-link" data-title="Order Types">Order Types</a>
                   </li>
                   <li>
                     <a href="#placing-perp-order" class="toc-h2 toc-link" data-title="Placing Perp Order">Placing Perp Order</a>
@@ -497,6 +509,8 @@
 <span class="kd">const</span> <span class="nx">wallet</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Wallet</span><span class="p">(</span><span class="nx">loadKeypair</span><span class="p">(</span><span class="nx">privateKeyFile</span><span class="p">));</span>
 </code></pre></div>
 <p>The wallet used to sign solana transactions. The wallet can be created from a private key or from a keypair file.</p>
+
+<p>Make sure this wallet has some SOL first. SOL is used to pay for transactions and is required as rent for account intializations.</p>
 <h2 id='client-initialization'>Client Initialization</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">DriftClient</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
 
 <span class="kd">const</span> <span class="nx">driftClient</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DriftClient</span><span class="p">({</span>
@@ -605,7 +619,11 @@
 <td>false</td>
 </tr>
 </tbody></table>
-<h2 id='user-initialization'>User Initialization</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="p">[</span><span class="nx">txSig</span><span class="p">,</span> <span class="nx">userPublickKey</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">initializeUser</span><span class="p">(</span>
+<h2 id='user-initialization'>User Initialization</h2>
+<aside class="notice">
+  initializing a new drift user account requires some rent (~.035 SOL). this can be reclaimed upon deletion.
+</aside>
+<div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="p">[</span><span class="nx">txSig</span><span class="p">,</span> <span class="nx">userPublickKey</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">initializeUser</span><span class="p">(</span>
   <span class="mi">0</span><span class="p">,</span>
   <span class="dl">"</span><span class="s2">toly</span><span class="dl">"</span>
 <span class="p">);</span>
@@ -640,7 +658,28 @@
 
 <p>Sub account ids are monotonic. The first user account created will have sub account id 0, the second will have sub account id 1, etc.
 The next sub account id can be found by calling <code>driftClient.getNextSubAccountId()</code>.</p>
-<h2 id='switching-sub-accounts'>Switching Sub Accounts</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="nx">driftClient</span><span class="p">.</span><span class="nx">switchActiveUser</span><span class="p">(</span>
+<h2 id='updating-user'>Updating User</h2>
+<p>Users accounts can update names, set custom max intial margin ratio, enable margin trading, and add a delegate account.</p>
+<div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">subaccountId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="c1">// set max 1x intiial leverage</span>
+<span class="k">await</span> <span class="k">this</span><span class="p">.</span><span class="nx">driftClient</span><span class="p">.</span><span class="nx">updateUserCustomMarginRatio</span><span class="p">(</span>
+  <span class="nx">MARGIN_PRECISION</span><span class="p">,</span> 
+  <span class="nx">subaccountId</span>
+<span class="p">);</span>
+
+<span class="c1">// enable spot margin trading</span>
+<span class="k">await</span> <span class="k">this</span><span class="p">.</span><span class="nx">driftClient</span><span class="p">.</span><span class="nx">updateUserMarginTradingEnabled</span><span class="p">(</span>
+  <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">subaccountId</span>
+<span class="p">);</span>
+
+<span class="c1">// add a delegate this user account</span>
+<span class="k">await</span> <span class="k">this</span><span class="p">.</span><span class="nx">driftClient</span><span class="p">.</span><span class="nx">updateUserDelegate</span><span class="p">(</span>
+  <span class="k">new</span> <span class="nx">PublicKey</span><span class="p">(</span><span class="dl">'</span><span class="s1">satoshi</span><span class="dl">'</span><span class="p">),</span>
+  <span class="nx">subaccountId</span>
+<span class="p">);</span>
+</code></pre></div><h2 id='switching-sub-accounts'>Switching Sub Accounts</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="nx">driftClient</span><span class="p">.</span><span class="nx">switchActiveUser</span><span class="p">(</span>
   <span class="mi">1</span><span class="p">,</span>
 <span class="p">);</span>
 </code></pre></div>
@@ -665,7 +704,12 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td>Current authority</td>
 </tr>
 </tbody></table>
-<h2 id='depositing'>Depositing</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<h2 id='deleting-user-account'>Deleting User Account</h2>
+<p>If an account contains no assets or liabilites, a user account can be deleted to reclaim rent.</p>
+<div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="nx">driftClient</span><span class="p">.</span><span class="nx">deleteUser</span><span class="p">(</span>
+  <span class="mi">1</span><span class="p">,</span>
+<span class="p">);</span>
+</code></pre></div><h2 id='depositing'>Depositing</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">amount</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToSpotPrecision</span><span class="p">(</span><span class="nx">marketIndex</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
 <span class="kd">const</span> <span class="nx">associatedTokenAccount</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getAssociatedTokenAccount</span><span class="p">(</span><span class="nx">marketIndex</span><span class="p">);</span>
 
@@ -807,22 +851,87 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <h2 id='getting-deposit-borrow-amounts'>Getting Deposit/Borrow Amounts</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
 <span class="kd">const</span> <span class="nx">tokenAmount</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getTokenAmount</span><span class="p">(</span>
-  <span class="nx">amount</span><span class="p">,</span>
+  <span class="nx">marketIndex</span><span class="p">,</span>
 <span class="p">);</span>
 
 <span class="kd">const</span> <span class="nx">isDeposit</span> <span class="o">=</span> <span class="nx">tokenAmount</span><span class="p">.</span><span class="nx">gte</span><span class="p">(</span><span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
 <span class="kd">const</span> <span class="nx">isBorrow</span> <span class="o">=</span> <span class="nx">tokenAmount</span><span class="p">.</span><span class="nx">lt</span><span class="p">(</span><span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
 </code></pre></div>
 <p>If token amount is greater than 0, it is a deposit. If less than zero, it is a borrow.</p>
+<h2 id='get-perp-position'>Get Perp Position</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">tokenAmount</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getTokenAmount</span><span class="p">(</span>
+  <span class="nx">marketIndex</span><span class="p">,</span>
+<span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">isDeposit</span> <span class="o">=</span> <span class="nx">tokenAmount</span><span class="p">.</span><span class="nx">gte</span><span class="p">(</span><span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+<span class="kd">const</span> <span class="nx">isBorrow</span> <span class="o">=</span> <span class="nx">tokenAmount</span><span class="p">.</span><span class="nx">lt</span><span class="p">(</span><span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+</code></pre></div>
+<p>If token amount is greater than 0, it is a deposit. If less than zero, it is a borrow.</p>
+<h2 id='order-types'>Order Types</h2>
+<p>MARKET, LIMIT, ORACLE orders all support auction parameters.</p>
+
+<table><thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>MARKET</td>
+<td>Market order.</td>
+</tr>
+<tr>
+<td>LIMIT</td>
+<td>Limit order.</td>
+</tr>
+<tr>
+<td>TRIGGER_MARKET</td>
+<td>Stop / Take-profit market order.</td>
+</tr>
+<tr>
+<td>TRIGGER_LIMIT</td>
+<td>Stop / Take-profit limit order.</td>
+</tr>
+<tr>
+<td>ORACLE</td>
+<td>Market order using oracle offset for auction parameters.</td>
+</tr>
+</tbody></table>
 <h2 id='placing-perp-order'>Placing Perp Order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
+<span class="c1">// market buy for 100 SOL-PERP @ $21.20-&gt;$21.30 over 60 slots (~30 seconds) </span>
+<span class="c1">// after 60 slots, market buy 100 SOL-PERP @ $21.35 until maxTs</span>
+<span class="kd">const</span> <span class="nx">orderParams</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">MARKET</span><span class="p">,</span> 
+  <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
+  <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+  <span class="na">auctionStartPrice</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mf">21.20</span><span class="p">),</span>
+  <span class="na">auctionEndPrice</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mf">21.30</span><span class="p">),</span>
+  <span class="na">price</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mf">21.35</span><span class="p">),</span>
+  <span class="na">auctionDuration</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
+  <span class="na">maxTs</span><span class="p">:</span> <span class="nx">now</span> <span class="o">+</span> <span class="mi">100</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">placePerpOrder</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">);</span>
+
+<span class="c1">// bid for 100 SOL-PERP @ $21.23 </span>
 <span class="kd">const</span> <span class="nx">orderParams</span> <span class="o">=</span> <span class="p">{</span>
   <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span> 
   <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
   <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
   <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
-  <span class="na">price</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+  <span class="na">price</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mf">21.23</span><span class="p">),</span>
 <span class="p">}</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">placePerpOrder</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">);</span>
 
+<span class="c1">// ask for 100 SOL-PERP @ ${OraclePrice} + .05</span>
+<span class="kd">const</span> <span class="nx">orderParams</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span> 
+  <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">SHORT</span><span class="p">,</span>
+  <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+  <span class="na">oraclePriceOffset</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(.</span><span class="mi">05</span><span class="p">).</span><span class="nx">toNumber</span><span class="p">(),</span>
+<span class="p">}</span>
 <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">placePerpOrder</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">);</span>
 </code></pre></div>
 <table><thead>
@@ -859,9 +968,9 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tr>
 <tr>
 <td>marketType</td>
-<td>The type of market order is for e.g. perp or spot</td>
+<td>The type of market order is for e.g. PERP or SPOT</td>
 <td>Yes</td>
-<td>perp</td>
+<td>PERP</td>
 </tr>
 <tr>
 <td>price</td>
@@ -925,7 +1034,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tr>
 <tr>
 <td>maxTs</td>
-<td>the max timestampe before the order expires</td>
+<td>the max timestamp (on-chain unix timestamp) before the order expires</td>
 <td>Yes</td>
 <td></td>
 </tr>
@@ -975,9 +1084,9 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tr>
 <tr>
 <td>marketType</td>
-<td>The type of market order is for e.g. perp or spot</td>
+<td>The type of market order is for e.g. PERP or SPOT</td>
 <td>Yes</td>
-<td>spot</td>
+<td>SPOT</td>
 </tr>
 <tr>
 <td>price</td>
@@ -1041,7 +1150,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tr>
 <tr>
 <td>maxTs</td>
-<td>the max timestampe before the order expires</td>
+<td>the max timestamp before the order expires</td>
 <td>Yes</td>
 <td></td>
 </tr>
