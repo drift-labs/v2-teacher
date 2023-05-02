@@ -460,14 +460,6 @@
               </ul>
           </li>
           <li>
-            <a href="#api-endpoints" class="toc-h1 toc-link" data-title="API Endpoints">API Endpoints</a>
-              <ul class="toc-list-h2">
-                  <li>
-                    <a href="#contracts" class="toc-h2 toc-link" data-title="Contracts">Contracts</a>
-                  </li>
-              </ul>
-          </li>
-          <li>
             <a href="#historical-data" class="toc-h1 toc-link" data-title="Historical Data">Historical Data</a>
               <ul class="toc-list-h2">
                   <li>
@@ -1931,94 +1923,6 @@ The user map subscribes to user account updates.  </p>
 </tbody></table>
 
 <p>The L3 orderbook contains every maker order on drift dlob, including the address for the user that placed the order.</p>
-<h1 id='api-endpoints'>API Endpoints</h1><h2 id='contracts'>Contracts</h2>
-<p>Contracts endpoint gives a high level overview of all the markets available in the protocol.</p>
-<h3 id='http-request'>HTTP Request</h3>
-<p><code>GET https://mainnet-beta.api.drift.trade/contracts</code></p>
-<div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
-
-<span class="n">contracts</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'https://mainnet-beta.api.drift.trade/contracts'</span><span class="p">)</span>
-<span class="n">contracts</span><span class="p">.</span><span class="n">json</span><span class="p">()</span>
-</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://mainnet-beta.api.drift.trade/contracts"</span>
-</code></pre></div><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="nx">fetch</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">node-fetch</span><span class="dl">"</span><span class="p">;</span>
-<span class="kd">const</span> <span class="nx">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">fetch</span><span class="p">(</span>
-            <span class="dl">"</span><span class="s2">https://mainnet-beta.api.drift.trade/contracts</span><span class="dl">"</span><span class="p">,</span>
-            <span class="p">{</span>
-                <span class="na">method</span><span class="p">:</span> <span class="dl">"</span><span class="s2">GET</span><span class="dl">"</span><span class="p">,</span>
-                <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="na">Accept</span><span class="p">:</span> <span class="dl">"</span><span class="s2">application/json</span><span class="dl">"</span><span class="p">,</span>
-                <span class="p">},</span>
-            <span class="p">}</span>
-        <span class="p">);</span>
-<span class="kd">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
-</code></pre></div>
-<blockquote>
-<p>The above command returns JSON structured like this:</p>
-</blockquote>
-<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="nl">"contracts"</span><span class="p">:</span><span class="w">
-  </span><span class="p">[</span><span class="w">
-     </span><span class="p">{</span><span class="w">
-      </span><span class="nl">"contract_index"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"ticker_id"</span><span class="p">:</span><span class="s2">"SOL-PERP"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"base_currency"</span><span class="p">:</span><span class="s2">"SOL"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"quote_currency"</span><span class="p">:</span><span class="s2">"USDC"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"last_price"</span><span class="p">:</span><span class="s2">"21.881487"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"base_volume"</span><span class="p">:</span><span class="s2">"110593.000000000"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"quote_volume"</span><span class="p">:</span><span class="s2">"1788085.901185"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"high"</span><span class="p">:</span><span class="s2">"23.852900"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"low"</span><span class="p">:</span><span class="s2">"21.759228"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"product_type"</span><span class="p">:</span><span class="s2">"PERP"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"open_interest"</span><span class="p">:</span><span class="s2">"119147.600000000"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"index_price"</span><span class="p">:</span><span class="s2">"21.887634"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"index_name"</span><span class="p">:</span><span class="s2">"SOL"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"index_currency"</span><span class="p">:</span><span class="s2">"USDC"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"start_timestamp"</span><span class="p">:</span><span class="s2">"1667560505000"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"end_timestamp"</span><span class="p">:</span><span class="s2">"1682956473378"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"funding_rate"</span><span class="p">:</span><span class="s2">"0.003867637"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"next_funding_rate"</span><span class="p">:</span><span class="s2">"0.00124"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"next_funding_rate_timestamp"</span><span class="p">:</span><span class="s2">"1682956805000"</span><span class="w">
-      </span><span class="p">},</span><span class="w">
-      </span><span class="err">...</span><span class="w">
-  </span><span class="p">]</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre></div><h3 id='response-values'>Response Values</h3>
-<table><thead>
-<tr>
-<th>Value</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>ticker_id</td>
-<td>market name</td>
-</tr>
-<tr>
-<td>last_price</td>
-<td>last trade price</td>
-</tr>
-<tr>
-<td>product_type</td>
-<td>either PERP or SPOT</td>
-</tr>
-<tr>
-<td>open_interest</td>
-<td>outstanding contracts opened in market, denominated in base currency</td>
-</tr>
-<tr>
-<td>index_price</td>
-<td>referenced oracle price for market, used for trigger orders</td>
-</tr>
-<tr>
-<td>next_funding_rate</td>
-<td>next predicted funding rate (in %) (based on oracle and market twap difference)</td>
-</tr>
-<tr>
-<td>next_funding_rate_timestamp</td>
-<td>time of next funding rate</td>
-</tr>
-</tbody></table>
-
-<p>This endpoint retrieves all contracts available within the protocol.</p>
 <h1 id='historical-data'>Historical Data</h1>
 <p>Snapshots are collected by parsing on-chain transaction logs. For convience the below are parsed logs collected, stored as a CSV, and stored off-chain (~99% of records). </p>
 
