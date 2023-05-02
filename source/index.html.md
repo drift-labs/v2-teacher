@@ -290,35 +290,6 @@ driftClient.transferDeposit(
 | fromSubAccountId | The sub account you're withdrawing from  | No | |
 | toSubAccountId | The sub account you're depositing too  | No | |
 
-## Getting Deposit/Borrow Amounts
-
-```typescript
-const marketIndex = 0;
-
-const tokenAmount = driftClient.getTokenAmount(
-  marketIndex,
-);
-
-const isDeposit = tokenAmount.gte(new BN(0));
-const isBorrow = tokenAmount.lt(new BN(0));
-```
-
-If token amount is greater than 0, it is a deposit. If less than zero, it is a borrow.
-
-## Get Perp Position
-```typescript
-const marketIndex = 0;
-
-const tokenAmount = driftClient.getTokenAmount(
-  marketIndex,
-);
-
-const isDeposit = tokenAmount.gte(new BN(0));
-const isBorrow = tokenAmount.lt(new BN(0));
-```
-
-If token amount is greater than 0, it is a deposit. If less than zero, it is a borrow.
-
 ## Order Types
 
 MARKET, LIMIT, ORACLE orders all support auction parameters.
@@ -525,6 +496,154 @@ await driftClient.modifyOrder(orderParams);
 | maxTs | the max timestampe before the order expires | Yes | |
 
 Modify order cancels and places a new order.
+
+# User
+
+## Get User
+
+```typescript
+   const user = await driftClient.getUser();
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| subAccountId | The sub account id of user to get  | Yes | active sub account |
+| authority | The authority of user to get. Only necessary if using multiple delegate accounts | Yes | current authority |
+
+## Getting Deposit/Borrow Amounts
+
+```typescript
+const marketIndex = 0;
+
+const tokenAmount = user.getTokenAmount(
+  marketIndex,
+);
+
+const isDeposit = tokenAmount.gte(new BN(0));
+const isBorrow = tokenAmount.lt(new BN(0));
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| marketIndex | Market index for the spot market  | No | |
+
+If token amount is greater than 0, it is a deposit. If less than zero, it is a borrow.
+
+## Get Perp Position
+```typescript
+const marketIndex = 0;
+
+const baseAssetAmount = user.getPerpPosiiton(
+  marketIndex,
+)?.baseAssetAmount;
+
+const isLong = baseAssetAmount.gte(new BN(0));
+const isShort = baseAssetAmount.lt(new BN(0));
+```
+
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| marketIndex | Market index for the perp market  | No | |
+
+If base amount is greater than 0, it is a long. If less than zero, it is a short.
+
+## Get Order
+```typescript
+const orderId = 1;
+
+const order = user.getOrder(
+  orderId,
+);
+```
+
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| orderId | Order id for the order you're getting | No | |
+
+## Get Order By User Order Id
+```typescript
+const userOrderId = 1;
+
+const order = user.getOrderByUserOrderId(
+  userOrderId,
+);
+```
+
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| userOrderId | User order id for the order you're getting | No | |
+
+## Get Open Orders
+```typescript
+const order = user.getOpenOrders();
+```
+
+## Get Unrealized Perp Pnl
+
+  ```typescript
+    const pnl = await user.getUnrealizedPNL();
+  ```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| withFunding | Whether to included unsettled funding payments  | Yes | false |
+| marketIndex | Whether to only return pnl for specific market  | Yes | |
+
+
+## Get Unrealized Funding Pnl
+
+  ```typescript
+    const pnl = await user.getUnrealizedFundingPNL();
+  ```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| marketIndex | Whether to only return pnl for specific market  | Yes | |
+
+## Get Total Collateral
+
+  ```typescript
+    const totalCollateral = await user.getTotalCollateral();
+  ```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| marginCategory | Initial or Maintenance  | Yes | Initial |
+
+Asset weights vary based on whether you're checking the initial or maintenance margin requirement. Initial is used for initial leverage extension, maintenance for determining liquidations.
+
+## Get Margin Requirement
+
+  ```typescript
+    const marginRequirement = await user.getMarginRequirement();
+  ```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| marginCategory | Initial or Maintenance  | Yes | Initial |
+
+Liability weights (for borrows) and margin ratios (for perp positions) vary based on whether you're checking the initial or maintenance margin requirement. Initial is used for initial leverage extension, maintenance for determining liquidations.
+
+## Get Free Collateral
+
+  ```typescript
+    const freeCollateral = await user.getFreeCollateral();
+  ```
+
+Free collateral is the difference between your total collateral and your initial margin requirement.
+
+## Get Leverage
+
+  ```typescript
+    const leverage = await user.getLeverage();
+  ```
+
+Leverage is the total liability value (borrows plus total perp position) divided by net asset value (total assets plus total liabilities)
+
+
 
 # Orderbook
 
