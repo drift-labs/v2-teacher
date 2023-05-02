@@ -381,6 +381,12 @@
                   <li>
                     <a href="#cancel-orders" class="toc-h2 toc-link" data-title="Cancel Orders">Cancel Orders</a>
                   </li>
+                  <li>
+                    <a href="#modifying-order" class="toc-h2 toc-link" data-title="Modifying Order">Modifying Order</a>
+                  </li>
+                  <li>
+                    <a href="#modifying-order-by-user-order-id" class="toc-h2 toc-link" data-title="Modifying Order By User Order Id">Modifying Order By User Order Id</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -1061,7 +1067,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tbody></table>
 <h2 id='canceling-order-by-user-order-id'>Canceling Order By User Order Id</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
 <span class="kd">const</span> <span class="nx">userOrderId</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">cancelOrder</span><span class="p">(</span><span class="nx">userOrderId</span><span class="p">);</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">cancelOrderByUserOrderId</span><span class="p">(</span><span class="nx">userOrderId</span><span class="p">);</span>
 </code></pre></div>
 <table><thead>
 <tr>
@@ -1113,6 +1119,200 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tbody></table>
 
 <p>To cancel all orders, do not set any parameters.</p>
+<h2 id='modifying-order'>Modifying Order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
+<span class="kd">const</span> <span class="nx">updateParams</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">orderId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="na">newBaseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">modifyOrder</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">);</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>orderId</td>
+<td>The order id of order to modify</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>newBaseAssetAmount</td>
+<td>The amount of base asset to buy or sell</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>newDirection</td>
+<td>The direction of order e.g. long (bid) or short (ask)</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>newLimitPrice</td>
+<td>The limit price for order</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>reduceOnly</td>
+<td>If the order can only reduce positions</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>postOnly</td>
+<td>If the order can only be a maker</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>newTriggerPrice</td>
+<td>at what price order is triggered. only applicable for triggerMarket and triggerLimit orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>newTriggerCondition</td>
+<td>whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>newOraclePriceOffset</td>
+<td>priceOffset for oracle derived limit price. only applicable for limit and oracle orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>auctionDuration</td>
+<td>how many slots the auction lasts. only applicable for market and oracle orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>auctionStartPrice</td>
+<td>the price the auction starts at</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>auctionEndPrice</td>
+<td>the price the auction ends at</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>maxTs</td>
+<td>the max timestampe before the order expires</td>
+<td>Yes</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<p>Modify order cancels and places a new order.</p>
+<h2 id='modifying-order-by-user-order-id'>Modifying Order By User Order Id</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
+<span class="kd">const</span> <span class="nx">updateParams</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">userOrderId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="na">newBaseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">modifyOrder</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">);</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>userOrderId</td>
+<td>The user order id of order to modify</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>newBaseAssetAmount</td>
+<td>The amount of base asset to buy or sell</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>newDirection</td>
+<td>The direction of order e.g. long (bid) or short (ask)</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>newLimitPrice</td>
+<td>The limit price for order</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>reduceOnly</td>
+<td>If the order can only reduce positions</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>postOnly</td>
+<td>If the order can only be a maker</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>newTriggerPrice</td>
+<td>at what price order is triggered. only applicable for triggerMarket and triggerLimit orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>newTriggerCondition</td>
+<td>whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>newOraclePriceOffset</td>
+<td>priceOffset for oracle derived limit price. only applicable for limit and oracle orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>auctionDuration</td>
+<td>how many slots the auction lasts. only applicable for market and oracle orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>auctionStartPrice</td>
+<td>the price the auction starts at</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>auctionEndPrice</td>
+<td>the price the auction ends at</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>maxTs</td>
+<td>the max timestampe before the order expires</td>
+<td>Yes</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<p>Modify order cancels and places a new order.</p>
 <h1 id='api-endpoints'>API Endpoints</h1><h2 id='contracts'>Contracts</h2>
 <p>Contracts endpoint gives a high level overview of all the markets available in the protocol.</p>
 <h3 id='http-request'>HTTP Request</h3>
