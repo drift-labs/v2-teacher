@@ -550,6 +550,28 @@ await driftClient.settlePNL(
 | settleeUserAccount | User account data you're settling pnl for | No | |
 | marketIndex | Market index for the perp market  | No | |
 
+## Get Spot Market
+
+```typescript
+const marketIndex = 1;
+const spotMarketAccount = driftClient.getSpotMarketAccount(marketIndex);
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| marketIndex | The market index for the spot market | No | |
+
+## Get Perp Market
+
+```typescript
+const marketIndex = 0;
+const perpMarketAccount = driftClient.getPerpMarketAccount(marketIndex);
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| marketIndex | The market index for the perp market | No | |
+
 # User
 
 ## Get User
