@@ -460,6 +460,9 @@
               </ul>
           </li>
           <li>
+            <a href="#numerical-precisions" class="toc-h1 toc-link" data-title="Numerical Precisions">Numerical Precisions</a>
+          </li>
+          <li>
             <a href="#historical-data" class="toc-h1 toc-link" data-title="Historical Data">Historical Data</a>
               <ul class="toc-list-h2">
                   <li>
@@ -1923,6 +1926,50 @@ The user map subscribes to user account updates.  </p>
 </tbody></table>
 
 <p>The L3 orderbook contains every maker order on drift dlob, including the address for the user that placed the order.</p>
+<h1 id='numerical-precisions'>Numerical Precisions</h1>
+<table><thead>
+<tr>
+<th>Value</th>
+<th>Precision</th>
+<th>Constant</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>perp base asset amount</td>
+<td>1e9</td>
+<td>BASE_PRECISION</td>
+</tr>
+<tr>
+<td>perp quote asset amount</td>
+<td>1e6</td>
+<td>QUOTE_PRECISION</td>
+</tr>
+<tr>
+<td>price</td>
+<td>1e6</td>
+<td>PRICE_PRECISION</td>
+</tr>
+<tr>
+<td>funding rate</td>
+<td>1e9</td>
+<td></td>
+</tr>
+<tr>
+<td>spot token amount</td>
+<td>derived from token mint&#39;s decimals (USDC is 1e6, SOL is 1e9)</td>
+<td></td>
+</tr>
+<tr>
+<td>margin ratio</td>
+<td>1e4</td>
+<td>MARGIN_PRECISION</td>
+</tr>
+<tr>
+<td>asset/liability weight</td>
+<td>1e4</td>
+<td>SPOT_WEIGHT_PRECISION</td>
+</tr>
+</tbody></table>
 <h1 id='historical-data'>Historical Data</h1>
 <p>Snapshots are collected by parsing on-chain transaction logs. For convience the below are parsed logs collected, stored as a CSV, and stored off-chain (~99% of records). </p>
 
