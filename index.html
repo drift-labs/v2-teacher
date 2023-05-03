@@ -388,6 +388,9 @@
                     <a href="#cancel-orders" class="toc-h2 toc-link" data-title="Cancel Orders">Cancel Orders</a>
                   </li>
                   <li>
+                    <a href="#cancel-and-place-orders" class="toc-h2 toc-link" data-title="Cancel and Place Orders">Cancel and Place Orders</a>
+                  </li>
+                  <li>
                     <a href="#modifying-order" class="toc-h2 toc-link" data-title="Modifying Order">Modifying Order</a>
                   </li>
                   <li>
@@ -1262,6 +1265,54 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td>direction</td>
 <td>The direction of orders to cancel.</td>
 <td>Yes</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<p>To cancel all orders, do not set any parameters.</p>
+<h2 id='cancel-and-place-orders'>Cancel and Place Orders</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
+<span class="kd">const</span> <span class="nx">cancelOrderParams</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="na">marketType</span><span class="p">:</span> <span class="nx">MarketType</span><span class="p">.</span><span class="nx">PERP</span><span class="p">,</span>
+   <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="kd">const</span> <span class="nx">placeOrderParams</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+     <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
+     <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+     <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
+     <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+     <span class="na">price</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mf">21.23</span><span class="p">),</span>
+   <span class="p">},</span> 
+   <span class="p">{</span>
+     <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
+     <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+     <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">SHORT</span><span class="p">,</span>
+     <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+     <span class="na">oraclePriceOffset</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(.</span><span class="mi">05</span><span class="p">).</span><span class="nx">toNumber</span><span class="p">(),</span>
+   <span class="p">}</span>
+<span class="p">];</span>
+
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">cancelAndPlaceOrders</span><span class="p">(</span><span class="nx">cancelOrderParams</span><span class="p">,</span> <span class="nx">placeOrderParams</span><span class="p">);</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>cancelOrderParams</td>
+<td>Parameters for cancel orders instruction</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>placeOrderParams</td>
+<td>Parameters for place order instructions</td>
+<td></td>
 <td></td>
 </tr>
 </tbody></table>
