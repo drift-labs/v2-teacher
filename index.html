@@ -399,6 +399,12 @@
                   <li>
                     <a href="#settle-perp-pnl" class="toc-h2 toc-link" data-title="Settle Perp PNL">Settle Perp PNL</a>
                   </li>
+                  <li>
+                    <a href="#get-spot-market" class="toc-h2 toc-link" data-title="Get Spot Market">Get Spot Market</a>
+                  </li>
+                  <li>
+                    <a href="#get-perp-market" class="toc-h2 toc-link" data-title="Get Perp Market">Get Perp Market</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -1543,6 +1549,42 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <tr>
 <td>marketIndex</td>
 <td>Market index for the perp market</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id='get-spot-market'>Get Spot Market</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">spotMarketAccount</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getSpotMarketAccount</span><span class="p">(</span><span class="nx">marketIndex</span><span class="p">);</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>marketIndex</td>
+<td>The market index for the spot market</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id='get-perp-market'>Get Perp Market</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">perpMarketAccount</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getPerpMarketAccount</span><span class="p">(</span><span class="nx">marketIndex</span><span class="p">);</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>marketIndex</td>
+<td>The market index for the perp market</td>
 <td>No</td>
 <td></td>
 </tr>
