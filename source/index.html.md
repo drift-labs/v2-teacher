@@ -436,6 +436,42 @@ await driftClient.cancelOrders(marketType, marketIndex, direction);
 
 To cancel all orders, do not set any parameters.
 
+## Cancel and Place Orders
+
+```typescript
+
+const cancelOrderParams = {
+   marketType: MarketType.PERP,
+   marketIndex: 0,
+};
+
+const placeOrderParams = [
+	{
+     orderType: OrderType.LIMIT,
+     marketIndex: 0,
+     direction: PositionDirection.LONG,
+     baseAssetAmount: driftClient.convertToPerpPrecision(100),
+     price: driftClient.convertToPricePrecision(21.23),
+   }, 
+   {
+     orderType: OrderType.LIMIT,
+     marketIndex: 0,
+     direction: PositionDirection.SHORT,
+     baseAssetAmount: driftClient.convertToPerpPrecision(100),
+     oraclePriceOffset: driftClient.convertToPricePrecision(.05).toNumber(),
+   }
+];
+
+await driftClient.cancelAndPlaceOrders(cancelOrderParams, placeOrderParams);
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| cancelOrderParams | Parameters for cancel orders instruction | | |
+| placeOrderParams | Parameters for place order instructions | | |
+
+To cancel all orders, do not set any parameters.
+
 ## Modifying Order
 
 ```typescript
