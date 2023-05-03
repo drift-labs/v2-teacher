@@ -400,10 +400,10 @@
                     <a href="#settle-perp-pnl" class="toc-h2 toc-link" data-title="Settle Perp PNL">Settle Perp PNL</a>
                   </li>
                   <li>
-                    <a href="#get-spot-market" class="toc-h2 toc-link" data-title="Get Spot Market">Get Spot Market</a>
+                    <a href="#get-spot-market-account" class="toc-h2 toc-link" data-title="Get Spot Market Account">Get Spot Market Account</a>
                   </li>
                   <li>
-                    <a href="#get-perp-market" class="toc-h2 toc-link" data-title="Get Perp Market">Get Perp Market</a>
+                    <a href="#get-perp-market-account" class="toc-h2 toc-link" data-title="Get Perp Market Account">Get Perp Market Account</a>
                   </li>
               </ul>
           </li>
@@ -586,6 +586,8 @@
   <span class="nx">wallet</span><span class="p">,</span>
   <span class="na">env</span><span class="p">:</span> <span class="dl">'</span><span class="s1">mainnet-beta</span><span class="dl">'</span><span class="p">,</span>
 <span class="p">});</span>
+
+<span class="nx">driftClient</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="kn">import</span> <span class="nn">driftpy</span><span class="p">;</span>
 </code></pre></div>
 <table><thead>
@@ -1553,7 +1555,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td></td>
 </tr>
 </tbody></table>
-<h2 id='get-spot-market'>Get Spot Market</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<h2 id='get-spot-market-account'>Get Spot Market Account</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">spotMarketAccount</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getSpotMarketAccount</span><span class="p">(</span><span class="nx">marketIndex</span><span class="p">);</span>
 </code></pre></div>
 <table><thead>
@@ -1571,7 +1573,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td></td>
 </tr>
 </tbody></table>
-<h2 id='get-perp-market'>Get Perp Market</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<h2 id='get-perp-market-account'>Get Perp Market Account</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">perpMarketAccount</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getPerpMarketAccount</span><span class="p">(</span><span class="nx">marketIndex</span><span class="p">);</span>
 </code></pre></div>
 <table><thead>
