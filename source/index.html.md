@@ -130,6 +130,8 @@ const driftClient = new DriftClient({
   wallet,
   env: 'mainnet-beta',
 });
+
+driftClient.subscribe();
 ```
 ```python
   import driftpy;
@@ -550,7 +552,7 @@ await driftClient.settlePNL(
 | settleeUserAccount | User account data you're settling pnl for | No | |
 | marketIndex | Market index for the perp market  | No | |
 
-## Get Spot Market
+## Get Spot Market Account
 
 ```typescript
 const marketIndex = 1;
@@ -561,7 +563,7 @@ const spotMarketAccount = driftClient.getSpotMarketAccount(marketIndex);
 | ----------- | ----------- | -------- | ------- |
 | marketIndex | The market index for the spot market | No | |
 
-## Get Perp Market
+## Get Perp Market Account
 
 ```typescript
 const marketIndex = 0;
