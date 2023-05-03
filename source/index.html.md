@@ -799,3 +799,15 @@ const l3 = dlobSubscriber.getL3({
 | marketType | The market type of the orderbook to get. If not set, marketName must be set | Yes | |
 
 The L3 orderbook contains every maker order on drift dlob, including the address for the user that placed the order.
+
+# Numerical Precisions
+
+| Value   | Precision | Constant |
+| ----------- | ----------- | -------- | ------- |
+| perp base asset amount | 1e9 | BASE_PRECISION |
+| perp quote asset amount | 1e6 | QUOTE_PRECISION |
+| price | 1e6 | PRICE_PRECISION |
+| funding rate | 1e9 |  |
+| spot token amount | derived from token mint's decimals (USDC is 1e6, SOL is 1e9) | |
+| margin ratio | 1e4 | MARGIN_PRECISION |
+| asset/liability weight | 1e4 | SPOT_WEIGHT_PRECISION |
