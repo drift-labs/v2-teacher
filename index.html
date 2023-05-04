@@ -472,6 +472,17 @@
             <a href="#numerical-precisions" class="toc-h1 toc-link" data-title="Numerical Precisions">Numerical Precisions</a>
           </li>
           <li>
+            <a href="#examples-bots" class="toc-h1 toc-link" data-title="Examples Bots">Examples Bots</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#typescript" class="toc-h2 toc-link" data-title="Typescript">Typescript</a>
+                  </li>
+                  <li>
+                    <a href="#python" class="toc-h2 toc-link" data-title="Python">Python</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#historical-data" class="toc-h1 toc-link" data-title="Historical Data">Historical Data</a>
               <ul class="toc-list-h2">
                   <li>
@@ -498,7 +509,7 @@
       <div class="dark-box"></div>
       <div class="content">
         <h1 id='terms-of-use'>Terms of Use</h1>
-<p>By using any API provided by Drift Labs, you agree to the <a href="https://docs.drift.trade/terms-of-use">Terms of Use</a>. If you do not agree to the foregoing, then do not use any such API.</p>
+<p>By using any API provided by Drift Labs, you agree to the <a href="https://docs.drift.trade/terms-of-use">Terms of Use]</a>. If you do not agree to the foregoing, then do not use any such API.</p>
 <h1 id='introduction'>Introduction</h1>
 <p>Drift Protocol is an <a href="https://github.com/drift-labs/protocol-v2/">open-sourced</a>, decentralised exchange built on the <a href="https://solana.com">Solana</a> blockchain, enabling transparent and non-custodial trading on cryptocurrencies.</p>
 
@@ -1709,7 +1720,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tr>
 </tbody></table>
 <h2 id='get-open-orders'>Get Open Orders</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">order</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getOpenOrders</span><span class="p">();</span>
-</code></pre></div><h2 id='get-unrealized-perp-pnl'>Get Unrealized Perp Pnl</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>    <span class="kd">const</span> <span class="nx">pnl</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getUnrealizedPNL</span><span class="p">();</span>
+</code></pre></div><h2 id='get-unrealized-perp-pnl'>Get Unrealized Perp Pnl</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">pnl</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getUnrealizedPNL</span><span class="p">();</span>
 </code></pre></div>
 <table><thead>
 <tr>
@@ -1732,7 +1743,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td></td>
 </tr>
 </tbody></table>
-<h2 id='get-unrealized-funding-pnl'>Get Unrealized Funding Pnl</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>    <span class="kd">const</span> <span class="nx">pnl</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getUnrealizedFundingPNL</span><span class="p">();</span>
+<h2 id='get-unrealized-funding-pnl'>Get Unrealized Funding Pnl</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">pnl</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getUnrealizedFundingPNL</span><span class="p">();</span>
 </code></pre></div>
 <table><thead>
 <tr>
@@ -1749,7 +1760,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td></td>
 </tr>
 </tbody></table>
-<h2 id='get-total-collateral'>Get Total Collateral</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>    <span class="kd">const</span> <span class="nx">totalCollateral</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getTotalCollateral</span><span class="p">();</span>
+<h2 id='get-total-collateral'>Get Total Collateral</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">totalCollateral</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getTotalCollateral</span><span class="p">();</span>
 </code></pre></div>
 <table><thead>
 <tr>
@@ -1768,7 +1779,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tbody></table>
 
 <p>Asset weights vary based on whether you&#39;re checking the initial or maintenance margin requirement. Initial is used for initial leverage extension, maintenance for determining liquidations.</p>
-<h2 id='get-margin-requirement'>Get Margin Requirement</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>    <span class="kd">const</span> <span class="nx">marginRequirement</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getMarginRequirement</span><span class="p">();</span>
+<h2 id='get-margin-requirement'>Get Margin Requirement</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">marginRequirement</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getMarginRequirement</span><span class="p">();</span>
 </code></pre></div>
 <table><thead>
 <tr>
@@ -1787,10 +1798,10 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tbody></table>
 
 <p>Liability weights (for borrows) and margin ratios (for perp positions) vary based on whether you&#39;re checking the initial or maintenance margin requirement. Initial is used for initial leverage extension, maintenance for determining liquidations.</p>
-<h2 id='get-free-collateral'>Get Free Collateral</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>    <span class="kd">const</span> <span class="nx">freeCollateral</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getFreeCollateral</span><span class="p">();</span>
+<h2 id='get-free-collateral'>Get Free Collateral</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">freeCollateral</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getFreeCollateral</span><span class="p">();</span>
 </code></pre></div>
 <p>Free collateral is the difference between your total collateral and your initial margin requirement.</p>
-<h2 id='get-leverage'>Get Leverage</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>    <span class="kd">const</span> <span class="nx">leverage</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getLeverage</span><span class="p">();</span>
+<h2 id='get-leverage'>Get Leverage</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">leverage</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getLeverage</span><span class="p">();</span>
 </code></pre></div>
 <p>Leverage is the total liability value (borrows plus total perp position) divided by net asset value (total assets plus total liabilities)</p>
 <h1 id='orderbook'>Orderbook</h1><h2 id='slot-subscription'>Slot Subscription</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>   <span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
@@ -2065,6 +2076,27 @@ The user map subscribes to user account updates.  </p>
 <td>SPOT_WEIGHT_PRECISION</td>
 </tr>
 </tbody></table>
+<h1 id='examples-bots'>Examples Bots</h1>
+<aside class="notice">
+This examples should be used as code reference only. Be cautious running any unreviewed code, especially off devnet.
+</aside>
+<h2 id='typescript'>Typescript</h2>
+<p><a href="https://github.com/drift-labs/keeper-bots-v2">Keeper-bots-v2</a></p>
+<h3 id='perp-markets'>Perp Markets</h3>
+<ul>
+<li>perp filler</li>
+<li>floating maker</li>
+<li>jit maker</li>
+<li>funding rate update</li>
+<li>pnl settler</li>
+</ul>
+<h3 id='spot-markets'>Spot Markets</h3>
+<ul>
+<li>spot filler</li>
+<li>insurance fund revenue settler</li>
+</ul>
+<h2 id='python'>Python</h2>
+<p><a href="https://github.com/drift-labs/driftpy/tree/master/examples">driftpy examples/</a></p>
 <h1 id='historical-data'>Historical Data</h1>
 <p>Snapshots are collected by parsing on-chain transaction logs. For convience the below are parsed logs collected, stored as a CSV, and stored off-chain (~99% of records). </p>
 
