@@ -10,6 +10,7 @@ toc_footers:
   - <a href='https://github.com/drift-labs/protocol-v2/releases/'> release history </a>
   - <a href='https://docs.drift.trade/'> Read more about Drift Protocol in Archbee</a>
 includes:
+  - examples
   - historicaldata
   - errors
 
@@ -24,7 +25,7 @@ meta:
 
 
 # Terms of Use
-By using any API provided by Drift Labs, you agree to the [Terms of Use](https://docs.drift.trade/terms-of-use). If you do not agree to the foregoing, then do not use any such API.
+By using any API provided by Drift Labs, you agree to the <a href="https://docs.drift.trade/terms-of-use">Terms of Use]</a>. If you do not agree to the foregoing, then do not use any such API.
 
 # Introduction
 
@@ -661,7 +662,7 @@ const order = user.getOpenOrders();
 ## Get Unrealized Perp Pnl
 
   ```typescript
-    const pnl = await user.getUnrealizedPNL();
+  const pnl = await user.getUnrealizedPNL();
   ```
 
 | Parameter   | Description | Optional | Default |
@@ -673,7 +674,7 @@ const order = user.getOpenOrders();
 ## Get Unrealized Funding Pnl
 
   ```typescript
-    const pnl = await user.getUnrealizedFundingPNL();
+  const pnl = await user.getUnrealizedFundingPNL();
   ```
 
 | Parameter   | Description | Optional | Default |
@@ -683,7 +684,7 @@ const order = user.getOpenOrders();
 ## Get Total Collateral
 
   ```typescript
-    const totalCollateral = await user.getTotalCollateral();
+  const totalCollateral = await user.getTotalCollateral();
   ```
 
 | Parameter   | Description | Optional | Default |
@@ -695,7 +696,7 @@ Asset weights vary based on whether you're checking the initial or maintenance m
 ## Get Margin Requirement
 
   ```typescript
-    const marginRequirement = await user.getMarginRequirement();
+  const marginRequirement = await user.getMarginRequirement();
   ```
 
 | Parameter   | Description | Optional | Default |
@@ -707,7 +708,7 @@ Liability weights (for borrows) and margin ratios (for perp positions) vary base
 ## Get Free Collateral
 
   ```typescript
-    const freeCollateral = await user.getFreeCollateral();
+  const freeCollateral = await user.getFreeCollateral();
   ```
 
 Free collateral is the difference between your total collateral and your initial margin requirement.
@@ -715,7 +716,7 @@ Free collateral is the difference between your total collateral and your initial
 ## Get Leverage
 
   ```typescript
-    const leverage = await user.getLeverage();
+  const leverage = await user.getLeverage();
   ```
 
 Leverage is the total liability value (borrows plus total perp position) divided by net asset value (total assets plus total liabilities)
