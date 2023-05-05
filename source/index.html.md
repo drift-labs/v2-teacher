@@ -8,7 +8,7 @@ language_tabs: # must be one of https://github.com/rouge-ruby/rouge/wiki/List-of
 
 toc_footers:
   - <a href='https://github.com/drift-labs/protocol-v2/releases/'> Release History </a>
-  - <a href='https://docs.drift.trade/'> Documenation </a>
+  - <a href='https://docs.drift.trade/'> Documentation </a>
 includes:
   - examples
   - historicaldata
@@ -83,21 +83,29 @@ Install @drift-labs/sdk from [npm](https://www.npmjs.com/package/@drift-labs/sdk
 
 `yarn add @drift-labs/sdk`
 
-auto-generated documentation here: https://drift-labs.github.io/protocol-v2/sdk/
+auto-generated documentation here: [https://drift-labs.github.io/protocol-v2/sdk/]
 
 ## Python
 Install driftpy from PyPI using pip:
 
 `pip install driftpy`
 
-auto-generated documentation here: https://drift-labs.github.io/driftpy/
+auto-generated documentation here: [https://drift-labs.github.io/driftpy/]
 
 ## Connection
 
   ```typescript
 import {Connection} from "@solana/web3.js";
 
+// the default RPC for devnet is `https://api.devnet.solana.com`
 const connection = new Connection('https://api.mainnet-beta.solana.com');
+```
+
+```python
+from solana.rpc.async_api import AsyncClient
+
+url = 'https://api.mainnet-beta.solana.com' # replace w/ any rpc
+connection = AsyncClient(url)
 ```
 
 The connection object is used to send transactions to the Solana blockchain. It is used by the DriftClient to send transactions to the blockchain.
@@ -109,6 +117,17 @@ import {Wallet, loadKeypair} from "@drift-labs/sdk";
 
 const keyPairFile = '~/.config/solana/my-keypair.json';
 const wallet = new Wallet(loadKeypair(privateKeyFile));
+```
+```python
+from solana.keypair import Keypair
+from anchorpy import Wallet
+import os
+import json
+
+key_pair_file = '~/.config/solana/my-keypair.json'
+with open(os.path.expanduser(key_pair_file), 'r') as f: secret = json.load(f) 
+kp = Keypair.from_secret_key(bytes(secret))
+wallet = Wallet(kp)
 ```
 
 The wallet used to sign solana transactions. The wallet can be created from a private key or from a keypair file.
@@ -135,7 +154,16 @@ const driftClient = new DriftClient({
 driftClient.subscribe();
 ```
 ```python
-  import driftpy;
+  import driftpy
+  from anchorpy import Wallet, Provider
+  from driftpy.constants.config import configs
+  from driftpy.clearing_house import ClearingHouse
+
+  # set connection and wallet
+  # ...
+  provider = Provider(connection, wallet)
+  config = configs['mainnet'] # or devnet
+  drift_client = ClearingHouse.from_config(config, provider)
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -167,6 +195,11 @@ const [txSig, userPublickKey] = await driftClient.initializeUser(
   0,
   "toly"
 );
+```
+
+```python
+# todo: cannot init with name
+tx_sig = await drift_client.intialize_user(0)  
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -227,8 +260,8 @@ driftClient.deleteUser(
 ## Depositing
 
 ```typescript
-const marketIndex = 0;
-const amount = driftClient.convertToSpotPrecision(marketIndex, 100);
+const marketIndex = 0; // USDC
+const amount = driftClient.convertToSpotPrecision(marketIndex, 100); // $100
 const associatedTokenAccount = await driftClient.getAssociatedTokenAccount(marketIndex);
 
 driftClient.deposit(
@@ -236,6 +269,18 @@ driftClient.deposit(
   marketIndex,
   associatedTokenAccount,
 );
+```
+
+```python
+from driftpy.accounts import get_spot_market_account
+from spl.token.instructions import get_associated_token_address
+
+spot_market_index = 0 # USDC
+spot_market = await get_spot_market_account(drift_client.program, spot_market_index)
+user_token_account = get_associated_token_address(drift_client.authority, spot_market.mint)
+amount = 100 * QUOTE_PRECISION # $100
+
+tx_sig = await drift_client.deposit(amount, spot_market_index, user_token_account)
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -344,6 +389,36 @@ const orderParams = {
 await driftClient.placePerpOrder(orderParams);
 ```
 
+```python
+from driftpy.types import *
+from driftpy.constants.numeric_constants import BASE_PRECISION, PRICE_PRECISION
+
+subaccount_id = 0
+market_index = 0
+
+# place order to long 1 SOL-PERP @ $21.88 (post only)
+bid_params = OrderParams(
+            order_type=OrderType.LIMIT(),
+            market_type=MarketType.PERP(),
+            direction=PositionDirection.LONG(),
+            user_order_id=0,
+            base_asset_amount=int(1 * BASE_PRECISION),
+            price=21.88 * PRICE_PRECISION,
+            market_index=market_index,
+            reduce_only=False,
+            post_only=PostOnlyParams.TRY_POST_ONLY(),
+            immediate_or_cancel=False,
+            trigger_price=0,
+            trigger_condition=OrderTriggerCondition.ABOVE(),
+            oracle_price_offset=0,
+            auction_duration=None,
+            max_ts=None,
+            auction_start_price=None,
+            auction_end_price=None,
+        )
+await drift_client.get_place_perp_order(bid_order_params, subaccount_id)
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | orderType | The type of order e.g. market, limit  | No | |
@@ -429,6 +504,11 @@ const marketType = MarketType.PERP;
 const marketIndex = 0;
 const direction = PositionDirection.LONG;
 await driftClient.cancelOrders(marketType, marketIndex, direction);
+```
+
+``` python
+subaccount_id = 0
+await drift_client.cancel_orders(subaccount_id) # cancels all orders
 ```
 
 | Parameter   | Description | Optional | Default |
