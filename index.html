@@ -469,6 +469,26 @@
               </ul>
           </li>
           <li>
+            <a href="#events" class="toc-h1 toc-link" data-title="Events">Events</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#event-subscription" class="toc-h2 toc-link" data-title="Event Subscription">Event Subscription</a>
+                  </li>
+                  <li>
+                    <a href="#event-types" class="toc-h2 toc-link" data-title="Event Types">Event Types</a>
+                  </li>
+                  <li>
+                    <a href="#listening-to-perp-market-fills" class="toc-h2 toc-link" data-title="Listening to Perp Market Fills">Listening to Perp Market Fills</a>
+                  </li>
+                  <li>
+                    <a href="#getting-events-received-by-type" class="toc-h2 toc-link" data-title="Getting Events Received By Type">Getting Events Received By Type</a>
+                  </li>
+                  <li>
+                    <a href="#getting-events-by-transaction" class="toc-h2 toc-link" data-title="Getting Events By Transaction">Getting Events By Transaction</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#numerical-precisions" class="toc-h1 toc-link" data-title="Numerical Precisions">Numerical Precisions</a>
           </li>
           <li>
@@ -2095,6 +2115,216 @@ The user map subscribes to user account updates.  </p>
 </tbody></table>
 
 <p>The L3 orderbook contains every maker order on drift dlob, including the address for the user that placed the order.</p>
+<h1 id='events'>Events</h1><h2 id='event-subscription'>Event Subscription</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span><span class="nx">Wallet</span><span class="p">,</span> <span class="nx">loadKeypair</span><span class="p">,</span> <span class="nx">DriftClient</span><span class="p">,</span> <span class="nx">EventSubscriber</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.mainnet-beta.solana.com</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">keyPairFile</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">~/.config/solana/my-keypair.json</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">wallet</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Wallet</span><span class="p">(</span><span class="nx">loadKeypair</span><span class="p">(</span><span class="nx">privateKeyFile</span><span class="p">))</span>
+
+<span class="kd">const</span> <span class="nx">driftClient</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DriftClient</span><span class="p">({</span>
+  <span class="nx">connection</span><span class="p">,</span>
+  <span class="nx">wallet</span><span class="p">,</span>
+  <span class="na">env</span><span class="p">:</span> <span class="dl">'</span><span class="s1">mainnet-beta</span><span class="dl">'</span><span class="p">,</span>
+<span class="p">});</span>
+
+<span class="kd">const</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">eventTypes</span><span class="p">:</span> <span class="p">[</span>
+    <span class="dl">'</span><span class="s1">DepositRecord</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">FundingPaymentRecord</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">LiquidationRecord</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">OrderRecord</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">OrderActionRecord</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">FundingRateRecord</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">NewUserRecord</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">SettlePnlRecord</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">LPRecord</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">InsuranceFundRecord</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">SpotInterestRecord</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">InsuranceFundStakeRecord</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">CurveRecord</span><span class="dl">'</span><span class="p">,</span>
+  <span class="p">],</span>
+  <span class="na">maxTx</span><span class="p">:</span> <span class="mi">4096</span><span class="p">,</span>
+  <span class="na">maxEventsPerType</span><span class="p">:</span> <span class="mi">4096</span><span class="p">,</span>
+  <span class="na">orderBy</span><span class="p">:</span> <span class="dl">'</span><span class="s1">blockchain</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">orderDir</span><span class="p">:</span> <span class="dl">'</span><span class="s1">asc</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">commitment</span><span class="p">:</span> <span class="dl">'</span><span class="s1">confirmed</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">logProviderConfig</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">websocket</span><span class="dl">'</span><span class="p">,</span>
+  <span class="p">},</span>
+<span class="p">}</span>
+
+<span class="kd">const</span> <span class="nx">eventSubscriber</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">EventSubscriber</span><span class="p">(</span><span class="nx">connection</span><span class="p">,</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">program</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+<span class="k">await</span> <span class="nx">eventSubscriber</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">();</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>connection</td>
+<td>Connection object specifying solana rpc url</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>program</td>
+<td>Anchor program object used to deserialize events from transaction logs</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>options.eventTypes</td>
+<td>Which events types to trigger event callbacks for</td>
+<td>Yes</td>
+<td>All events</td>
+</tr>
+<tr>
+<td>options.maxTx</td>
+<td>Max number of transactions to keep in memory</td>
+<td>Yes</td>
+<td>4096</td>
+</tr>
+<tr>
+<td>options.maxEventsPerType</td>
+<td>Max number of events per event type to keep in memory</td>
+<td>Yes</td>
+<td>4096</td>
+</tr>
+<tr>
+<td>options.orderBy</td>
+<td>Whether to sort the tx in memory by the order they occurred on chain (&#39;blockchain&#39;) or received by client (&#39;client&#39;)</td>
+<td>Yes</td>
+<td>&#39;blockchain&#39;</td>
+</tr>
+<tr>
+<td>options.orderDir</td>
+<td>Whether to sort the tx in memory to be most recent (&#39;desc&#39;) or oldest (&#39;asc&#39;)</td>
+<td>Yes</td>
+<td>&#39;asc&#39;</td>
+</tr>
+<tr>
+<td>options.commitment</td>
+<td>What transaction commitment to wait for</td>
+<td>Yes</td>
+<td>&#39;confirmed&#39;</td>
+</tr>
+<tr>
+<td>options.logProviderConfig</td>
+<td>Whether to use websocket or polling to listen for tx logs</td>
+<td>Yes</td>
+<td>{type: &quot;websocket&quot;}</td>
+</tr>
+</tbody></table>
+
+<p>Protocol events are recorded in transactions logs. To listen for events, one must subscribe to the drift program&#39;s transaction logs.  </p>
+<h2 id='event-types'>Event Types</h2>
+<table><thead>
+<tr>
+<th>Event Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>DepositRecord</td>
+<td>A record of a user depositing or withdrawing funds from protocol</td>
+</tr>
+<tr>
+<td>FundingPaymentRecord</td>
+<td>A record of a user paying/receiving funding payments</td>
+</tr>
+<tr>
+<td>LiquidationRecord</td>
+<td>A record of a user being liquidated</td>
+</tr>
+<tr>
+<td>OrderRecord</td>
+<td>A record of a user placing an order, including all of its parameters</td>
+</tr>
+<tr>
+<td>OrderActionRecord</td>
+<td>A record of a user action on an order, including place, cancel and fill</td>
+</tr>
+<tr>
+<td>FundingRateRecord</td>
+<td>A record of the funding rate changing</td>
+</tr>
+<tr>
+<td>NewUserRecord</td>
+<td>A record of a new user</td>
+</tr>
+<tr>
+<td>SettlePnlRecord</td>
+<td>A record of a user settling their pnl</td>
+</tr>
+<tr>
+<td>LPRecord</td>
+<td>A record of a user adding or removing passive perp liquidity</td>
+</tr>
+<tr>
+<td>InsuranceFundRecord</td>
+<td>A record of the insurance fund changing</td>
+</tr>
+<tr>
+<td>SpotInterestRecord</td>
+<td>A record of the spot interest changing</td>
+</tr>
+<tr>
+<td>InsuranceFundStakeRecord</td>
+<td>A record of a user staking or unstaking from the insurance fund</td>
+</tr>
+<tr>
+<td>CurveRecord</td>
+<td>A record of the amm curve updating</td>
+</tr>
+</tbody></table>
+<h2 id='listening-to-perp-market-fills'>Listening to Perp Market Fills</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
+<span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">isPerpMarketFill</span> <span class="o">=</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">eventType</span> <span class="o">!==</span> <span class="dl">'</span><span class="s1">OrderActionRecord</span><span class="dl">'</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">marketIndex</span> <span class="o">!==</span> <span class="nx">marketIndex</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">isVariant</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">marketType</span><span class="p">,</span> <span class="dl">'</span><span class="s1">perp</span><span class="dl">'</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">isVariant</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">action</span><span class="p">,</span> <span class="dl">'</span><span class="s1">fill</span><span class="dl">'</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kd">const</span> <span class="nx">fillCallback</span> <span class="o">=</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">event</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">eventSubscriber</span><span class="p">.</span><span class="nx">eventEmitter</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">newEvent</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">isPerpMarketFill</span><span class="p">(</span><span class="nx">event</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nx">fillCallback</span><span class="p">(</span><span class="nx">event</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+</code></pre></div><h2 id='getting-events-received-by-type'>Getting Events Received By Type</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
+<span class="kd">const</span> <span class="nx">eventType</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">OrderActionRecord</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">events</span> <span class="o">=</span> <span class="nx">eventSubscriber</span><span class="p">.</span><span class="nx">getEventsReceived</span><span class="p">(</span><span class="nx">eventType</span><span class="p">);</span>
+</code></pre></div>
+<p>This returns all the events that the event subscriber currently has stored in memory.</p>
+<h2 id='getting-events-by-transaction'>Getting Events By Transaction</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
+<span class="kd">const</span> <span class="nx">txSig</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">3dq5PtQ3VnNTkQRrHhQ1nRACWZaFVvSBKs1RLXM8WvCqLHTzTuVGc7XER5awoLFLTdJ4kqZiNmo7e8b3pXaEGaoo</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">events</span> <span class="o">=</span> <span class="nx">eventSubscriber</span><span class="p">.</span><span class="nx">getEventsByTx</span><span class="p">(</span><span class="nx">txSig</span><span class="p">);</span>
+</code></pre></div>
+<p>This returns the events that the event subscriber currently has stored in memory for a given transaction.</p>
 <h1 id='numerical-precisions'>Numerical Precisions</h1>
 <table><thead>
 <tr>
@@ -2121,7 +2351,7 @@ The user map subscribes to user account updates.  </p>
 <tr>
 <td>funding rate</td>
 <td>1e9</td>
-<td></td>
+<td>FUNDING_RATE_PRECISION</td>
 </tr>
 <tr>
 <td>spot token amount</td>
