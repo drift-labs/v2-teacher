@@ -941,6 +941,144 @@ const l3 = dlobSubscriber.getL3({
 
 The L3 orderbook contains every maker order on drift dlob, including the address for the user that placed the order.
 
+# Events
+
+## Event Subscription
+
+```typescript
+import {Connection} from "@solana/web3.js";
+import {Wallet, loadKeypair, DriftClient, EventSubscriber} from "@drift-labs/sdk";
+
+const connection = new Connection('https://api.mainnet-beta.solana.com');
+
+const keyPairFile = '~/.config/solana/my-keypair.json';
+const wallet = new Wallet(loadKeypair(privateKeyFile))
+
+const driftClient = new DriftClient({
+  connection,
+  wallet,
+  env: 'mainnet-beta',
+});
+
+const options = {
+  eventTypes: [
+    'DepositRecord',
+    'FundingPaymentRecord',
+    'LiquidationRecord',
+    'OrderRecord',
+    'OrderActionRecord',
+    'FundingRateRecord',
+    'NewUserRecord',
+    'SettlePnlRecord',
+    'LPRecord',
+    'InsuranceFundRecord',
+    'SpotInterestRecord',
+    'InsuranceFundStakeRecord',
+    'CurveRecord',
+  ],
+  maxTx: 4096,
+  maxEventsPerType: 4096,
+  orderBy: 'blockchain',
+  orderDir: 'asc',
+  commitment: 'confirmed',
+  logProviderConfig: {
+    type: 'websocket',
+  },
+}
+
+const eventSubscriber = new EventSubscriber(connection, driftClient.program, options);
+await eventSubscriber.subscribe();
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| connection | Connection object specifying solana rpc url   | No | |
+| program | Anchor program object used to deserialize events from transaction logs | No | |
+| options.eventTypes | Which events types to trigger event callbacks for | Yes | All events |
+| options.maxTx | Max number of transactions to keep in memory | Yes | 4096 |
+| options.maxEventsPerType | Max number of events per event type to keep in memory | Yes | 4096 |
+| options.orderBy | Whether to sort the tx in memory by the order they occurred on chain ('blockchain') or received by client ('client') | Yes | 'blockchain' |
+| options.orderDir | Whether to sort the tx in memory to be most recent ('desc') or oldest ('asc') | Yes | 'asc' |
+| options.commitment | What transaction commitment to wait for | Yes | 'confirmed' |
+| options.logProviderConfig | Whether to use websocket or polling to listen for tx logs | Yes | {type: "websocket"} |
+
+Protocol events are recorded in transactions logs. To listen for events, one must subscribe to the drift program's transaction logs.  
+
+## Event Types
+
+| Event Type   | Description |
+| ----------- | ----------- |
+| DepositRecord | A record of a user depositing or withdrawing funds from protocol |
+| FundingPaymentRecord | A record of a user paying/receiving funding payments |
+| LiquidationRecord | A record of a user being liquidated |
+| OrderRecord | A record of a user placing an order, including all of its parameters |
+| OrderActionRecord | A record of a user action on an order, including place, cancel and fill |
+| FundingRateRecord | A record of the funding rate changing |
+| NewUserRecord | A record of a new user |
+| SettlePnlRecord | A record of a user settling their pnl |
+| LPRecord | A record of a user adding or removing passive perp liquidity |
+| InsuranceFundRecord | A record of the insurance fund changing |
+| SpotInterestRecord | A record of the spot interest changing |
+| InsuranceFundStakeRecord | A record of a user staking or unstaking from the insurance fund |
+| CurveRecord | A record of the amm curve updating |
+
+## Listening to Perp Market Fills
+
+```typescript
+
+const marketIndex = 0;
+const isPerpMarketFill = (event) => {
+  if (event.eventType !== 'OrderActionRecord') {
+    return false;
+  }
+  
+  if (event.marketIndex !== marketIndex) {
+    return false;
+  }
+  
+  if (!isVariant(event.marketType, 'perp')) {
+    return false;
+  }
+  
+  if (!isVariant(event.action, 'fill')) {
+    return false;
+  }
+
+  return true;
+};
+
+const fillCallback = (event) => {
+  console.log(event);
+}
+
+eventSubscriber.eventEmitter.on('newEvent', (event) => {
+  if (isPerpMarketFill(event)) {
+    fillCallback(event);
+  }
+});
+
+```
+
+## Getting Events Received By Type
+
+```typescript
+
+const eventType = 'OrderActionRecord';
+const events = eventSubscriber.getEventsReceived(eventType);
+```
+
+This returns all the events that the event subscriber currently has stored in memory.
+
+## Getting Events By Transaction
+
+```typescript
+
+const txSig = '3dq5PtQ3VnNTkQRrHhQ1nRACWZaFVvSBKs1RLXM8WvCqLHTzTuVGc7XER5awoLFLTdJ4kqZiNmo7e8b3pXaEGaoo';
+const events = eventSubscriber.getEventsByTx(txSig);
+```
+
+This returns the events that the event subscriber currently has stored in memory for a given transaction.
+
 # Numerical Precisions
 
 | Value   | Precision | Constant |
@@ -948,7 +1086,7 @@ The L3 orderbook contains every maker order on drift dlob, including the address
 | perp base asset amount | 1e9 | BASE_PRECISION |
 | perp quote asset amount | 1e6 | QUOTE_PRECISION |
 | price | 1e6 | PRICE_PRECISION |
-| funding rate | 1e9 |  |
+| funding rate | 1e9 | FUNDING_RATE_PRECISION |
 | spot token amount | derived from token mint's decimals (USDC is 1e6, SOL is 1e9) | |
 | margin ratio | 1e4 | MARGIN_PRECISION |
 | asset/liability weight | 1e4 | SPOT_WEIGHT_PRECISION |
