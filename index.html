@@ -293,6 +293,7 @@
     <script>
       $(function() { setupCodeCopy(); });
     </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>`
   </head>
 
   <body class="index" data-languages="[&quot;typescript&quot;,&quot;python&quot;,&quot;shell&quot;]">
@@ -487,6 +488,9 @@
                     <a href="#getting-events-by-transaction" class="toc-h2 toc-link" data-title="Getting Events By Transaction">Getting Events By Transaction</a>
                   </li>
               </ul>
+          </li>
+          <li>
+            <a href="#margin-system" class="toc-h1 toc-link" data-title="Margin System">Margin System</a>
           </li>
           <li>
             <a href="#numerical-precisions" class="toc-h1 toc-link" data-title="Numerical Precisions">Numerical Precisions</a>
@@ -2325,6 +2329,46 @@ The user map subscribes to user account updates.  </p>
 <span class="kd">const</span> <span class="nx">events</span> <span class="o">=</span> <span class="nx">eventSubscriber</span><span class="p">.</span><span class="nx">getEventsByTx</span><span class="p">(</span><span class="nx">txSig</span><span class="p">);</span>
 </code></pre></div>
 <p>This returns the events that the event subscriber currently has stored in memory for a given transaction.</p>
+<h1 id='margin-system'>Margin System</h1>
+<p>Drift offers a cross-collateral margining system, allowing users to utilize multiple assets as trading collateral.</p>
+
+<p>The margining system tracks each user&#39;s total collateral, the weighted sum of the user&#39;s deposits and perp pnl, as well 
+as their margin requirement, the weighted value out the user&#39;s outstanding borrow and perp positions.</p>
+
+<p>Total collateral is calculated as:</p>
+
+<p>\[\sum_{i=1}^n d_i \cdot p_i \cdot w_i^a\ +\ \sum_{j=1}^n pnl_j \cdot qp_j \cdot w_j^{pnl} \]</p>
+
+<p>Where</p>
+
+<ul>
+<li>\(d_i\) is the deposit amount for spot market \(i\)</li>
+<li>\(p_i\) is the price for spot market \(i\)</li>
+<li>\(w_i^a\) is the asset weight for spot market \(i\)</li>
+<li>\(pnl_j\) is the pnl for perp market \(j\)</li>
+<li>\(qp_j\) is the quote asset price for perp market \(j\)</li>
+<li>\(w_j^{pnl}\) is the pnl weight for perp market \(j\)</li>
+</ul>
+
+<p>Margin requirement is calculated as:</p>
+
+<p>\[ \sum_{i=1}^n b_i \cdot p_i \cdot w_i^l\ +\ \sum_{j=1}^n ba_j \cdot o_j \cdot qp_j \cdot m_j \]</p>
+
+<p>Where </p>
+
+<ul>
+<li>\(b_i\) is the borrow amount for spot market \(i\)</li>
+<li>\(p_i\) is the price for spot market \(i\)</li>
+<li>\(w_i^l\) is the liability weight for spot market \(i\)</li>
+<li>\(ba_j\) is the base amount for perp market \(j\)</li>
+<li>\(o_j\) is the oracle price for perp market \(j\)</li>
+<li>\(qp_j\) is the quote asset price for perp market \(j\)</li>
+<li>\(m_j\) is the margin ratio for perp market \(j\)</li>
+</ul>
+
+<p>The asset, liability and perp pnl weights depend on whether you&#39;re calculating the initial or maintenance values. To open a new perp position or borrow, a user&#39;s initial total collateral must be greater than their initial margin requirement.
+If a user&#39;s maintenance total collateral drops below their maintenance margin requirement, a user&#39;s position can be liquidated
+to reduce their risk.</p>
 <h1 id='numerical-precisions'>Numerical Precisions</h1>
 <table><thead>
 <tr>
