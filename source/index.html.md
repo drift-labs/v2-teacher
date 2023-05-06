@@ -1113,8 +1113,11 @@ Where
 * \\(qp_j\\) is the quote asset price for perp market \\(j\\)
 * \\(m_j\\) is the margin ratio for perp market \\(j\\)
 
-The asset, liability and perp pnl weights depend on whether you're calculating the initial or maintenance values. To open a new perp position or borrow, a user's initial total collateral must be greater than their initial margin requirement.
-If a user's maintenance total collateral drops below their maintenance margin requirement, a user's position can be liquidated
+The weights and margin ratios depend on whether you're calculating the initial or maintenance values. 
+
+The initial maintenance check governs leverage extension. To open a new perp position or borrow, a user's initial total collateral must be greater than their initial margin requirement.
+
+The maintenance check governs when a user's position must be liquidated. If a user's maintenance total collateral drops below their maintenance margin requirement, a user's position can be liquidated
 to reduce their risk.
 
 # Numerical Precisions
