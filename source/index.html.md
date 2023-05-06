@@ -1079,6 +1079,44 @@ const events = eventSubscriber.getEventsByTx(txSig);
 
 This returns the events that the event subscriber currently has stored in memory for a given transaction.
 
+# Margin System
+
+Drift offers a cross-collateral margining system, allowing users to utilize multiple assets as trading collateral.
+
+The margining system tracks each user's total collateral, the weighted sum of the user's deposits and perp pnl, as well 
+as their margin requirement, the weighted value out the user's outstanding borrow and perp positions.
+
+Total collateral is calculated as:
+
+\\[\sum_{i=1}^n d_i \cdot p_i \cdot w_i^a\ +\ \sum_{j=1}^n pnl_j \cdot qp_j \cdot w_j^{pnl} \\]
+
+Where
+
+* \\(d_i\\) is the deposit amount for spot market \\(i\\)
+* \\(p_i\\) is the price for spot market \\(i\\)
+* \\(w_i^a\\) is the asset weight for spot market \\(i\\)
+* \\(pnl_j\\) is the pnl for perp market \\(j\\)
+* \\(qp_j\\) is the quote asset price for perp market \\(j\\)
+* \\(w_j^{pnl}\\) is the pnl weight for perp market \\(j\\)
+
+Margin requirement is calculated as:
+
+\\[ \sum_{i=1}^n b_i \cdot p_i \cdot w_i^l\ +\ \sum_{j=1}^n ba_j \cdot o_j \cdot qp_j \cdot m_j \\]
+
+Where 
+
+* \\(b_i\\) is the borrow amount for spot market \\(i\\)
+* \\(p_i\\) is the price for spot market \\(i\\)
+* \\(w_i^l\\) is the liability weight for spot market \\(i\\)
+* \\(ba_j\\) is the base amount for perp market \\(j\\)
+* \\(o_j\\) is the oracle price for perp market \\(j\\)
+* \\(qp_j\\) is the quote asset price for perp market \\(j\\)
+* \\(m_j\\) is the margin ratio for perp market \\(j\\)
+
+The asset, liability and perp pnl weights depend on whether you're calculating the initial or maintenance values. To open a new perp position or borrow, a user's initial total collateral must be greater than their initial margin requirement.
+If a user's maintenance total collateral drops below their maintenance margin requirement, a user's position can be liquidated
+to reduce their risk.
+
 # Numerical Precisions
 
 | Value   | Precision | Constant |
