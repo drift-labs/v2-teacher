@@ -1120,6 +1120,12 @@ The initial maintenance check governs leverage extension. To open a new perp pos
 The maintenance check governs when a user's position must be liquidated. If a user's maintenance total collateral drops below their maintenance margin requirement, a user's position can be liquidated
 to reduce their risk.
 
+The prices used for deposits, borrows and perp quote assets differ between the initial and maintenance checks. The maintenance check uses
+the current oracle price. The initial check uses the `min(oracle_price, oracle_twap)` for deposits and positive perp pnl and `max(oracle_price, oracle_twap)`
+for borrows, negative perp pnl and perp base amount.
+
+Lastly, 
+
 # Numerical Precisions
 
 | Value   | Precision | Constant |
