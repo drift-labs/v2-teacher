@@ -1124,8 +1124,6 @@ The prices used for deposits, borrows and perp quote assets differ between the i
 the current oracle price. The initial check uses the `min(oracle_price, oracle_twap)` for deposits and positive perp pnl and `max(oracle_price, oracle_twap)`
 for borrows, negative perp pnl and perp base amount.
 
-Lastly, 
-
 # Numerical Precisions
 
 | Value   | Precision | Constant |
