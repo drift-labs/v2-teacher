@@ -125,7 +125,7 @@ import os
 import json
 
 key_pair_file = '~/.config/solana/my-keypair.json'
-with open(os.path.expanduser(key_pair_file), 'r') as f: secret = json.load(f) 
+with open(os.path.expanduser(key_pair_file), 'r') as f: secret = json.load(f)
 kp = Keypair.from_secret_key(bytes(secret))
 wallet = Wallet(kp)
 ```
@@ -199,7 +199,7 @@ const [txSig, userPublickKey] = await driftClient.initializeUser(
 
 ```python
 # todo: cannot init with name
-tx_sig = await drift_client.intialize_user(0)  
+tx_sig = await drift_client.intialize_user(0)
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -219,7 +219,7 @@ const subaccountId = 0;
 
 // set max 1x intiial leverage
 await this.driftClient.updateUserCustomMarginRatio(
-  MARGIN_PRECISION, 
+  MARGIN_PRECISION,
   subaccountId
 );
 
@@ -342,7 +342,7 @@ driftClient.transferDeposit(
 MARKET, LIMIT, ORACLE orders all support auction parameters.
 
 | Type	| Description |
-| ----- | ----------- | 
+| ----- | ----------- |
 | MARKET |	Market order. |
 | LIMIT |	Limit order. |
 | TRIGGER_MARKET |	Stop / Take-profit market order. |
@@ -353,10 +353,10 @@ MARKET, LIMIT, ORACLE orders all support auction parameters.
 
 ```typescript
 
-// market buy for 100 SOL-PERP @ $21.20->$21.30 over 60 slots (~30 seconds) 
+// market buy for 100 SOL-PERP @ $21.20->$21.30 over 60 slots (~30 seconds)
 // after 60 slots, market buy 100 SOL-PERP @ $21.35 until maxTs
 const orderParams = {
-  orderType: OrderType.MARKET, 
+  orderType: OrderType.MARKET,
   marketIndex: 0,
   direction: PositionDirection.LONG,
   baseAssetAmount: driftClient.convertToPerpPrecision(100),
@@ -368,9 +368,9 @@ const orderParams = {
 }
 await driftClient.placePerpOrder(orderParams);
 
-// bid for 100 SOL-PERP @ $21.23 
+// bid for 100 SOL-PERP @ $21.23
 const orderParams = {
-  orderType: OrderType.LIMIT, 
+  orderType: OrderType.LIMIT,
   marketIndex: 0,
   direction: PositionDirection.LONG,
   baseAssetAmount: driftClient.convertToPerpPrecision(100),
@@ -380,7 +380,7 @@ await driftClient.placePerpOrder(orderParams);
 
 // ask for 100 SOL-PERP @ ${OraclePrice} + .05
 const orderParams = {
-  orderType: OrderType.LIMIT, 
+  orderType: OrderType.LIMIT,
   marketIndex: 0,
   direction: PositionDirection.SHORT,
   baseAssetAmount: driftClient.convertToPerpPrecision(100),
@@ -535,7 +535,7 @@ const placeOrderParams = [
      direction: PositionDirection.LONG,
      baseAssetAmount: driftClient.convertToPerpPrecision(100),
      price: driftClient.convertToPricePrecision(21.23),
-   }, 
+   },
    {
      orderType: OrderType.LIMIT,
      marketIndex: 0,
@@ -621,7 +621,7 @@ Modify order cancels and places a new order.
 const marketIndex = 0;
 const user =  driftClient.getUser();
 await driftClient.settlePNL(
-   user.userAccountPublicKey, 
+   user.userAccountPublicKey,
    user.getUserAccount(),
    marketIndex
 );
@@ -838,7 +838,7 @@ The slot subscriber subscribes to the latest slot and updates the slot value eve
 
    const keyPairFile = '~/.config/solana/my-keypair.json';
    const wallet = new Wallet(loadKeypair(privateKeyFile))
-   
+
    const driftClient = new DriftClient({
      connection,
      wallet,
@@ -846,7 +846,7 @@ The slot subscriber subscribes to the latest slot and updates the slot value eve
    });
 
    await driftClient.subscribe();
-   
+
    const includeIdleUsers = false;
    const userMap = new UserMap(driftClient, {type: 'websocket'}, false);
    await userMap.subscribe();
@@ -858,8 +858,8 @@ The slot subscriber subscribes to the latest slot and updates the slot value eve
 | accountSubscription | Whether to use websocket or polling to subscribe to users | No | |
 | includeIdle | Whether to include idle users. An idle user has had no orders, perp position or borrow for 7 days  | Yes | |
 
-Orders are stored on user accounts. To reconstruct the orderbook, you must keep track of the user accounts that have orders. 
-The user map subscribes to user account updates.  
+Orders are stored on user accounts. To reconstruct the orderbook, you must keep track of the user accounts that have orders.
+The user map subscribes to user account updates.
 
 ## Orderbook Subscription
 
@@ -876,7 +876,7 @@ await userMap.subscribe();
     slotSource: slotSubscriber,
     updateFrequency: 1000,
  });
- 
+
 await dlobSubscriber.subscribe();
 ```
 
@@ -891,7 +891,7 @@ import {DLOBApiClient, DLOBSubscriber} from "@drift-labs/sdk";
  const dlobSubscriber = new DLOBSubscriber({
     driftClient,
     dlobSource: dlobApiClient,
-    slotSource: slotSubscriber, 
+    slotSource: slotSubscriber,
     updateFrequency: 1000,
  });
 
@@ -1002,7 +1002,7 @@ await eventSubscriber.subscribe();
 | options.commitment | What transaction commitment to wait for | Yes | 'confirmed' |
 | options.logProviderConfig | Whether to use websocket or polling to listen for tx logs | Yes | {type: "websocket"} |
 
-Protocol events are recorded in transactions logs. To listen for events, one must subscribe to the drift program's transaction logs.  
+Protocol events are recorded in transactions logs. To listen for events, one must subscribe to the drift program's transaction logs.
 
 ## Event Types
 
@@ -1031,15 +1031,15 @@ const isPerpMarketFill = (event) => {
   if (event.eventType !== 'OrderActionRecord') {
     return false;
   }
-  
+
   if (event.marketIndex !== marketIndex) {
     return false;
   }
-  
+
   if (!isVariant(event.marketType, 'perp')) {
     return false;
   }
-  
+
   if (!isVariant(event.action, 'fill')) {
     return false;
   }
@@ -1083,7 +1083,7 @@ This returns the events that the event subscriber currently has stored in memory
 
 Drift offers a cross-collateral margining system, allowing users to utilize multiple assets as trading collateral.
 
-The margining system tracks each user's total collateral, the weighted sum of the user's deposits and perp pnl, as well 
+The margining system tracks each user's total collateral, the weighted sum of the user's deposits and perp pnl, as well
 as their margin requirement, the weighted value out the user's outstanding borrow and perp positions.
 
 Total collateral is calculated as:
@@ -1103,7 +1103,7 @@ Margin requirement is calculated as:
 
 \\[ \sum_{i=1}^n b_i \cdot p_i \cdot w_i^l\ +\ \sum_{j=1}^n ba_j \cdot o_j \cdot qp_j \cdot m_j \\]
 
-Where 
+Where
 
 * \\(b_i\\) is the borrow amount for spot market \\(i\\)
 * \\(p_i\\) is the price for spot market \\(i\\)
@@ -1113,7 +1113,7 @@ Where
 * \\(qp_j\\) is the quote asset price for perp market \\(j\\)
 * \\(m_j\\) is the margin ratio for perp market \\(j\\)
 
-The weights and margin ratios depend on whether you're calculating the initial or maintenance values. 
+The weights and margin ratios depend on whether you're calculating the initial or maintenance values.
 
 The initial maintenance check governs leverage extension. To open a new perp position or borrow, a user's initial total collateral must be greater than their initial margin requirement.
 
@@ -1126,12 +1126,44 @@ for borrows, negative perp pnl and perp base amount.
 
 # Numerical Precisions
 
+To maintain numerical precision, the on-chain program stores all values as integers.
+
+## Getting a Current Perp Position
+
+```typescript
+
+const perpMarketIndex = 0; // SOL-PERP
+const perpPosition = driftClient.getPerpPosition(perpMarketIndex);
+console.log(convertToNumber(perpPosition.baseAssetAmount, BASE_PRECISION));
+```
+
+This prints the size of the current perp position in perp market index 0 (SOL-PERP)
+
+## Getting a Current Spot Position
+
+```typescript
+
+const spotMarketIndex = 0; // USDC
+const spotConfig = SpotMarkets['mainnet-beta'][spotMarketIndex];
+const spotMarket = driftClient.getSpotMarketAccount(spotMarketIndex);
+const spotPosition = driftClient.getSpotPosition(spotMarketIndex);
+const tokenAmount = getTokenAmount(spotPosition.scaledBalance, spotMarket, .spotPosition.balanceType);
+console.log(convertToNumber(tokenAmount, spotConfig.precision));
+```
+
+This prints the current spot position in spot market index 0 (USDC). This value is the same as the value shown on the UI,
+it includes any accumulated interest.
+
+
+## Common precision values
+
 | Value   | Precision | Constant |
-| ----------- | ----------- | -------- | ------- |
-| perp base asset amount | 1e9 | BASE_PRECISION |
-| perp quote asset amount | 1e6 | QUOTE_PRECISION |
-| price | 1e6 | PRICE_PRECISION |
-| funding rate | 1e9 | FUNDING_RATE_PRECISION |
-| spot token amount | derived from token mint's decimals (USDC is 1e6, SOL is 1e9) | |
-| margin ratio | 1e4 | MARGIN_PRECISION |
-| asset/liability weight | 1e4 | SPOT_WEIGHT_PRECISION |
+| ----------- | ----------- | -------- |
+| perp base asset amount | 1e9 | `BASE_PRECISION` |
+| perp quote asset amount | 1e6 | `QUOTE_PRECISION` |
+| price | 1e6 | `PRICE_PRECISION` |
+| funding rate | 1e9 | `FUNDING_RATE_PRECISION` |
+| spot token amount | derived from token mint's decimals (USDC is 1e6, SOL is 1e9) | `SpotMarketConfig.precision` |
+| spot token balance | 1e9 | `SPOT_MARKET_BALANCE_PRECISION` |
+| margin ratio | 1e4 | `MARGIN_PRECISION` |
+| asset/liability weight | 1e4 | `SPOT_WEIGHT_PRECISION` |
