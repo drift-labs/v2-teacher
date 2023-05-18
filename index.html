@@ -494,6 +494,17 @@
           </li>
           <li>
             <a href="#numerical-precisions" class="toc-h1 toc-link" data-title="Numerical Precisions">Numerical Precisions</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#getting-a-current-perp-position" class="toc-h2 toc-link" data-title="Getting a Current Perp Position">Getting a Current Perp Position</a>
+                  </li>
+                  <li>
+                    <a href="#getting-a-current-spot-position" class="toc-h2 toc-link" data-title="Getting a Current Spot Position">Getting a Current Spot Position</a>
+                  </li>
+                  <li>
+                    <a href="#common-precision-values" class="toc-h2 toc-link" data-title="Common precision values">Common precision values</a>
+                  </li>
+              </ul>
           </li>
           <li>
             <a href="#examples-bots" class="toc-h1 toc-link" data-title="Examples Bots">Examples Bots</a>
@@ -615,7 +626,7 @@
 <span class="kn">import</span> <span class="nn">json</span>
 
 <span class="n">key_pair_file</span> <span class="o">=</span> <span class="s">'~/.config/solana/my-keypair.json'</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">key_pair_file</span><span class="p">),</span> <span class="s">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span> <span class="n">secret</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> 
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">key_pair_file</span><span class="p">),</span> <span class="s">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span> <span class="n">secret</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 <span class="n">kp</span> <span class="o">=</span> <span class="n">Keypair</span><span class="p">.</span><span class="n">from_secret_key</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">secret</span><span class="p">))</span>
 <span class="n">wallet</span> <span class="o">=</span> <span class="n">Wallet</span><span class="p">(</span><span class="n">kp</span><span class="p">)</span>
 </code></pre></div>
@@ -756,7 +767,7 @@
   <span class="dl">"</span><span class="s2">toly</span><span class="dl">"</span>
 <span class="p">);</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="c1"># todo: cannot init with name
-</span><span class="n">tx_sig</span> <span class="o">=</span> <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">intialize_user</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  
+</span><span class="n">tx_sig</span> <span class="o">=</span> <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">intialize_user</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div>
 <table><thead>
 <tr>
@@ -794,7 +805,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 
 <span class="c1">// set max 1x intiial leverage</span>
 <span class="k">await</span> <span class="k">this</span><span class="p">.</span><span class="nx">driftClient</span><span class="p">.</span><span class="nx">updateUserCustomMarginRatio</span><span class="p">(</span>
-  <span class="nx">MARGIN_PRECISION</span><span class="p">,</span> 
+  <span class="nx">MARGIN_PRECISION</span><span class="p">,</span>
   <span class="nx">subaccountId</span>
 <span class="p">);</span>
 
@@ -1018,10 +1029,10 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tr>
 </tbody></table>
 <h2 id='placing-perp-order'>Placing Perp Order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
-<span class="c1">// market buy for 100 SOL-PERP @ $21.20-&gt;$21.30 over 60 slots (~30 seconds) </span>
+<span class="c1">// market buy for 100 SOL-PERP @ $21.20-&gt;$21.30 over 60 slots (~30 seconds)</span>
 <span class="c1">// after 60 slots, market buy 100 SOL-PERP @ $21.35 until maxTs</span>
 <span class="kd">const</span> <span class="nx">orderParams</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">MARKET</span><span class="p">,</span> 
+  <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">MARKET</span><span class="p">,</span>
   <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
   <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
   <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
@@ -1033,9 +1044,9 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <span class="p">}</span>
 <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">placePerpOrder</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">);</span>
 
-<span class="c1">// bid for 100 SOL-PERP @ $21.23 </span>
+<span class="c1">// bid for 100 SOL-PERP @ $21.23</span>
 <span class="kd">const</span> <span class="nx">orderParams</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span> 
+  <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
   <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
   <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
   <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
@@ -1045,7 +1056,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 
 <span class="c1">// ask for 100 SOL-PERP @ ${OraclePrice} + .05</span>
 <span class="kd">const</span> <span class="nx">orderParams</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span> 
+  <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
   <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
   <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">SHORT</span><span class="p">,</span>
   <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
@@ -1389,7 +1400,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
      <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
      <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
      <span class="na">price</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mf">21.23</span><span class="p">),</span>
-   <span class="p">},</span> 
+   <span class="p">},</span>
    <span class="p">{</span>
      <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
      <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
@@ -1621,7 +1632,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <h2 id='settle-perp-pnl'>Settle Perp PNL</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span>  <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getUser</span><span class="p">();</span>
 <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">settlePNL</span><span class="p">(</span>
-   <span class="nx">user</span><span class="p">.</span><span class="nx">userAccountPublicKey</span><span class="p">,</span> 
+   <span class="nx">user</span><span class="p">.</span><span class="nx">userAccountPublicKey</span><span class="p">,</span>
    <span class="nx">user</span><span class="p">.</span><span class="nx">getUserAccount</span><span class="p">(),</span>
    <span class="nx">marketIndex</span>
 <span class="p">);</span>
@@ -1969,8 +1980,8 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tr>
 </tbody></table>
 
-<p>Orders are stored on user accounts. To reconstruct the orderbook, you must keep track of the user accounts that have orders. 
-The user map subscribes to user account updates.  </p>
+<p>Orders are stored on user accounts. To reconstruct the orderbook, you must keep track of the user accounts that have orders.
+The user map subscribes to user account updates.</p>
 <h2 id='orderbook-subscription'>Orderbook Subscription</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">DLOBSubscriber</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
 
 <span class="c1">// on-chain subscription to users</span>
@@ -1995,7 +2006,7 @@ The user map subscribes to user account updates.  </p>
  <span class="kd">const</span> <span class="nx">dlobSubscriber</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DLOBSubscriber</span><span class="p">({</span>
     <span class="nx">driftClient</span><span class="p">,</span>
     <span class="na">dlobSource</span><span class="p">:</span> <span class="nx">dlobApiClient</span><span class="p">,</span>
-    <span class="na">slotSource</span><span class="p">:</span> <span class="nx">slotSubscriber</span><span class="p">,</span> 
+    <span class="na">slotSource</span><span class="p">:</span> <span class="nx">slotSubscriber</span><span class="p">,</span>
     <span class="na">updateFrequency</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
  <span class="p">});</span>
 
@@ -2226,7 +2237,7 @@ The user map subscribes to user account updates.  </p>
 </tr>
 </tbody></table>
 
-<p>Protocol events are recorded in transactions logs. To listen for events, one must subscribe to the drift program&#39;s transaction logs.  </p>
+<p>Protocol events are recorded in transactions logs. To listen for events, one must subscribe to the drift program&#39;s transaction logs.</p>
 <h2 id='event-types'>Event Types</h2>
 <table><thead>
 <tr>
@@ -2332,7 +2343,7 @@ The user map subscribes to user account updates.  </p>
 <h1 id='margin-system'>Margin System</h1>
 <p>Drift offers a cross-collateral margining system, allowing users to utilize multiple assets as trading collateral.</p>
 
-<p>The margining system tracks each user&#39;s total collateral, the weighted sum of the user&#39;s deposits and perp pnl, as well 
+<p>The margining system tracks each user&#39;s total collateral, the weighted sum of the user&#39;s deposits and perp pnl, as well
 as their margin requirement, the weighted value out the user&#39;s outstanding borrow and perp positions.</p>
 
 <p>Total collateral is calculated as:</p>
@@ -2354,7 +2365,7 @@ as their margin requirement, the weighted value out the user&#39;s outstanding b
 
 <p>\[ \sum_{i=1}^n b_i \cdot p_i \cdot w_i^l\ +\ \sum_{j=1}^n ba_j \cdot o_j \cdot qp_j \cdot m_j \]</p>
 
-<p>Where </p>
+<p>Where</p>
 
 <ul>
 <li>\(b_i\) is the borrow amount for spot market \(i\)</li>
@@ -2366,7 +2377,7 @@ as their margin requirement, the weighted value out the user&#39;s outstanding b
 <li>\(m_j\) is the margin ratio for perp market \(j\)</li>
 </ul>
 
-<p>The weights and margin ratios depend on whether you&#39;re calculating the initial or maintenance values. </p>
+<p>The weights and margin ratios depend on whether you&#39;re calculating the initial or maintenance values.</p>
 
 <p>The initial maintenance check governs leverage extension. To open a new perp position or borrow, a user&#39;s initial total collateral must be greater than their initial margin requirement.</p>
 
@@ -2377,6 +2388,24 @@ to reduce their risk.</p>
 the current oracle price. The initial check uses the <code>min(oracle_price, oracle_twap)</code> for deposits and positive perp pnl and <code>max(oracle_price, oracle_twap)</code>
 for borrows, negative perp pnl and perp base amount.</p>
 <h1 id='numerical-precisions'>Numerical Precisions</h1>
+<p>To maintain numerical precision, the on-chain program stores all values as integers.</p>
+<h2 id='getting-a-current-perp-position'>Getting a Current Perp Position</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
+<span class="kd">const</span> <span class="nx">perpMarketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// SOL-PERP</span>
+<span class="kd">const</span> <span class="nx">perpPosition</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getPerpPosition</span><span class="p">(</span><span class="nx">perpMarketIndex</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">convertToNumber</span><span class="p">(</span><span class="nx">perpPosition</span><span class="p">.</span><span class="nx">baseAssetAmount</span><span class="p">,</span> <span class="nx">BASE_PRECISION</span><span class="p">));</span>
+</code></pre></div>
+<p>This prints the size of the current perp position in perp market index 0 (SOL-PERP)</p>
+<h2 id='getting-a-current-spot-position'>Getting a Current Spot Position</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
+<span class="kd">const</span> <span class="nx">spotMarketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// USDC</span>
+<span class="kd">const</span> <span class="nx">spotConfig</span> <span class="o">=</span> <span class="nx">SpotMarkets</span><span class="p">[</span><span class="dl">'</span><span class="s1">mainnet-beta</span><span class="dl">'</span><span class="p">][</span><span class="nx">spotMarketIndex</span><span class="p">];</span>
+<span class="kd">const</span> <span class="nx">spotMarket</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getSpotMarketAccount</span><span class="p">(</span><span class="nx">spotMarketIndex</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">spotPosition</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getSpotPosition</span><span class="p">(</span><span class="nx">spotMarketIndex</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">tokenAmount</span> <span class="o">=</span> <span class="nx">getTokenAmount</span><span class="p">(</span><span class="nx">spotPosition</span><span class="p">.</span><span class="nx">scaledBalance</span><span class="p">,</span> <span class="nx">spotMarket</span><span class="p">,</span> <span class="p">.</span><span class="nx">spotPosition</span><span class="p">.</span><span class="nx">balanceType</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">convertToNumber</span><span class="p">(</span><span class="nx">tokenAmount</span><span class="p">,</span> <span class="nx">spotConfig</span><span class="p">.</span><span class="nx">precision</span><span class="p">));</span>
+</code></pre></div>
+<p>This prints the current spot position in spot market index 0 (USDC). This value is the same as the value shown on the UI,
+it includes any accumulated interest.</p>
+<h2 id='common-precision-values'>Common precision values</h2>
 <table><thead>
 <tr>
 <th>Value</th>
@@ -2387,37 +2416,42 @@ for borrows, negative perp pnl and perp base amount.</p>
 <tr>
 <td>perp base asset amount</td>
 <td>1e9</td>
-<td>BASE_PRECISION</td>
+<td><code>BASE_PRECISION</code></td>
 </tr>
 <tr>
 <td>perp quote asset amount</td>
 <td>1e6</td>
-<td>QUOTE_PRECISION</td>
+<td><code>QUOTE_PRECISION</code></td>
 </tr>
 <tr>
 <td>price</td>
 <td>1e6</td>
-<td>PRICE_PRECISION</td>
+<td><code>PRICE_PRECISION</code></td>
 </tr>
 <tr>
 <td>funding rate</td>
 <td>1e9</td>
-<td>FUNDING_RATE_PRECISION</td>
+<td><code>FUNDING_RATE_PRECISION</code></td>
 </tr>
 <tr>
 <td>spot token amount</td>
 <td>derived from token mint&#39;s decimals (USDC is 1e6, SOL is 1e9)</td>
-<td></td>
+<td><code>SpotMarketConfig.precision</code></td>
+</tr>
+<tr>
+<td>spot token balance</td>
+<td>1e9</td>
+<td><code>SPOT_MARKET_BALANCE_PRECISION</code></td>
 </tr>
 <tr>
 <td>margin ratio</td>
 <td>1e4</td>
-<td>MARGIN_PRECISION</td>
+<td><code>MARGIN_PRECISION</code></td>
 </tr>
 <tr>
 <td>asset/liability weight</td>
 <td>1e4</td>
-<td>SPOT_WEIGHT_PRECISION</td>
+<td><code>SPOT_WEIGHT_PRECISION</code></td>
 </tr>
 </tbody></table>
 <h1 id='examples-bots'>Examples Bots</h1>
