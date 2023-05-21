@@ -762,6 +762,10 @@
 <aside class="notice">
   initializing a new drift user account requires some rent (~.035 SOL). this can be reclaimed upon deletion.
 </aside>
+
+<aside class="notice">
+  Alternatively you can export the private key of an existing user that has been initialized via the UI. This will allow you to use the same user account programatically.
+</aside>
 <div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="p">[</span><span class="nx">txSig</span><span class="p">,</span> <span class="nx">userPublickKey</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">initializeUser</span><span class="p">(</span>
   <span class="mi">0</span><span class="p">,</span>
   <span class="dl">"</span><span class="s2">toly</span><span class="dl">"</span>
