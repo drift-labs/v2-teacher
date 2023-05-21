@@ -189,6 +189,9 @@ driftClient.subscribe();
 <aside class="notice">
   initializing a new drift user account requires some rent (~.035 SOL). this can be reclaimed upon deletion.
 </aside>
+<aside class="notice">
+  Alternatively you can export the private key of an existing user that has been initialized via the UI. This will allow you to use the same user account programatically.
+</aside>
 
 ```typescript
 const [txSig, userPublickKey] = await driftClient.initializeUser(
