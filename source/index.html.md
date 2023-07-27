@@ -991,6 +991,10 @@ const options = {
 
 const eventSubscriber = new EventSubscriber(connection, driftClient.program, options);
 await eventSubscriber.subscribe();
+
+eventSubscriber.eventEmitter.on('newEvent', (event) => {
+  console.log(event);
+});
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -1004,6 +1008,7 @@ await eventSubscriber.subscribe();
 | options.orderDir | Whether to sort the tx in memory to be most recent ('desc') or oldest ('asc') | Yes | 'asc' |
 | options.commitment | What transaction commitment to wait for | Yes | 'confirmed' |
 | options.logProviderConfig | Whether to use websocket or polling to listen for tx logs | Yes | {type: "websocket"} |
+| options.address | Which address to listen to events for. Defaults to drift program. | Yes | dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH |
 
 Protocol events are recorded in transactions logs. To listen for events, one must subscribe to the drift program's transaction logs.
 
