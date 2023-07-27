@@ -2176,6 +2176,10 @@ The user map subscribes to user account updates.</p>
 
 <span class="kd">const</span> <span class="nx">eventSubscriber</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">EventSubscriber</span><span class="p">(</span><span class="nx">connection</span><span class="p">,</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">program</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
 <span class="k">await</span> <span class="nx">eventSubscriber</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">();</span>
+
+<span class="nx">eventSubscriber</span><span class="p">.</span><span class="nx">eventEmitter</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">newEvent</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">event</span><span class="p">);</span>
+<span class="p">});</span>
 </code></pre></div>
 <table><thead>
 <tr>
@@ -2238,6 +2242,12 @@ The user map subscribes to user account updates.</p>
 <td>Whether to use websocket or polling to listen for tx logs</td>
 <td>Yes</td>
 <td>{type: &quot;websocket&quot;}</td>
+</tr>
+<tr>
+<td>options.address</td>
+<td>Which address to listen to events for. Defaults to drift program.</td>
+<td>Yes</td>
+<td>dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH</td>
 </tr>
 </tbody></table>
 
