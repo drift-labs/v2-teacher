@@ -475,6 +475,36 @@ await driftClient.placeSpotOrder(orderParams);
 | auctionEndPrice | the price the auction ends at | Yes | |
 | maxTs | the max timestamp before the order expires | Yes | |
 
+## Cancel and Place Orders
+
+```typescript
+
+const placeOrderParams = [
+	{
+     orderType: OrderType.LIMIT,
+     marketIndex: 0,
+     direction: PositionDirection.LONG,
+     baseAssetAmount: driftClient.convertToPerpPrecision(100),
+     price: driftClient.convertToPricePrecision(21.23),
+   },
+   {
+     orderType: OrderType.LIMIT,
+     marketIndex: 0,
+     direction: PositionDirection.SHORT,
+     baseAssetAmount: driftClient.convertToPerpPrecision(100),
+     oraclePriceOffset: driftClient.convertToPricePrecision(.05).toNumber(),
+   }
+];
+
+await driftClient.placeOrders(placeOrderParams);
+```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| placeOrderParams | Parameters for place order instructions | | |
+
+Placing multiple orders in one tx can be cheaper than placing them in separate tx.
+
 ## Canceling Order
 
 ```typescript
