@@ -475,7 +475,7 @@ await driftClient.placeSpotOrder(orderParams);
 | auctionEndPrice | the price the auction ends at | Yes | |
 | maxTs | the max timestamp before the order expires | Yes | |
 
-## Cancel and Place Orders
+## Place Orders
 
 ```typescript
 
