@@ -28,8 +28,8 @@ mainnet-beta:  `https://drift-historical-data.s3-v2.eu-west-1.amazonaws.com/prog
 | accountKey | user sub account public key (not authority) | |
 | marketSymbol | market name | SOL-PERP |
 | year |  | 2023 |
-| month |  | 2 |
-| day | utc time | 1 | 
+| month |  | 02 |
+| day | utc time | 01 | 
 
 
 ## Examples
