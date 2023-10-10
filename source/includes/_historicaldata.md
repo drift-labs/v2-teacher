@@ -1,27 +1,26 @@
 # Historical Data
 
-Snapshots are collected by parsing on-chain transaction logs. For convience the below are parsed logs collected, stored as a CSV, and stored off-chain (~99% of records). 
+Snapshots are collected by parsing on-chain transaction logs. For convience the below are parsed logs collected, stored as a CSV, and stored off-chain (~99% of records)
 
 Please share any transaction signatures or time ranges you believe might be missing in Drift Protocol Discord.
 
 ## URL Prefix
-mainnet-beta:  `https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/`
+mainnet-beta:  `https://drift-historical-data.s3-v2.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/`
 
-devnet: `https://drift-historical-data.s3.us-east-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/`
+<!-- devnet: `https://drift-historical-data.s3.us-east-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/` -->
 
 ## URL Suffix
 
 ### Schema
 | recordType | url suffix |
 | --- | --- |
-| trades | `user/${accountKey}/trades/${year}/${month}` |
-| market-trades | `market/${marketSymbol}/trades/${year}/${month}/${day}` |
-| funding-rates | `market/${marketSymbol}/funding-rates/${year}/${month}` |
-| funding-payments | `user/${accountKey}/funding-payments/${year}/${month}` |
-| deposits | `user/${accountKey}/deposits/${year}/${month}` |
-| liquidations | `user/${accountKey}/liquidations/${year}/${month}` |
-| candles | `market/${marketSymbol}/candles/${year}/${month}/resolution/${candleResolution}` |
-| settle-pnl-records | `user/${accountKey}/settlePnls/${year}/${month}` |
+| trades | `user/${accountKey}/tradeRecords/${year}/${year}${month}${day}` |
+| market-trades | `market/${marketSymbol}/tradeRecords/${year}/${year}${month}${day}` |
+| funding-rates | `market/${marketSymbol}/fundingRateRecords/${year}/${year}${month}${day}` |
+| funding-payments | `user/${accountKey}/fundingPaymentRecords/${year}/${year}${month}${day}` |
+| deposits | `user/${accountKey}/depositRecords/${year}/${year}${month}${day}` |
+| liquidations | `user/${accountKey}/liquidationRecords/${year}/${year}${month}${day}` |
+| settle-pnl | `user/${accountKey}/settlePnlRecords/${year}/${year}${month}${day}` |
 
 ### Variables
 | variable | description | example |
@@ -29,9 +28,8 @@ devnet: `https://drift-historical-data.s3.us-east-1.amazonaws.com/program/dRifty
 | accountKey | user sub account public key (not authority) | |
 | marketSymbol | market name | SOL-PERP |
 | year |  | 2023 |
-| month |  | 4 |
-| day | utc time | 25 | 
-| candleResolution | | 1M |
+| month |  | 2 |
+| day | utc time | 1 | 
 
 
 ## Examples
@@ -40,9 +38,9 @@ devnet: `https://drift-historical-data.s3.us-east-1.amazonaws.com/program/dRifty
 ```python
 import requests
 
-outcsv = requets.get('https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/user/2dy78vpWpquDgAoLB8w8Ewfns9WXYzQx4CGt3HSgZLEe/trades/2023/4')'
+outcsv = requets.get('https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/user/FrEFAwxdrzHxgc7S4cuFfsfLmcg8pfbxnkCQW83euyCS/tradeRecords/2023/20230201')'
 ```
 
 ```shell
-curl https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/user/2dy78vpWpquDgAoLB8w8Ewfns9WXYzQx4CGt3HSgZLEe/trades/2023/4 --output out.csv.gz
+curl https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/user/FrEFAwxdrzHxgc7S4cuFfsfLmcg8pfbxnkCQW83euyCS/tradeRecords/2023/20230201 --output out.csv.gz
 ```
