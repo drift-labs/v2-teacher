@@ -116,7 +116,7 @@ The connection object is used to send transactions to the Solana blockchain. It 
 import {Wallet, loadKeypair} from "@drift-labs/sdk";
 
 const keyPairFile = '~/.config/solana/my-keypair.json';
-const wallet = new Wallet(loadKeypair(privateKeyFile));
+const wallet = new Wallet(loadKeypair(keyPairFile));
 ```
 ```python
 from solana.keypair import Keypair
