@@ -195,8 +195,7 @@ const [txSig, userPublickKey] = await driftClient.initializeUser(
 ```
 
 ```python
-# todo: cannot init with name
-tx_sig = await drift_client.intialize_user(0)
+tx_sig = await drift_client.initialize_user(sub_account_id=0, name="toly")
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -238,6 +237,10 @@ await this.driftClient.updateUserDelegate(
 driftClient.switchActiveUser(
   1,
 );
+```
+
+```python
+drift_client.switch_active_user(sub_account_id=1)
 ```
 
 | Parameter   | Description | Optional | Default |
