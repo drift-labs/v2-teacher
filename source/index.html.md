@@ -119,14 +119,11 @@ const keyPairFile = '~/.config/solana/my-keypair.json';
 const wallet = new Wallet(loadKeypair(keyPairFile));
 ```
 ```python
-from solana.keypair import Keypair
 from anchorpy import Wallet
-import os
-import json
+from driftpy.keypair import load_keypair
 
-key_pair_file = '~/.config/solana/my-keypair.json'
-with open(os.path.expanduser(key_pair_file), 'r') as f: secret = json.load(f)
-kp = Keypair.from_secret_key(bytes(secret))
+keypair_file = '~/.config/solana/my-keypair.json'
+keypair = load_keypair(keypair_file)
 wallet = Wallet(kp)
 ```
 
@@ -154,16 +151,13 @@ const driftClient = new DriftClient({
 driftClient.subscribe();
 ```
 ```python
-  import driftpy
-  from anchorpy import Wallet, Provider
-  from driftpy.constants.config import configs
-  from driftpy.clearing_house import ClearingHouse
+  from anchorpy import Wallet
+  from driftpy.drift_client import DriftClient
+  from solana.rpc.async_api import AsyncClient
 
   # set connection and wallet
   # ...
-  provider = Provider(connection, wallet)
-  config = configs['mainnet'] # or devnet
-  drift_client = ClearingHouse.from_config(config, provider)
+  drift_client = DriftClient(connection, wallet, "mainnet")
 ```
 
 | Parameter   | Description | Optional | Default |
