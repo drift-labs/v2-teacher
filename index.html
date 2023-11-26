@@ -767,8 +767,7 @@
   <span class="mi">0</span><span class="p">,</span>
   <span class="dl">"</span><span class="s2">toly</span><span class="dl">"</span>
 <span class="p">);</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="c1"># todo: cannot init with name
-</span><span class="n">tx_sig</span> <span class="o">=</span> <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">intialize_user</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">tx_sig</span> <span class="o">=</span> <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">initialize_user</span><span class="p">(</span><span class="n">sub_account_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">"toly"</span><span class="p">)</span>
 </code></pre></div>
 <table><thead>
 <tr>
@@ -824,6 +823,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </code></pre></div><h2 id='switching-sub-accounts'>Switching Sub Accounts</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="nx">driftClient</span><span class="p">.</span><span class="nx">switchActiveUser</span><span class="p">(</span>
   <span class="mi">1</span><span class="p">,</span>
 <span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">drift_client</span><span class="p">.</span><span class="n">switch_active_user</span><span class="p">(</span><span class="n">sub_account_id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
 <table><thead>
 <tr>
