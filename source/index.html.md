@@ -301,6 +301,14 @@ driftClient.withdraw(
 );
 ```
 
+```python
+
+spot_market_index = 0 # USDC
+amount = drift_client.convert_to_spot_precision(spot_market_index, 100) # $100
+
+tx_sig = await drift_client.withdraw(amount, spot_market_index)
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | amount | The amount to withdraw in spot market's token mint precision  | No | |
