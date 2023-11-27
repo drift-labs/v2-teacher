@@ -764,6 +764,16 @@ await driftClient.settlePNL(
 );
 ```
 
+```python
+market_index = 0
+user =  drift_client.get_user()
+await drift_client.settle_pnl(
+   user.user_public_key,
+   user.get_user_account(),
+   market_index
+)
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | settleeUserAccountPublicKey | User address you're settling pnl for | No | |
