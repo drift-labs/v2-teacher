@@ -654,6 +654,24 @@ await drift_client.cancel_and_place_orders(canel_order_params, place_order_param
 
 To cancel all orders, do not set any parameters.
 
+## Modify Order Params
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| orderId | The order id of order to modify  | No | |
+| baseAssetAmount | The amount of base asset to buy or sell  | Yes | |
+| direction | The direction of order e.g. long (bid) or short (ask)  | Yes | |
+| limitPrice | The limit price for order | Yes | |
+| reduceOnly | If the order can only reduce positions| Yes | |
+| postOnly | If the order can only be a maker | Yes | |
+| triggerPrice | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders | Yes | |
+| triggerCondition | whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders | Yes | |
+| oraclePriceOffset | priceOffset for oracle derived limit price. only applicable for limit and oracle orders  | Yes | |
+| auctionDuration | how many slots the auction lasts. only applicable for market and oracle orders | Yes | |
+| auctionStartPrice | the price the auction starts at | Yes | |
+| auctionEndPrice | the price the auction ends at | Yes | |
+| maxTs | the max timestamp before the order expires | Yes | |
+
 ## Modifying Order
 
 ```typescript
@@ -681,20 +699,11 @@ await drift_client.modify_order(order_id, modify_order_params);
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | orderId | The order id of order to modify  | No | |
-| newBaseAssetAmount | The amount of base asset to buy or sell  | Yes | |
-| newDirection | The direction of order e.g. long (bid) or short (ask)  | Yes | |
-| newLimitPrice | The limit price for order | Yes | |
-| reduceOnly | If the order can only reduce positions| Yes | |
-| postOnly | If the order can only be a maker | Yes | |
-| newTriggerPrice | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders | Yes | |
-| newTriggerCondition | whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders | Yes | |
-| newOraclePriceOffset | priceOffset for oracle derived limit price. only applicable for limit and oracle orders  | Yes | |
-| auctionDuration | how many slots the auction lasts. only applicable for market and oracle orders | Yes | |
-| auctionStartPrice | the price the auction starts at | Yes | |
-| auctionEndPrice | the price the auction ends at | Yes | |
-| maxTs | the max timestamp before the order expires | Yes | |
+| modifyOrderParams | The modify order params  | Yes | |
 
-Modify order cancels and places a new order.
+Modify cancels and places a new order
+
+For typescript, the orderId and modifyOrderParams are merged into a single object and some properties are prefixed with `new` e.g. `newBaseAssetAmount`
 
 ## Modifying Order By User Order Id
 
@@ -723,20 +732,11 @@ await drift_client.modify_order_by_user_id(user_order_id, modify_order_params);
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | userOrderId | The user order id of order to modify  | No | |
-| newBaseAssetAmount | The amount of base asset to buy or sell  | Yes | |
-| newDirection | The direction of order e.g. long (bid) or short (ask)  | Yes | |
-| newLimitPrice | The limit price for order | Yes | |
-| reduceOnly | If the order can only reduce positions| Yes | |
-| postOnly | If the order can only be a maker | Yes | |
-| newTriggerPrice | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders | Yes | |
-| newTriggerCondition | whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders | Yes | |
-| newOraclePriceOffset | priceOffset for oracle derived limit price. only applicable for limit and oracle orders  | Yes | |
-| auctionDuration | how many slots the auction lasts. only applicable for market and oracle orders | Yes | |
-| auctionStartPrice | the price the auction starts at | Yes | |
-| auctionEndPrice | the price the auction ends at | Yes | |
-| maxTs | the max timestampe before the order expires | Yes | |
+| modifyOrderParams | The modify order params  | Yes | |
 
-Modify order cancels and places a new order.
+Modify cancels and places a new order
+
+For typescript, the userOrderId and modifyOrderParams are merged into a single object and some properties are prefixed with `new` e.g. `newBaseAssetAmount`
 
 ## Settle Perp PNL
 
