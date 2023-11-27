@@ -555,6 +555,12 @@ const userOrderId = 1;
 await driftClient.cancelOrderByUserOrderId(userOrderId);
 ```
 
+```python
+
+const user_order_id = 1;
+await drift_client.cancel_order_by_user_order_id(user_order_id);
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | userOrderId | Unique order id specified by user when order was placed  | No | |
@@ -659,6 +665,18 @@ const updateParams = {
 await driftClient.modifyOrder(orderParams);
 ```
 
+```python
+
+order_id = 1
+
+modfiy_order_params = ModifyOrderParams(
+  base_asset_amount=drift_client.convert_to_perp_precision(1),
+  price=drift_client.convert_to_price_precision(20),
+)
+
+await drift_client.modify_order(order_id, modify_order_params);
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | orderId | The order id of order to modify  | No | |
@@ -673,7 +691,7 @@ await driftClient.modifyOrder(orderParams);
 | auctionDuration | how many slots the auction lasts. only applicable for market and oracle orders | Yes | |
 | auctionStartPrice | the price the auction starts at | Yes | |
 | auctionEndPrice | the price the auction ends at | Yes | |
-| maxTs | the max timestampe before the order expires | Yes | |
+| maxTs | the max timestamp before the order expires | Yes | |
 
 Modify order cancels and places a new order.
 
@@ -686,7 +704,19 @@ const updateParams = {
   newBaseAssetAmount: driftClient.convertToPerpPrecision(200),
 }
 
-await driftClient.modifyOrder(orderParams);
+await driftClient.modifyOrderByUserOrderId(orderParams);
+```
+
+```python
+
+user_order_id = 1
+
+modfiy_order_params = ModifyOrderParams(
+  base_asset_amount=drift_client.convert_to_perp_precision(1),
+  price=drift_client.convert_to_price_precision(20),
+)
+
+await drift_client.modify_order_by_user_id(user_order_id, modify_order_params);
 ```
 
 | Parameter   | Description | Optional | Default |
