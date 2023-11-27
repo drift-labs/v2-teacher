@@ -272,15 +272,11 @@ driftClient.deposit(
 ```
 
 ```python
-from driftpy.accounts import get_spot_market_account
-from spl.token.instructions import get_associated_token_address
 
 spot_market_index = 0 # USDC
-spot_market = await get_spot_market_account(drift_client.program, spot_market_index)
-user_token_account = get_associated_token_address(drift_client.authority, spot_market.mint)
-amount = 100 * QUOTE_PRECISION # $100
+amount = drift_client.convert_to_spot_precision(spot_market_index, 100) # $100
 
-tx_sig = await drift_client.deposit(amount, spot_market_index, user_token_account)
+tx_sig = await drift_client.deposit(amount, spot_market_index)
 ```
 
 | Parameter   | Description | Optional | Default |
