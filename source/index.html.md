@@ -538,6 +538,12 @@ const orderId = 1;
 await driftClient.cancelOrder(orderId);
 ```
 
+```python
+
+order_dd = 1;
+await drift_client.cancel_order(order_id);
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | orderId | The order being canceled  | No | |
