@@ -397,30 +397,18 @@ await driftClient.placePerpOrder(orderParams);
 from driftpy.types import *
 from driftpy.constants.numeric_constants import BASE_PRECISION, PRICE_PRECISION
 
-subaccount_id = 0
 market_index = 0
 
 # place order to long 1 SOL-PERP @ $21.88 (post only)
-bid_params = OrderParams(
+order_params = OrderParams(
             order_type=OrderType.LIMIT(),
-            market_type=MarketType.PERP(),
             direction=PositionDirection.LONG(),
-            user_order_id=0,
-            base_asset_amount=int(1 * BASE_PRECISION),
-            price=21.88 * PRICE_PRECISION,
+            base_asset_amount=drift_client.convert_to_perp_precision(1),
+            price=drift_client.convert_to_price_precision(21.88),
             market_index=market_index,
-            reduce_only=False,
             post_only=PostOnlyParams.TRY_POST_ONLY(),
-            immediate_or_cancel=False,
-            trigger_price=0,
-            trigger_condition=OrderTriggerCondition.ABOVE(),
-            oracle_price_offset=0,
-            auction_duration=None,
-            max_ts=None,
-            auction_start_price=None,
-            auction_end_price=None,
         )
-await drift_client.get_place_perp_order(bid_order_params, subaccount_id)
+await drift_client.get_place_perp_order(order_params)
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -455,6 +443,21 @@ const orderParams = {
 }
 
 await driftClient.placeSpotOrder(orderParams);
+```
+
+```python
+
+market_index = 1
+
+order_params = OrderParams(
+            order_type=OrderType.LIMIT(),
+            direction=PositionDirection.LONG(),
+            base_asset_amount=drift_client.convert_to_spot_precision(market_index, 100),
+            price=drift_client.convert_to_price_precision(100),
+            market_index=market_index,
+        )
+
+await driftClient.place_spot_order(order_params);
 ```
 
 | Parameter   | Description | Optional | Default |
