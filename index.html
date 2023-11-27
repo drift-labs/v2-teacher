@@ -1396,6 +1396,9 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <h2 id='canceling-order-by-user-order-id'>Canceling Order By User Order Id</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
 <span class="kd">const</span> <span class="nx">userOrderId</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">cancelOrderByUserOrderId</span><span class="p">(</span><span class="nx">userOrderId</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>
+<span class="n">const</span> <span class="n">user_order_id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">cancel_order_by_user_order_id</span><span class="p">(</span><span class="n">user_order_id</span><span class="p">);</span>
 </code></pre></div>
 <table><thead>
 <tr>
@@ -1530,6 +1533,15 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <span class="p">}</span>
 
 <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">modifyOrder</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>
+<span class="n">order_id</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">modfiy_order_params</span> <span class="o">=</span> <span class="n">ModifyOrderParams</span><span class="p">(</span>
+  <span class="n">base_asset_amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+  <span class="n">price</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">modify_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">,</span> <span class="n">modify_order_params</span><span class="p">);</span>
 </code></pre></div>
 <table><thead>
 <tr>
@@ -1613,7 +1625,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tr>
 <tr>
 <td>maxTs</td>
-<td>the max timestampe before the order expires</td>
+<td>the max timestamp before the order expires</td>
 <td>Yes</td>
 <td></td>
 </tr>
@@ -1626,7 +1638,16 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
   <span class="na">newBaseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
 <span class="p">}</span>
 
-<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">modifyOrder</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">);</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">modifyOrderByUserOrderId</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>
+<span class="n">user_order_id</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">modfiy_order_params</span> <span class="o">=</span> <span class="n">ModifyOrderParams</span><span class="p">(</span>
+  <span class="n">base_asset_amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+  <span class="n">price</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">modify_order_by_user_id</span><span class="p">(</span><span class="n">user_order_id</span><span class="p">,</span> <span class="n">modify_order_params</span><span class="p">);</span>
 </code></pre></div>
 <table><thead>
 <tr>
