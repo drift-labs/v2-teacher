@@ -762,6 +762,12 @@ const marketIndex = 1;
 const spotMarketAccount = driftClient.getSpotMarketAccount(marketIndex);
 ```
 
+```python
+market_index = 0;
+
+spot_market_account = drift_client.get_spot_market_account(market_index);
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marketIndex | The market index for the spot market | No | |
@@ -771,6 +777,12 @@ const spotMarketAccount = driftClient.getSpotMarketAccount(marketIndex);
 ```typescript
 const marketIndex = 0;
 const perpMarketAccount = driftClient.getPerpMarketAccount(marketIndex);
+```
+
+```python
+market_index = 0;
+
+perp_market_account = drift_client.get_perp_market_account(market_index);
 ```
 
 | Parameter   | Description | Optional | Default |
