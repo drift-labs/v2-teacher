@@ -486,6 +486,7 @@ await driftClient.place_spot_order(order_params);
 const placeOrderParams = [
 	{
      orderType: OrderType.LIMIT,
+     marketType: MarketType.PERP,
      marketIndex: 0,
      direction: PositionDirection.LONG,
      baseAssetAmount: driftClient.convertToPerpPrecision(100),
@@ -493,6 +494,7 @@ const placeOrderParams = [
    },
    {
      orderType: OrderType.LIMIT,
+     marketType: MarketType.PERP,
      marketIndex: 0,
      direction: PositionDirection.SHORT,
      baseAssetAmount: driftClient.convertToPerpPrecision(100),
@@ -501,6 +503,30 @@ const placeOrderParams = [
 ];
 
 await driftClient.placeOrders(placeOrderParams);
+```
+
+```python
+
+place_order_params = [
+	OrderParams(
+     order_type=OrderType.LIMIT(),
+     market_type=MarketType.PERP(),
+     market_index=0,
+     direction=PositionDirection.LONG(),
+     base_asset_amount=drift_client.convert_to_perp_precision(100),
+     price=drift_client.convert_to_price_precision(21.23),
+   ),
+   OrderParams(
+     order_type=OrderType.LIMIT(),
+     market_type=MarketType.PERP(),
+     market_index=0,
+     direction=PositionDirection.SHORT(),
+     base_asset_amount=drift_client.convert_to_perp_precision(100),
+     oracle_price_offset=drift_client.convert_to_price_precision(.05),
+   )
+]
+
+await drift_client.place_orders(place_order_params);
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -587,6 +613,31 @@ const placeOrderParams = [
 ];
 
 await driftClient.cancelAndPlaceOrders(cancelOrderParams, placeOrderParams);
+```
+
+```python
+
+canel_order_params = (MarketType.PERP(), 0, None) # cancel all orders in perp market 0
+place_order_params = [
+	OrderParams(
+     order_type=OrderType.LIMIT(),
+     market_type=MarketType.PERP(),
+     market_index=0,
+     direction=PositionDirection.LONG(),
+     base_asset_amount=drift_client.convert_to_perp_precision(100),
+     price=drift_client.convert_to_price_precision(21.23),
+   ),
+   OrderParams(
+     order_type=OrderType.LIMIT(),
+     market_type=MarketType.PERP(),
+     market_index=0,
+     direction=PositionDirection.SHORT(),
+     base_asset_amount=drift_client.convert_to_perp_precision(100),
+     oracle_price_offset=drift_client.convert_to_price_precision(.05),
+   )
+]
+
+await drift_client.cancel_and_place_orders(canel_order_params, place_order_params);
 ```
 
 | Parameter   | Description | Optional | Default |
