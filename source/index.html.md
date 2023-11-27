@@ -541,8 +541,12 @@ await driftClient.cancelOrders(marketType, marketIndex, direction);
 ```
 
 ``` python
-subaccount_id = 0
-await drift_client.cancel_orders(subaccount_id) # cancels all orders
+market_type = MarketType.PERP
+market_index = 0
+direction = PositionDirection.LONG
+await drift_client.cancel_orders(market_type, market_index, direction) # cancel bids in perp market 0
+
+await drift_client.cancel_orders() # cancels all orders
 ```
 
 | Parameter   | Description | Optional | Default |
