@@ -374,6 +374,9 @@
                     <a href="#order-types" class="toc-h2 toc-link" data-title="Order Types">Order Types</a>
                   </li>
                   <li>
+                    <a href="#order-params" class="toc-h2 toc-link" data-title="Order Params">Order Params</a>
+                  </li>
+                  <li>
                     <a href="#placing-perp-order" class="toc-h2 toc-link" data-title="Placing Perp Order">Placing Perp Order</a>
                   </li>
                   <li>
@@ -393,6 +396,9 @@
                   </li>
                   <li>
                     <a href="#cancel-and-place-orders" class="toc-h2 toc-link" data-title="Cancel and Place Orders">Cancel and Place Orders</a>
+                  </li>
+                  <li>
+                    <a href="#modify-order-params" class="toc-h2 toc-link" data-title="Modify Order Params">Modify Order Params</a>
                   </li>
                   <li>
                     <a href="#modifying-order" class="toc-h2 toc-link" data-title="Modifying Order">Modifying Order</a>
@@ -1030,57 +1036,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td>Market order using oracle offset for auction parameters.</td>
 </tr>
 </tbody></table>
-<h2 id='placing-perp-order'>Placing Perp Order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
-<span class="c1">// market buy for 100 SOL-PERP @ $21.20-&gt;$21.30 over 60 slots (~30 seconds)</span>
-<span class="c1">// after 60 slots, market buy 100 SOL-PERP @ $21.35 until maxTs</span>
-<span class="kd">const</span> <span class="nx">orderParams</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">MARKET</span><span class="p">,</span>
-  <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-  <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
-  <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
-  <span class="na">auctionStartPrice</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mf">21.20</span><span class="p">),</span>
-  <span class="na">auctionEndPrice</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mf">21.30</span><span class="p">),</span>
-  <span class="na">price</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mf">21.35</span><span class="p">),</span>
-  <span class="na">auctionDuration</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
-  <span class="na">maxTs</span><span class="p">:</span> <span class="nx">now</span> <span class="o">+</span> <span class="mi">100</span><span class="p">,</span>
-<span class="p">}</span>
-<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">placePerpOrder</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">);</span>
-
-<span class="c1">// bid for 100 SOL-PERP @ $21.23</span>
-<span class="kd">const</span> <span class="nx">orderParams</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
-  <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-  <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
-  <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
-  <span class="na">price</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mf">21.23</span><span class="p">),</span>
-<span class="p">}</span>
-<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">placePerpOrder</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">);</span>
-
-<span class="c1">// ask for 100 SOL-PERP @ ${OraclePrice} + .05</span>
-<span class="kd">const</span> <span class="nx">orderParams</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
-  <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-  <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">SHORT</span><span class="p">,</span>
-  <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
-  <span class="na">oraclePriceOffset</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(.</span><span class="mi">05</span><span class="p">).</span><span class="nx">toNumber</span><span class="p">(),</span>
-<span class="p">}</span>
-<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">placePerpOrder</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">);</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">driftpy.types</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">driftpy.constants.numeric_constants</span> <span class="kn">import</span> <span class="n">BASE_PRECISION</span><span class="p">,</span> <span class="n">PRICE_PRECISION</span>
-
-<span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span>
-
-<span class="c1"># place order to long 1 SOL-PERP @ $21.88 (post only)
-</span><span class="n">order_params</span> <span class="o">=</span> <span class="n">OrderParams</span><span class="p">(</span>
-            <span class="n">order_type</span><span class="o">=</span><span class="n">OrderType</span><span class="p">.</span><span class="n">LIMIT</span><span class="p">(),</span>
-            <span class="n">direction</span><span class="o">=</span><span class="n">PositionDirection</span><span class="p">.</span><span class="n">LONG</span><span class="p">(),</span>
-            <span class="n">base_asset_amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-            <span class="n">price</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(</span><span class="mf">21.88</span><span class="p">),</span>
-            <span class="n">market_index</span><span class="o">=</span><span class="n">market_index</span><span class="p">,</span>
-            <span class="n">post_only</span><span class="o">=</span><span class="n">PostOnlyParams</span><span class="p">.</span><span class="n">TRY_POST_ONLY</span><span class="p">(),</span>
-        <span class="p">)</span>
-<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_place_perp_order</span><span class="p">(</span><span class="n">order_params</span><span class="p">)</span>
-</code></pre></div>
+<h2 id='order-params'>Order Params</h2>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1117,7 +1073,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td>marketType</td>
 <td>The type of market order is for e.g. PERP or SPOT</td>
 <td>Yes</td>
-<td>PERP</td>
+<td>Depends on method</td>
 </tr>
 <tr>
 <td>price</td>
@@ -1186,6 +1142,74 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td></td>
 </tr>
 </tbody></table>
+<h2 id='placing-perp-order'>Placing Perp Order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
+<span class="c1">// market buy for 100 SOL-PERP @ $21.20-&gt;$21.30 over 60 slots (~30 seconds)</span>
+<span class="c1">// after 60 slots, market buy 100 SOL-PERP @ $21.35 until maxTs</span>
+<span class="kd">const</span> <span class="nx">orderParams</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">MARKET</span><span class="p">,</span>
+  <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
+  <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+  <span class="na">auctionStartPrice</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mf">21.20</span><span class="p">),</span>
+  <span class="na">auctionEndPrice</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mf">21.30</span><span class="p">),</span>
+  <span class="na">price</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mf">21.35</span><span class="p">),</span>
+  <span class="na">auctionDuration</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
+  <span class="na">maxTs</span><span class="p">:</span> <span class="nx">now</span> <span class="o">+</span> <span class="mi">100</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">placePerpOrder</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">);</span>
+
+<span class="c1">// bid for 100 SOL-PERP @ $21.23</span>
+<span class="kd">const</span> <span class="nx">orderParams</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
+  <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
+  <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+  <span class="na">price</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mf">21.23</span><span class="p">),</span>
+<span class="p">}</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">placePerpOrder</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">);</span>
+
+<span class="c1">// ask for 100 SOL-PERP @ ${OraclePrice} + .05</span>
+<span class="kd">const</span> <span class="nx">orderParams</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
+  <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">SHORT</span><span class="p">,</span>
+  <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+  <span class="na">oraclePriceOffset</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(.</span><span class="mi">05</span><span class="p">).</span><span class="nx">toNumber</span><span class="p">(),</span>
+<span class="p">}</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">placePerpOrder</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">driftpy.types</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">driftpy.constants.numeric_constants</span> <span class="kn">import</span> <span class="n">BASE_PRECISION</span><span class="p">,</span> <span class="n">PRICE_PRECISION</span>
+
+<span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># place order to long 1 SOL-PERP @ $21.88 (post only)
+</span><span class="n">order_params</span> <span class="o">=</span> <span class="n">OrderParams</span><span class="p">(</span>
+            <span class="n">order_type</span><span class="o">=</span><span class="n">OrderType</span><span class="p">.</span><span class="n">LIMIT</span><span class="p">(),</span>
+            <span class="n">direction</span><span class="o">=</span><span class="n">PositionDirection</span><span class="p">.</span><span class="n">LONG</span><span class="p">(),</span>
+            <span class="n">base_asset_amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+            <span class="n">price</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(</span><span class="mf">21.88</span><span class="p">),</span>
+            <span class="n">market_index</span><span class="o">=</span><span class="n">market_index</span><span class="p">,</span>
+            <span class="n">post_only</span><span class="o">=</span><span class="n">PostOnlyParams</span><span class="p">.</span><span class="n">TRY_POST_ONLY</span><span class="p">(),</span>
+        <span class="p">)</span>
+<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_place_perp_order</span><span class="p">(</span><span class="n">order_params</span><span class="p">)</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>orderParams</td>
+<td>The order params</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<p>The order type is set to PERP by default.</p>
 <h2 id='placing-spot-order'>Placing Spot Order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
 <span class="kd">const</span> <span class="nx">orderParams</span> <span class="o">=</span> <span class="p">{</span>
   <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
@@ -1218,102 +1242,14 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tr>
 </thead><tbody>
 <tr>
-<td>orderType</td>
-<td>The type of order e.g. market, limit</td>
+<td>orderParams</td>
+<td>The order params</td>
 <td>No</td>
-<td></td>
-</tr>
-<tr>
-<td>marketIndex</td>
-<td>The market to place order in</td>
-<td>No</td>
-<td></td>
-</tr>
-<tr>
-<td>direction</td>
-<td>The direction of order e.g. long (bid) or short (ask)</td>
-<td>No</td>
-<td></td>
-</tr>
-<tr>
-<td>baseAssetAmount</td>
-<td>The amount of base asset to buy or sell</td>
-<td>No</td>
-<td></td>
-</tr>
-<tr>
-<td>marketType</td>
-<td>The type of market order is for e.g. PERP or SPOT</td>
-<td>Yes</td>
-<td>SPOT</td>
-</tr>
-<tr>
-<td>price</td>
-<td>The limit price for order</td>
-<td>Yes</td>
-<td>0</td>
-</tr>
-<tr>
-<td>userOrderId</td>
-<td>Unique order id specified by user</td>
-<td>Yes</td>
-<td>0</td>
-</tr>
-<tr>
-<td>reduceOnly</td>
-<td>If the order can only reduce positions</td>
-<td>Yes</td>
-<td>false</td>
-</tr>
-<tr>
-<td>postOnly</td>
-<td>If the order can only be a maker</td>
-<td>Yes</td>
-<td>false</td>
-</tr>
-<tr>
-<td>triggerPrice</td>
-<td>at what price order is triggered. only applicable for triggerMarket and triggerLimit orders</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>triggerCondition</td>
-<td>whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>oraclePriceOffset</td>
-<td>priceOffset for oracle derived limit price. only applicable for limit and oracle orders</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>auctionDuration</td>
-<td>how many slots the auction lasts. only applicable for market and oracle orders</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>auctionStartPrice</td>
-<td>the price the auction starts at</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>auctionEndPrice</td>
-<td>the price the auction ends at</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>maxTs</td>
-<td>the max timestamp before the order expires</td>
-<td>Yes</td>
 <td></td>
 </tr>
 </tbody></table>
+
+<p>The order type is set to SPOT by default.</p>
 <h2 id='place-orders'>Place Orders</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
 <span class="kd">const</span> <span class="nx">placeOrderParams</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">{</span>
@@ -1377,6 +1313,9 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <h2 id='canceling-order'>Canceling Order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
 <span class="kd">const</span> <span class="nx">orderId</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">cancelOrder</span><span class="p">(</span><span class="nx">orderId</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>
+<span class="n">order_dd</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">cancel_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">);</span>
 </code></pre></div>
 <table><thead>
 <tr>
@@ -1526,6 +1465,94 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tbody></table>
 
 <p>To cancel all orders, do not set any parameters.</p>
+<h2 id='modify-order-params'>Modify Order Params</h2>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>orderId</td>
+<td>The order id of order to modify</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>baseAssetAmount</td>
+<td>The amount of base asset to buy or sell</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>direction</td>
+<td>The direction of order e.g. long (bid) or short (ask)</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>limitPrice</td>
+<td>The limit price for order</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>reduceOnly</td>
+<td>If the order can only reduce positions</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>postOnly</td>
+<td>If the order can only be a maker</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>triggerPrice</td>
+<td>at what price order is triggered. only applicable for triggerMarket and triggerLimit orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>triggerCondition</td>
+<td>whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>oraclePriceOffset</td>
+<td>priceOffset for oracle derived limit price. only applicable for limit and oracle orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>auctionDuration</td>
+<td>how many slots the auction lasts. only applicable for market and oracle orders</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>auctionStartPrice</td>
+<td>the price the auction starts at</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>auctionEndPrice</td>
+<td>the price the auction ends at</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>maxTs</td>
+<td>the max timestamp before the order expires</td>
+<td>Yes</td>
+<td></td>
+</tr>
+</tbody></table>
 <h2 id='modifying-order'>Modifying Order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
 <span class="kd">const</span> <span class="nx">updateParams</span> <span class="o">=</span> <span class="p">{</span>
   <span class="na">orderId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
@@ -1558,80 +1585,16 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td></td>
 </tr>
 <tr>
-<td>newBaseAssetAmount</td>
-<td>The amount of base asset to buy or sell</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>newDirection</td>
-<td>The direction of order e.g. long (bid) or short (ask)</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>newLimitPrice</td>
-<td>The limit price for order</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>reduceOnly</td>
-<td>If the order can only reduce positions</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>postOnly</td>
-<td>If the order can only be a maker</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>newTriggerPrice</td>
-<td>at what price order is triggered. only applicable for triggerMarket and triggerLimit orders</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>newTriggerCondition</td>
-<td>whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>newOraclePriceOffset</td>
-<td>priceOffset for oracle derived limit price. only applicable for limit and oracle orders</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>auctionDuration</td>
-<td>how many slots the auction lasts. only applicable for market and oracle orders</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>auctionStartPrice</td>
-<td>the price the auction starts at</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>auctionEndPrice</td>
-<td>the price the auction ends at</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>maxTs</td>
-<td>the max timestamp before the order expires</td>
+<td>modifyOrderParams</td>
+<td>The modify order params</td>
 <td>Yes</td>
 <td></td>
 </tr>
 </tbody></table>
 
-<p>Modify order cancels and places a new order.</p>
+<p>Modify cancels and places a new order</p>
+
+<p>For typescript, the orderId and modifyOrderParams are merged into a single object and some properties are prefixed with <code>new</code> e.g. <code>newBaseAssetAmount</code></p>
 <h2 id='modifying-order-by-user-order-id'>Modifying Order By User Order Id</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
 <span class="kd">const</span> <span class="nx">updateParams</span> <span class="o">=</span> <span class="p">{</span>
   <span class="na">userOrderId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
@@ -1664,80 +1627,16 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td></td>
 </tr>
 <tr>
-<td>newBaseAssetAmount</td>
-<td>The amount of base asset to buy or sell</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>newDirection</td>
-<td>The direction of order e.g. long (bid) or short (ask)</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>newLimitPrice</td>
-<td>The limit price for order</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>reduceOnly</td>
-<td>If the order can only reduce positions</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>postOnly</td>
-<td>If the order can only be a maker</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>newTriggerPrice</td>
-<td>at what price order is triggered. only applicable for triggerMarket and triggerLimit orders</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>newTriggerCondition</td>
-<td>whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>newOraclePriceOffset</td>
-<td>priceOffset for oracle derived limit price. only applicable for limit and oracle orders</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>auctionDuration</td>
-<td>how many slots the auction lasts. only applicable for market and oracle orders</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>auctionStartPrice</td>
-<td>the price the auction starts at</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>auctionEndPrice</td>
-<td>the price the auction ends at</td>
-<td>Yes</td>
-<td></td>
-</tr>
-<tr>
-<td>maxTs</td>
-<td>the max timestampe before the order expires</td>
+<td>modifyOrderParams</td>
+<td>The modify order params</td>
 <td>Yes</td>
 <td></td>
 </tr>
 </tbody></table>
 
-<p>Modify order cancels and places a new order.</p>
+<p>Modify cancels and places a new order</p>
+
+<p>For typescript, the userOrderId and modifyOrderParams are merged into a single object and some properties are prefixed with <code>new</code> e.g. <code>newBaseAssetAmount</code></p>
 <h2 id='settle-perp-pnl'>Settle Perp PNL</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span>  <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getUser</span><span class="p">();</span>
 <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">settlePNL</span><span class="p">(</span>
