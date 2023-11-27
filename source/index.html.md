@@ -303,8 +303,8 @@ driftClient.withdraw(
 
 ```python
 
-spot_market_index = 0 # USDC
-amount = drift_client.convert_to_spot_precision(spot_market_index, 100) # $100
+market_index = 0 # USDC
+amount = drift_client.convert_to_spot_precision(market_index, 100) # $100
 
 tx_sig = await drift_client.withdraw(amount, spot_market_index)
 ```
@@ -332,6 +332,20 @@ driftClient.transferDeposit(
   fromSubAccountId,
   toSubAccountId,
 );
+```
+
+```python
+market_index = 0
+amount = drift_client.convert_to_spot_precision(market_ndex, 100)
+from_sub_account_id = 0
+to_sub_account_id = 0
+
+await drift_client.transfer_deposit(
+  amount,
+  market_index,
+  from_sub_account_id,
+  to_sub_account_id,
+)
 ```
 
 | Parameter   | Description | Optional | Default |
