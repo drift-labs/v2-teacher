@@ -940,7 +940,11 @@ orders = user.get_open_orders()
 ## Get Unrealized Perp Pnl
 
   ```typescript
-  const pnl = await user.getUnrealizedPNL();
+  const pnl = user.getUnrealizedPNL();
+  ```
+
+  ```python
+  pnl = user.get_unrealized_pnl()
   ```
 
 | Parameter   | Description | Optional | Default |
@@ -953,6 +957,10 @@ orders = user.get_open_orders()
 
   ```typescript
   const pnl = await user.getUnrealizedFundingPNL();
+  ```
+
+  ```python
+  pnl = user.get_unrealized_funding_pnl()
   ```
 
 | Parameter   | Description | Optional | Default |
