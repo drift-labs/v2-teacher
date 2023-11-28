@@ -1764,6 +1764,12 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 
 <span class="kd">const</span> <span class="nx">isDeposit</span> <span class="o">=</span> <span class="nx">tokenAmount</span><span class="p">.</span><span class="nx">gte</span><span class="p">(</span><span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
 <span class="kd">const</span> <span class="nx">isBorrow</span> <span class="o">=</span> <span class="nx">tokenAmount</span><span class="p">.</span><span class="nx">lt</span><span class="p">(</span><span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">token_amount</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_token_amount</span><span class="p">(</span><span class="n">marketIndex</span><span class="p">)</span>
+
+<span class="n">is_deposit</span> <span class="o">=</span> <span class="n">token_amount</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="n">is_borrow</span> <span class="o">=</span> <span class="n">token_amount</span> <span class="o">&lt;</span> <span class="mi">0</span>
 </code></pre></div>
 <table><thead>
 <tr>
@@ -1790,6 +1796,14 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 
 <span class="kd">const</span> <span class="nx">isLong</span> <span class="o">=</span> <span class="nx">baseAssetAmount</span><span class="p">.</span><span class="nx">gte</span><span class="p">(</span><span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
 <span class="kd">const</span> <span class="nx">isShort</span> <span class="o">=</span> <span class="nx">baseAssetAmount</span><span class="p">.</span><span class="nx">lt</span><span class="p">(</span><span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">perp_position</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_perp_position</span><span class="p">(</span><span class="n">market_index</span><span class="p">)</span>
+
+<span class="n">base_asset_amount</span> <span class="o">=</span> <span class="n">perp_position</span><span class="p">.</span><span class="n">base_asset_amount</span> <span class="k">if</span> <span class="n">perp_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="mi">0</span>
+
+<span class="n">is_long</span> <span class="o">=</span> <span class="n">base_asset_amount</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="n">is_short</span> <span class="o">=</span> <span class="n">base_asset_amount</span> <span class="o">&lt;</span> <span class="mi">0</span>
 </code></pre></div>
 <table><thead>
 <tr>
@@ -1813,6 +1827,9 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <span class="kd">const</span> <span class="nx">order</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getOrder</span><span class="p">(</span>
   <span class="nx">orderId</span><span class="p">,</span>
 <span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">order_id</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">order</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">)</span>
 </code></pre></div>
 <table><thead>
 <tr>
@@ -1834,6 +1851,9 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <span class="kd">const</span> <span class="nx">order</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getOrderByUserOrderId</span><span class="p">(</span>
   <span class="nx">userOrderId</span><span class="p">,</span>
 <span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">user_order_id</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">order</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_order_by_user_order_id</span><span class="p">(</span><span class="n">user_order_id</span><span class="p">)</span>
 </code></pre></div>
 <table><thead>
 <tr>
@@ -1850,7 +1870,8 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td></td>
 </tr>
 </tbody></table>
-<h2 id='get-open-orders'>Get Open Orders</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">order</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getOpenOrders</span><span class="p">();</span>
+<h2 id='get-open-orders'>Get Open Orders</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">orders</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getOpenOrders</span><span class="p">();</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">orders</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_open_orders</span><span class="p">()</span>
 </code></pre></div><h2 id='get-unrealized-perp-pnl'>Get Unrealized Perp Pnl</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">pnl</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getUnrealizedPNL</span><span class="p">();</span>
 </code></pre></div>
 <table><thead>
