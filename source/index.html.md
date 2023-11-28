@@ -844,6 +844,15 @@ const isDeposit = tokenAmount.gte(new BN(0));
 const isBorrow = tokenAmount.lt(new BN(0));
 ```
 
+```python
+market_index = 0
+
+token_amount = user.get_token_amount(marketIndex)
+
+is_deposit = token_amount > 0
+is_borrow = token_amount < 0
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marketIndex | Market index for the spot market  | No | |
@@ -862,6 +871,17 @@ const isLong = baseAssetAmount.gte(new BN(0));
 const isShort = baseAssetAmount.lt(new BN(0));
 ```
 
+```python
+market_index = 0
+
+perp_position = user.get_perp_position(market_index)
+
+base_asset_amount = perp_position.base_asset_amount if perp_position is not None else 0
+
+is_long = base_asset_amount > 0
+is_short = base_asset_amount < 0
+```
+
 
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
@@ -878,6 +898,12 @@ const order = user.getOrder(
 );
 ```
 
+```python
+order_id = 1
+
+order = user.get_order(order_id)
+```
+
 
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
@@ -892,6 +918,11 @@ const order = user.getOrderByUserOrderId(
 );
 ```
 
+```python
+user_order_id = 1
+
+order = user.get_order_by_user_order_id(user_order_id)
+```
 
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
@@ -899,7 +930,11 @@ const order = user.getOrderByUserOrderId(
 
 ## Get Open Orders
 ```typescript
-const order = user.getOpenOrders();
+const orders = user.getOpenOrders();
+```
+
+```python
+orders = user.get_open_orders()
 ```
 
 ## Get Unrealized Perp Pnl
