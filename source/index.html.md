@@ -819,7 +819,11 @@ perp_market_account = drift_client.get_perp_market_account(market_index);
 ## Get User
 
 ```typescript
-   const user = await driftClient.getUser();
+   const user = driftClient.getUser();
+```
+
+```python
+  user = drift_client.get_user();
 ```
 
 | Parameter   | Description | Optional | Default |
