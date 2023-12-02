@@ -1340,22 +1340,22 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
   <span class="na">auctionDuration</span><span class="p">:</span> <span class="nx">auctionDuration</span><span class="p">,</span>
 <span class="p">};</span>
 <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">placePerpOrder</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>    <span class="n">oracle_price</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_oracle_price_data_for_perp_market</span><span class="p">(</span><span class="mi">18</span><span class="p">).</span><span class="n">price</span>
-    <span class="n">auction_start_price</span> <span class="o">=</span> <span class="o">-</span><span class="n">oracle_price</span> <span class="o">//</span> <span class="mi">1000</span> <span class="c1"># start auction 10bps below oracle
-</span>    <span class="n">auction_end_price</span> <span class="o">=</span> <span class="n">oracle_price</span> <span class="o">//</span> <span class="mi">1000</span> <span class="c1"># end auction 10bps above oracle
-</span>    <span class="n">oracle_price_offset</span> <span class="o">=</span> <span class="n">oracle_price</span> <span class="o">//</span> <span class="mi">500</span> <span class="c1"># limit price after auction 20bps above oracle
-</span>    <span class="n">auction_duration</span> <span class="o">=</span> <span class="mi">30</span> <span class="c1"># 30 slots
-</span>    <span class="n">order_params</span> <span class="o">=</span> <span class="n">OrderParams</span><span class="p">(</span>
-        <span class="n">OrderType</span><span class="p">.</span><span class="n">ORACLE</span><span class="p">(),</span>
-        <span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
-        <span class="mi">18</span><span class="p">,</span>
-        <span class="n">PositionDirection</span><span class="p">.</span><span class="n">LONG</span><span class="p">(),</span>
-        <span class="n">auction_start_price</span><span class="o">=</span><span class="n">auction_start_price</span><span class="p">,</span>
-        <span class="n">auction_end_price</span><span class="o">=</span><span class="n">auction_end_price</span><span class="p">,</span>
-        <span class="n">oracle_price_offset</span><span class="o">=</span><span class="n">oracle_price_offset</span><span class="p">,</span>
-        <span class="n">auction_duration</span><span class="o">=</span><span class="n">auction_duration</span>
-    <span class="p">)</span>
-    <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">place_perp_order</span><span class="p">(</span><span class="n">order_params</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">oracle_price</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_oracle_price_data_for_perp_market</span><span class="p">(</span><span class="mi">18</span><span class="p">).</span><span class="n">price</span>
+<span class="n">auction_start_price</span> <span class="o">=</span> <span class="o">-</span><span class="n">oracle_price</span> <span class="o">//</span> <span class="mi">1000</span> <span class="c1"># start auction 10bps below oracle
+</span><span class="n">auction_end_price</span> <span class="o">=</span> <span class="n">oracle_price</span> <span class="o">//</span> <span class="mi">1000</span> <span class="c1"># end auction 10bps above oracle
+</span><span class="n">oracle_price_offset</span> <span class="o">=</span> <span class="n">oracle_price</span> <span class="o">//</span> <span class="mi">500</span> <span class="c1"># limit price after auction 20bps above oracle
+</span><span class="n">auction_duration</span> <span class="o">=</span> <span class="mi">30</span> <span class="c1"># 30 slots
+</span><span class="n">order_params</span> <span class="o">=</span> <span class="n">OrderParams</span><span class="p">(</span>
+  <span class="n">OrderType</span><span class="p">.</span><span class="n">ORACLE</span><span class="p">(),</span>
+  <span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+  <span class="mi">18</span><span class="p">,</span>
+  <span class="n">PositionDirection</span><span class="p">.</span><span class="n">LONG</span><span class="p">(),</span>
+  <span class="n">auction_start_price</span><span class="o">=</span><span class="n">auction_start_price</span><span class="p">,</span>
+  <span class="n">auction_end_price</span><span class="o">=</span><span class="n">auction_end_price</span><span class="p">,</span>
+  <span class="n">oracle_price_offset</span><span class="o">=</span><span class="n">oracle_price_offset</span><span class="p">,</span>
+  <span class="n">auction_duration</span><span class="o">=</span><span class="n">auction_duration</span>
+<span class="p">)</span>
+<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">place_perp_order</span><span class="p">(</span><span class="n">order_params</span><span class="p">)</span>
 </code></pre></div>
 <p>Oracle market orders enable a user to define their auction params as an offset (or relative to) the oracle price. </p>
 <h2 id='canceling-order'>Canceling Order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
