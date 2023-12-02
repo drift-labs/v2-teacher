@@ -488,7 +488,7 @@ await driftClient.place_spot_order(order_params);
 
 The order type is set to SPOT by default.
 
-## Place Orders
+## Placing Multiple Orders
 
 ```typescript
 
@@ -543,6 +543,48 @@ await drift_client.place_orders(place_order_params);
 | placeOrderParams | Parameters for place order instructions | | |
 
 Placing multiple orders in one tx can be cheaper than placing them in separate tx.
+
+## Placing Oracle Market Orders
+
+```typescript
+const oraclePrice = driftClient.getOracleDataForPerpMarket(18).price;
+const auctionStartPrice = oraclePrice.neg().divn(1000); // start auction 10bps below oracle
+const auctionEndPrice = oraclePrice.divn(1000); // end auction 10bps above oracle
+const oraclePriceOffset = oraclePrice.divn(500); // limit price after auction 20bps above oracle
+const auctionDuration = 30; // 30 slots
+const orderParams = {
+  orderType: OrderType.ORACLE,
+  baseAssetAmount: driftClient.convertToPerpPrecision(10),
+  direction: PositionDirection.LONG,
+  marketIndex: 18,
+  auctionStartPrice: auctionStartPrice,
+  auctionEndPrice: auctionEndPrice,
+  oraclePriceOffset: oraclePriceOffset,
+  auctionDuration: auctionDuration,
+};
+await driftClient.placePerpOrder(orderParams)
+```
+
+```python
+    oracle_price = drift_client.get_oracle_price_data_for_perp_market(18).price
+    auction_start_price = -oracle_price // 1000 # start auction 10bps below oracle
+    auction_end_price = oracle_price // 1000 # end auction 10bps above oracle
+    oracle_price_offset = oracle_price // 500 # limit price after auction 20bps above oracle
+    auction_duration = 30 # 30 slots
+    order_params = OrderParams(
+        OrderType.ORACLE(),
+        drift_client.convert_to_perp_precision(10),
+        18,
+        PositionDirection.LONG(),
+        auction_start_price=auction_start_price,
+        auction_end_price=auction_end_price,
+        oracle_price_offset=oracle_price_offset,
+        auction_duration=auction_duration
+    )
+    await drift_client.place_perp_order(order_params)
+```
+
+Oracle market orders enable a user to define their auction params as an offset (or relative to) the oracle price. 
 
 ## Canceling Order
 
