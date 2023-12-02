@@ -1915,6 +1915,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tr>
 </tbody></table>
 <h2 id='get-total-collateral'>Get Total Collateral</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">totalCollateral</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getTotalCollateral</span><span class="p">();</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">total_collateral</span> <span class="o">=</span> <span class="k">await</span> <span class="n">user</span><span class="p">.</span><span class="n">get_total_collateral</span><span class="p">()</span>
 </code></pre></div>
 <table><thead>
 <tr>
@@ -1934,6 +1935,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 
 <p>Asset weights vary based on whether you&#39;re checking the initial or maintenance margin requirement. Initial is used for initial leverage extension, maintenance for determining liquidations.</p>
 <h2 id='get-margin-requirement'>Get Margin Requirement</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">marginRequirement</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getMarginRequirement</span><span class="p">();</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">margin_requirement</span> <span class="o">=</span> <span class="k">await</span> <span class="n">user</span><span class="p">.</span><span class="n">get_margin_requirement</span><span class="p">()</span>
 </code></pre></div>
 <table><thead>
 <tr>
@@ -1952,11 +1954,45 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tbody></table>
 
 <p>Liability weights (for borrows) and margin ratios (for perp positions) vary based on whether you&#39;re checking the initial or maintenance margin requirement. Initial is used for initial leverage extension, maintenance for determining liquidations.</p>
-<h2 id='get-free-collateral'>Get Free Collateral</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">freeCollateral</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getFreeCollateral</span><span class="p">();</span>
+<h2 id='get-free-collateral'>Get Free Collateral</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">freeCollateral</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getFreeCollateral</span><span class="p">();</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">free_collateral</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_free_collateral</span><span class="p">()</span>
 </code></pre></div>
-<p>Free collateral is the difference between your total collateral and your initial margin requirement.</p>
-<h2 id='get-leverage'>Get Leverage</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">leverage</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getLeverage</span><span class="p">();</span>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>marginCategory</td>
+<td>Initial or Maintenance</td>
+<td>Yes</td>
+<td>Initial</td>
+</tr>
+</tbody></table>
+
+<p>Free collateral is the difference between your total collateral and your margin requirement.</p>
+<h2 id='get-leverage'>Get Leverage</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">leverage</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getLeverage</span><span class="p">();</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">leverage</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_leverage</span><span class="p">()</span>
 </code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>includeOpenOrders</td>
+<td>Whether to factor in open orders in position size</td>
+<td>Yes</td>
+<td>true</td>
+</tr>
+</tbody></table>
+
 <p>Leverage is the total liability value (borrows plus total perp position) divided by net asset value (total assets plus total liabilities)</p>
 <h1 id='orderbook'>Orderbook</h1><h2 id='slot-subscription'>Slot Subscription</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>   <span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
    <span class="k">import</span> <span class="p">{</span><span class="nx">SlotSubscriber</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
