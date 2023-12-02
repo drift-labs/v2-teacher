@@ -973,6 +973,10 @@ orders = user.get_open_orders()
   const totalCollateral = await user.getTotalCollateral();
   ```
 
+  ```python
+  total_collateral = await user.get_total_collateral()
+  ```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marginCategory | Initial or Maintenance  | Yes | Initial |
@@ -985,6 +989,10 @@ Asset weights vary based on whether you're checking the initial or maintenance m
   const marginRequirement = await user.getMarginRequirement();
   ```
 
+  ```python
+  margin_requirement = await user.get_margin_requirement()
+  ```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marginCategory | Initial or Maintenance  | Yes | Initial |
@@ -994,16 +1002,32 @@ Liability weights (for borrows) and margin ratios (for perp positions) vary base
 ## Get Free Collateral
 
   ```typescript
-  const freeCollateral = await user.getFreeCollateral();
+  const freeCollateral = user.getFreeCollateral();
   ```
 
-Free collateral is the difference between your total collateral and your initial margin requirement.
+  ```python
+  free_collateral = user.get_free_collateral()
+  ```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| marginCategory | Initial or Maintenance  | Yes | Initial |
+
+Free collateral is the difference between your total collateral and your margin requirement.
 
 ## Get Leverage
 
   ```typescript
-  const leverage = await user.getLeverage();
+  const leverage = user.getLeverage();
   ```
+
+  ```python
+  leverage = user.get_leverage()
+  ```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| includeOpenOrders | Whether to factor in open orders in position size  | Yes | true |
 
 Leverage is the total liability value (borrows plus total perp position) divided by net asset value (total assets plus total liabilities)
 
