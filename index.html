@@ -383,7 +383,10 @@
                     <a href="#placing-spot-order" class="toc-h2 toc-link" data-title="Placing Spot Order">Placing Spot Order</a>
                   </li>
                   <li>
-                    <a href="#place-orders" class="toc-h2 toc-link" data-title="Place Orders">Place Orders</a>
+                    <a href="#placing-multiple-orders" class="toc-h2 toc-link" data-title="Placing Multiple Orders">Placing Multiple Orders</a>
+                  </li>
+                  <li>
+                    <a href="#placing-oracle-market-orders" class="toc-h2 toc-link" data-title="Placing Oracle Market Orders">Placing Oracle Market Orders</a>
                   </li>
                   <li>
                     <a href="#canceling-order" class="toc-h2 toc-link" data-title="Canceling Order">Canceling Order</a>
@@ -1261,7 +1264,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tbody></table>
 
 <p>The order type is set to SPOT by default.</p>
-<h2 id='place-orders'>Place Orders</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
+<h2 id='placing-multiple-orders'>Placing Multiple Orders</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
 <span class="kd">const</span> <span class="nx">placeOrderParams</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">{</span>
      <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
@@ -1321,6 +1324,40 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tbody></table>
 
 <p>Placing multiple orders in one tx can be cheaper than placing them in separate tx.</p>
+<h2 id='placing-oracle-market-orders'>Placing Oracle Market Orders</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">oraclePrice</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getOracleDataForPerpMarket</span><span class="p">(</span><span class="mi">18</span><span class="p">).</span><span class="nx">price</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">auctionStartPrice</span> <span class="o">=</span> <span class="nx">oraclePrice</span><span class="p">.</span><span class="nx">neg</span><span class="p">().</span><span class="nx">divn</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span> <span class="c1">// start auction 10bps below oracle</span>
+<span class="kd">const</span> <span class="nx">auctionEndPrice</span> <span class="o">=</span> <span class="nx">oraclePrice</span><span class="p">.</span><span class="nx">divn</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span> <span class="c1">// end auction 10bps above oracle</span>
+<span class="kd">const</span> <span class="nx">oraclePriceOffset</span> <span class="o">=</span> <span class="nx">oraclePrice</span><span class="p">.</span><span class="nx">divn</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span> <span class="c1">// limit price after auction 20bps above oracle</span>
+<span class="kd">const</span> <span class="nx">auctionDuration</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span> <span class="c1">// 30 slots</span>
+<span class="kd">const</span> <span class="nx">orderParams</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">ORACLE</span><span class="p">,</span>
+  <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+  <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
+  <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+  <span class="na">auctionStartPrice</span><span class="p">:</span> <span class="nx">auctionStartPrice</span><span class="p">,</span>
+  <span class="na">auctionEndPrice</span><span class="p">:</span> <span class="nx">auctionEndPrice</span><span class="p">,</span>
+  <span class="na">oraclePriceOffset</span><span class="p">:</span> <span class="nx">oraclePriceOffset</span><span class="p">,</span>
+  <span class="na">auctionDuration</span><span class="p">:</span> <span class="nx">auctionDuration</span><span class="p">,</span>
+<span class="p">};</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">placePerpOrder</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>    <span class="n">oracle_price</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_oracle_price_data_for_perp_market</span><span class="p">(</span><span class="mi">18</span><span class="p">).</span><span class="n">price</span>
+    <span class="n">auction_start_price</span> <span class="o">=</span> <span class="o">-</span><span class="n">oracle_price</span> <span class="o">//</span> <span class="mi">1000</span> <span class="c1"># start auction 10bps below oracle
+</span>    <span class="n">auction_end_price</span> <span class="o">=</span> <span class="n">oracle_price</span> <span class="o">//</span> <span class="mi">1000</span> <span class="c1"># end auction 10bps above oracle
+</span>    <span class="n">oracle_price_offset</span> <span class="o">=</span> <span class="n">oracle_price</span> <span class="o">//</span> <span class="mi">500</span> <span class="c1"># limit price after auction 20bps above oracle
+</span>    <span class="n">auction_duration</span> <span class="o">=</span> <span class="mi">30</span> <span class="c1"># 30 slots
+</span>    <span class="n">order_params</span> <span class="o">=</span> <span class="n">OrderParams</span><span class="p">(</span>
+        <span class="n">OrderType</span><span class="p">.</span><span class="n">ORACLE</span><span class="p">(),</span>
+        <span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+        <span class="mi">18</span><span class="p">,</span>
+        <span class="n">PositionDirection</span><span class="p">.</span><span class="n">LONG</span><span class="p">(),</span>
+        <span class="n">auction_start_price</span><span class="o">=</span><span class="n">auction_start_price</span><span class="p">,</span>
+        <span class="n">auction_end_price</span><span class="o">=</span><span class="n">auction_end_price</span><span class="p">,</span>
+        <span class="n">oracle_price_offset</span><span class="o">=</span><span class="n">oracle_price_offset</span><span class="p">,</span>
+        <span class="n">auction_duration</span><span class="o">=</span><span class="n">auction_duration</span>
+    <span class="p">)</span>
+    <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">place_perp_order</span><span class="p">(</span><span class="n">order_params</span><span class="p">)</span>
+</code></pre></div>
+<p>Oracle market orders enable a user to define their auction params as an offset (or relative to) the oracle price. </p>
 <h2 id='canceling-order'>Canceling Order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
 <span class="kd">const</span> <span class="nx">orderId</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">cancelOrder</span><span class="p">(</span><span class="nx">orderId</span><span class="p">);</span>
