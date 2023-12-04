@@ -1218,19 +1218,7 @@ The L3 orderbook contains every maker order on drift dlob, including the address
 ## Event Subscription
 
 ```typescript
-import {Connection} from "@solana/web3.js";
-import {Wallet, loadKeypair, DriftClient, EventSubscriber} from "@drift-labs/sdk";
-
-const connection = new Connection('https://api.mainnet-beta.solana.com');
-
-const keyPairFile = '~/.config/solana/my-keypair.json';
-const wallet = new Wallet(loadKeypair(privateKeyFile))
-
-const driftClient = new DriftClient({
-  connection,
-  wallet,
-  env: 'mainnet-beta',
-});
+import {EventSubscriber} from "@drift-labs/sdk";
 
 const options = {
   eventTypes: [
@@ -1264,6 +1252,40 @@ await eventSubscriber.subscribe();
 eventSubscriber.eventEmitter.on('newEvent', (event) => {
   console.log(event);
 });
+```
+
+```python
+from driftpy.events.event_subscriber import EventSubscriber
+from driftpy.events.types import WrappedEvent, EventSubscriptionOptions, WebsocketLogProviderConfig
+
+options = EventSubscriptionOptions(
+    event_types = (
+        'DepositRecord',
+        'FundingPaymentRecord',
+        'LiquidationRecord',
+        'OrderRecord',
+        'OrderActionRecord',
+        'FundingRateRecord',
+        'NewUserRecord',
+        'SettlePnlRecord',
+        'LPRecord',
+        'InsuranceFundRecord',
+        'SpotInterestRecord',
+        'InsuranceFundStakeRecord',
+        'CurveRecord',
+    ),
+    max_tx= 4096,
+    max_events_per_type=4096,
+    order_by="blockchain",
+    order_dir="asc",
+    commitment="processed",
+    log_provider_config=WebsocketLogProviderConfig()
+)
+
+event_subscriber = EventSubscriber(connection, drift_client.program, options)
+event_subscriber.subscribe()
+
+event_subscriber.event_emitter.new_event += lambda event: print(event)
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -1336,6 +1358,56 @@ eventSubscriber.eventEmitter.on('newEvent', (event) => {
 
 ```
 
+```python
+market_index = 0
+
+def fill_callback(event: WrappedEvent):
+    if event.event_type != "OrderActionRecord":
+        return
+
+    if event.data.market_index != market_index:
+        return
+
+    if not is_variant(event.data.market_type, "Perp"):
+        return
+
+    if not is_variant(event.data.action, "Fill"):
+        return
+
+    print(event)
+
+
+event_subscriber.event_emitter.new_event += fill_callback
+```
+
+## Listening to User Fills
+
+```python
+options = EventSubscriptionOptions(
+    address=drift_client.get_user_account_public_key(),
+)
+
+event_subscriber = EventSubscriber(connection, drift_client.program, options)
+event_subscriber.subscribe()
+
+def fill_callback(event: WrappedEvent):
+    if event.event_type != "OrderActionRecord":
+        return
+
+    if not is_variant(event.data.action, "Fill"):
+        return
+
+    is_taker = event.data.taker == drift_client.get_user_account_public_key()
+    is_maker = event.data.taker == drift_client.get_user_account_public_key()
+    if not is_taker and not is_maker:
+        return
+
+    print(event)
+
+
+event_subscriber.event_emitter.new_event += fill_callback
+```
+
 ## Getting Events Received By Type
 
 ```typescript
@@ -1344,14 +1416,20 @@ const eventType = 'OrderActionRecord';
 const events = eventSubscriber.getEventsReceived(eventType);
 ```
 
+```python
+
+event_type = 'OrderActionRecord'
+events = event_subscriber.get_events_array(event_type)
+```
+
 This returns all the events that the event subscriber currently has stored in memory.
 
 ## Getting Events By Transaction
 
 ```typescript
 
-const txSig = '3dq5PtQ3VnNTkQRrHhQ1nRACWZaFVvSBKs1RLXM8WvCqLHTzTuVGc7XER5awoLFLTdJ4kqZiNmo7e8b3pXaEGaoo';
-const events = eventSubscriber.getEventsByTx(txSig);
+tx_sig = '3dq5PtQ3VnNTkQRrHhQ1nRACWZaFVvSBKs1RLXM8WvCqLHTzTuVGc7XER5awoLFLTdJ4kqZiNmo7e8b3pXaEGaoo'
+events = event_subscriber.get_events_by_tx(tx_sig)
 ```
 
 This returns the events that the event subscriber currently has stored in memory for a given transaction.
