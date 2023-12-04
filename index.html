@@ -494,6 +494,9 @@
                     <a href="#listening-to-perp-market-fills" class="toc-h2 toc-link" data-title="Listening to Perp Market Fills">Listening to Perp Market Fills</a>
                   </li>
                   <li>
+                    <a href="#listening-to-user-fills" class="toc-h2 toc-link" data-title="Listening to User Fills">Listening to User Fills</a>
+                  </li>
+                  <li>
                     <a href="#getting-events-received-by-type" class="toc-h2 toc-link" data-title="Getting Events Received By Type">Getting Events Received By Type</a>
                   </li>
                   <li>
@@ -2259,19 +2262,7 @@ The user map subscribes to user account updates.</p>
 </tbody></table>
 
 <p>The L3 orderbook contains every maker order on drift dlob, including the address for the user that placed the order.</p>
-<h1 id='events'>Events</h1><h2 id='event-subscription'>Event Subscription</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
-<span class="k">import</span> <span class="p">{</span><span class="nx">Wallet</span><span class="p">,</span> <span class="nx">loadKeypair</span><span class="p">,</span> <span class="nx">DriftClient</span><span class="p">,</span> <span class="nx">EventSubscriber</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
-
-<span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.mainnet-beta.solana.com</span><span class="dl">'</span><span class="p">);</span>
-
-<span class="kd">const</span> <span class="nx">keyPairFile</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">~/.config/solana/my-keypair.json</span><span class="dl">'</span><span class="p">;</span>
-<span class="kd">const</span> <span class="nx">wallet</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Wallet</span><span class="p">(</span><span class="nx">loadKeypair</span><span class="p">(</span><span class="nx">privateKeyFile</span><span class="p">))</span>
-
-<span class="kd">const</span> <span class="nx">driftClient</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DriftClient</span><span class="p">({</span>
-  <span class="nx">connection</span><span class="p">,</span>
-  <span class="nx">wallet</span><span class="p">,</span>
-  <span class="na">env</span><span class="p">:</span> <span class="dl">'</span><span class="s1">mainnet-beta</span><span class="dl">'</span><span class="p">,</span>
-<span class="p">});</span>
+<h1 id='events'>Events</h1><h2 id='event-subscription'>Event Subscription</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">EventSubscriber</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
 
 <span class="kd">const</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
   <span class="na">eventTypes</span><span class="p">:</span> <span class="p">[</span>
@@ -2305,6 +2296,37 @@ The user map subscribes to user account updates.</p>
 <span class="nx">eventSubscriber</span><span class="p">.</span><span class="nx">eventEmitter</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">newEvent</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">event</span><span class="p">);</span>
 <span class="p">});</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">driftpy.events.event_subscriber</span> <span class="kn">import</span> <span class="n">EventSubscriber</span>
+<span class="kn">from</span> <span class="nn">driftpy.events.types</span> <span class="kn">import</span> <span class="n">WrappedEvent</span><span class="p">,</span> <span class="n">EventSubscriptionOptions</span><span class="p">,</span> <span class="n">WebsocketLogProviderConfig</span>
+
+<span class="n">options</span> <span class="o">=</span> <span class="n">EventSubscriptionOptions</span><span class="p">(</span>
+    <span class="n">event_types</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s">'DepositRecord'</span><span class="p">,</span>
+        <span class="s">'FundingPaymentRecord'</span><span class="p">,</span>
+        <span class="s">'LiquidationRecord'</span><span class="p">,</span>
+        <span class="s">'OrderRecord'</span><span class="p">,</span>
+        <span class="s">'OrderActionRecord'</span><span class="p">,</span>
+        <span class="s">'FundingRateRecord'</span><span class="p">,</span>
+        <span class="s">'NewUserRecord'</span><span class="p">,</span>
+        <span class="s">'SettlePnlRecord'</span><span class="p">,</span>
+        <span class="s">'LPRecord'</span><span class="p">,</span>
+        <span class="s">'InsuranceFundRecord'</span><span class="p">,</span>
+        <span class="s">'SpotInterestRecord'</span><span class="p">,</span>
+        <span class="s">'InsuranceFundStakeRecord'</span><span class="p">,</span>
+        <span class="s">'CurveRecord'</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">max_tx</span><span class="o">=</span> <span class="mi">4096</span><span class="p">,</span>
+    <span class="n">max_events_per_type</span><span class="o">=</span><span class="mi">4096</span><span class="p">,</span>
+    <span class="n">order_by</span><span class="o">=</span><span class="s">"blockchain"</span><span class="p">,</span>
+    <span class="n">order_dir</span><span class="o">=</span><span class="s">"asc"</span><span class="p">,</span>
+    <span class="n">commitment</span><span class="o">=</span><span class="s">"processed"</span><span class="p">,</span>
+    <span class="n">log_provider_config</span><span class="o">=</span><span class="n">WebsocketLogProviderConfig</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="n">event_subscriber</span> <span class="o">=</span> <span class="n">EventSubscriber</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">program</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+<span class="n">event_subscriber</span><span class="p">.</span><span class="n">subscribe</span><span class="p">()</span>
+
+<span class="n">event_subscriber</span><span class="p">.</span><span class="n">event_emitter</span><span class="p">.</span><span class="n">new_event</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 </code></pre></div>
 <table><thead>
 <tr>
@@ -2469,14 +2491,59 @@ The user map subscribes to user account updates.</p>
   <span class="p">}</span>
 <span class="p">});</span>
 
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">def</span> <span class="nf">fill_callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">WrappedEvent</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">event</span><span class="p">.</span><span class="n">event_type</span> <span class="o">!=</span> <span class="s">"OrderActionRecord"</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">event</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">market_index</span> <span class="o">!=</span> <span class="n">market_index</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_variant</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">market_type</span><span class="p">,</span> <span class="s">"Perp"</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_variant</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">action</span><span class="p">,</span> <span class="s">"Fill"</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+
+<span class="n">event_subscriber</span><span class="p">.</span><span class="n">event_emitter</span><span class="p">.</span><span class="n">new_event</span> <span class="o">+=</span> <span class="n">fill_callback</span>
+</code></pre></div><h2 id='listening-to-user-fills'>Listening to User Fills</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">options</span> <span class="o">=</span> <span class="n">EventSubscriptionOptions</span><span class="p">(</span>
+    <span class="n">address</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">get_user_account_public_key</span><span class="p">(),</span>
+<span class="p">)</span>
+
+<span class="n">event_subscriber</span> <span class="o">=</span> <span class="n">EventSubscriber</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">program</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+<span class="n">event_subscriber</span><span class="p">.</span><span class="n">subscribe</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">fill_callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">WrappedEvent</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">event</span><span class="p">.</span><span class="n">event_type</span> <span class="o">!=</span> <span class="s">"OrderActionRecord"</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_variant</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">action</span><span class="p">,</span> <span class="s">"Fill"</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="n">is_taker</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">taker</span> <span class="o">==</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_user_account_public_key</span><span class="p">()</span>
+    <span class="n">is_maker</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">taker</span> <span class="o">==</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_user_account_public_key</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_taker</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_maker</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+
+<span class="n">event_subscriber</span><span class="p">.</span><span class="n">event_emitter</span><span class="p">.</span><span class="n">new_event</span> <span class="o">+=</span> <span class="n">fill_callback</span>
 </code></pre></div><h2 id='getting-events-received-by-type'>Getting Events Received By Type</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
 <span class="kd">const</span> <span class="nx">eventType</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">OrderActionRecord</span><span class="dl">'</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">events</span> <span class="o">=</span> <span class="nx">eventSubscriber</span><span class="p">.</span><span class="nx">getEventsReceived</span><span class="p">(</span><span class="nx">eventType</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>
+<span class="n">event_type</span> <span class="o">=</span> <span class="s">'OrderActionRecord'</span>
+<span class="n">events</span> <span class="o">=</span> <span class="n">event_subscriber</span><span class="p">.</span><span class="n">get_events_array</span><span class="p">(</span><span class="n">event_type</span><span class="p">)</span>
 </code></pre></div>
 <p>This returns all the events that the event subscriber currently has stored in memory.</p>
 <h2 id='getting-events-by-transaction'>Getting Events By Transaction</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
-<span class="kd">const</span> <span class="nx">txSig</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">3dq5PtQ3VnNTkQRrHhQ1nRACWZaFVvSBKs1RLXM8WvCqLHTzTuVGc7XER5awoLFLTdJ4kqZiNmo7e8b3pXaEGaoo</span><span class="dl">'</span><span class="p">;</span>
-<span class="kd">const</span> <span class="nx">events</span> <span class="o">=</span> <span class="nx">eventSubscriber</span><span class="p">.</span><span class="nx">getEventsByTx</span><span class="p">(</span><span class="nx">txSig</span><span class="p">);</span>
+<span class="nx">tx_sig</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">3dq5PtQ3VnNTkQRrHhQ1nRACWZaFVvSBKs1RLXM8WvCqLHTzTuVGc7XER5awoLFLTdJ4kqZiNmo7e8b3pXaEGaoo</span><span class="dl">'</span>
+<span class="nx">events</span> <span class="o">=</span> <span class="nx">event_subscriber</span><span class="p">.</span><span class="nx">get_events_by_tx</span><span class="p">(</span><span class="nx">tx_sig</span><span class="p">)</span>
 </code></pre></div>
 <p>This returns the events that the event subscriber currently has stored in memory for a given transaction.</p>
 <h1 id='margin-system'>Margin System</h1>
