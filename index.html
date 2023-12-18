@@ -462,7 +462,7 @@
               </ul>
           </li>
           <li>
-            <a href="#orderbook" class="toc-h1 toc-link" data-title="Orderbook">Orderbook</a>
+            <a href="#orderbook-blockchain" class="toc-h1 toc-link" data-title="Orderbook (Blockchain)">Orderbook (Blockchain)</a>
               <ul class="toc-list-h2">
                   <li>
                     <a href="#slot-subscription" class="toc-h2 toc-link" data-title="Slot Subscription">Slot Subscription</a>
@@ -547,7 +547,7 @@
               </ul>
           </li>
           <li>
-            <a href="#websockets" class="toc-h1 toc-link" data-title="Websockets">Websockets</a>
+            <a href="#websocket-api" class="toc-h1 toc-link" data-title="Websocket API">Websocket API</a>
               <ul class="toc-list-h2">
                   <li>
                     <a href="#subscribing" class="toc-h2 toc-link" data-title="Subscribing">Subscribing</a>
@@ -2051,7 +2051,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tbody></table>
 
 <p>Leverage is the total liability value (borrows plus total perp position) divided by net asset value (total assets plus total liabilities)</p>
-<h1 id='orderbook'>Orderbook</h1><h2 id='slot-subscription'>Slot Subscription</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>   <span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
+<h1 id='orderbook-blockchain'>Orderbook (Blockchain)</h1><h2 id='slot-subscription'>Slot Subscription</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>   <span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
    <span class="k">import</span> <span class="p">{</span><span class="nx">SlotSubscriber</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
 
    <span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">"</span><span class="s2">https://api.mainnet-beta.solana.com</span><span class="dl">"</span><span class="p">);</span>
@@ -2145,21 +2145,6 @@ The user map subscribes to user account updates.</p>
  <span class="p">});</span>
 
 <span class="k">await</span> <span class="nx">dlobSubscriber</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">();</span>
-</code></pre></div><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">DLOBApiClient</span><span class="p">,</span> <span class="nx">DLOBSubscriber</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
-
- <span class="c1">// Polling from api</span>
- <span class="kd">const</span> <span class="nx">dlobApiClient</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DLOBApiClient</span><span class="p">({</span>
-   <span class="na">url</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://dlob.drift.trade/orders/idlWithSlot</span><span class="dl">'</span><span class="p">,</span>
- <span class="p">});</span>
-
- <span class="kd">const</span> <span class="nx">dlobSubscriber</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DLOBSubscriber</span><span class="p">({</span>
-    <span class="nx">driftClient</span><span class="p">,</span>
-    <span class="na">dlobSource</span><span class="p">:</span> <span class="nx">dlobApiClient</span><span class="p">,</span>
-    <span class="na">slotSource</span><span class="p">:</span> <span class="nx">slotSubscriber</span><span class="p">,</span>
-    <span class="na">updateFrequency</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
- <span class="p">});</span>
-
- <span class="k">await</span> <span class="nx">dlobSubscriber</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">();</span>
 </code></pre></div>
 <table><thead>
 <tr>
@@ -2789,7 +2774,7 @@ This examples should be used as code reference only. Be cautious running any unr
 
 <span class="n">outcsv</span> <span class="o">=</span> <span class="n">requets</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/user/2dy78vpWpquDgAoLB8w8Ewfns9WXYzQx4CGt3HSgZLEe/trades/2023/4'</span><span class="p">)</span><span class="s">'
 </span></code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/user/2dy78vpWpquDgAoLB8w8Ewfns9WXYzQx4CGt3HSgZLEe/trades/2023/4 <span class="nt">--output</span> out.csv.gz
-</code></pre></div><h1 id='websockets'>Websockets</h1>
+</code></pre></div><h1 id='websocket-api'>Websocket API</h1>
 <p>Drift currently offers websocket streaming for two data streams: orderbooks and trades. The data streams are constructed from blockhain data. More data sources and user specific feeds will be added as this functionality is expanded.</p>
 
 <p>mainnet-beta: <code>wss://dlob.drift.trade/ws</code></p>
