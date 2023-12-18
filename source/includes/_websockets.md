@@ -34,6 +34,75 @@ Each market currently requires its own subscribe message. The two examples below
 }
 `
 
+```typescript
+
+import WebSocket from 'ws';
+const ws = new WebSocket('wss://dlob.drift.trade/ws');
+
+ws.on('open', async () => {
+  console.log('Connected to the server');
+
+  // Subscribe to orderbook data
+  ws.send(JSON.stringify({ type: 'subscribe', marketType: 'perp', channel: 'orderbook', market: 'SOL-PERP' }));  
+  ws.send(JSON.stringify({ type: 'subscribe', marketType: 'spot', channel: 'orderbook', market: 'SOL' }));
+
+
+  // Subscribe to trades data
+  ws.send(JSON.stringify({ type: 'subscribe', marketType: 'perp', channel: 'trades', market: 'SOL-PERP' }));  
+});
+
+ws.on('message', (data: WebSocket.Data) => {
+  try {
+    const message = JSON.parse(data.toString());
+    console.log(`Received data from channel: ${JSON.stringify(message.channel)}`);
+    // book and trades data is in message.data
+  } catch (e) {
+    console.error('Invalid message:', data);
+  }
+});
+
+```
+
+```python 
+import json
+import websocket
+import ssl
+
+def on_message(ws, message):
+    try:
+        message = json.loads(message)
+        print(f"Received data from channel: {json.dumps(message['channel'])}")
+        # book and trades data is in message['data']
+    except ValueError:
+        print(f"Invalid message: {message}")
+
+def on_error(ws, error):
+    print(f"Error: {error}")
+
+def on_close(ws, close_status_code, close_msg):
+    print("### Closed ###")
+
+def on_open(ws):
+    print("Connected to the server")
+
+    # Subscribe to orderbook data
+    ws.send(json.dumps({'type': 'subscribe', 'marketType': 'perp', 'channel': 'orderbook', 'market': 'SOL-PERP'}))
+    ws.send(json.dumps({'type': 'subscribe', 'marketType': 'spot', 'channel': 'orderbook', 'market': 'SOL'}))
+
+    # Subscribe to trades data
+    ws.send(json.dumps({'type': 'subscribe', 'marketType': 'perp', 'channel': 'trades', 'market': 'SOL-PERP'}))
+
+if __name__ == "__main__":
+    websocket.enableTrace(True)
+    ws = websocket.WebSocketApp("wss://dlob.drift.trade/ws",
+                                on_open=on_open,
+                                on_message=on_message,
+                                on_error=on_error,
+                                on_close=on_close)
+
+    ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
+```
+
 #### Update frequency
 
 Currently, orderbook websockets send messages every 1000ms. Connections that contain frequent updates are coming soon.
