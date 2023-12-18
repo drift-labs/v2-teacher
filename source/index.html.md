@@ -12,6 +12,7 @@ toc_footers:
 includes:
   - examples
   - historicaldata
+  - websockets
   - errors
 
 search: true
