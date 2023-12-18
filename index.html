@@ -547,6 +547,23 @@
               </ul>
           </li>
           <li>
+            <a href="#websockets" class="toc-h1 toc-link" data-title="Websockets">Websockets</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#subscribing" class="toc-h2 toc-link" data-title="Subscribing">Subscribing</a>
+                  </li>
+                  <li>
+                    <a href="#unsubscribing" class="toc-h2 toc-link" data-title="Unsubscribing">Unsubscribing</a>
+                  </li>
+                  <li>
+                    <a href="#liveness-measure" class="toc-h2 toc-link" data-title="Liveness measure">Liveness measure</a>
+                  </li>
+                  <li>
+                    <a href="#feedback" class="toc-h2 toc-link" data-title="Feedback">Feedback</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
           </li>
       </ul>
@@ -2772,7 +2789,133 @@ This examples should be used as code reference only. Be cautious running any unr
 
 <span class="n">outcsv</span> <span class="o">=</span> <span class="n">requets</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/user/2dy78vpWpquDgAoLB8w8Ewfns9WXYzQx4CGt3HSgZLEe/trades/2023/4'</span><span class="p">)</span><span class="s">'
 </span></code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/user/2dy78vpWpquDgAoLB8w8Ewfns9WXYzQx4CGt3HSgZLEe/trades/2023/4 <span class="nt">--output</span> out.csv.gz
-</code></pre></div><h1 id='errors'>Errors</h1>
+</code></pre></div><h1 id='websockets'>Websockets</h1>
+<p>Drift currently offers websocket streaming for two data streams: orderbooks and trades. The data streams are constructed from blockhain data. More data sources and user specific feeds will be added as this functionality is expanded.</p>
+
+<p>mainnet-beta: <code>wss://dlob.drift.trade/ws</code></p>
+
+<p>devnet: <code>wss://master.dlob.drift.trade/ws</code></p>
+<h2 id='subscribing'>Subscribing</h2>
+<p>Clients must send subscribe messages over the websocket connection in order to start receiving messages.</p>
+<h3 id='orderbook'>Orderbook</h3>
+<p>Each market currently requires its own subscribe message. The two examples below show subscribe messages for a perp and spot market:</p>
+<h4 id='perp-markets'>Perp markets</h4>
+<p><code>
+{
+  type: &#39;subscribe&#39;,
+  marketType: &#39;perp&#39;,
+  channel: &#39;orderbook&#39;,
+  market: &#39;SOL-PERP&#39;
+}
+</code></p>
+<h4 id='spot-markets'>Spot markets</h4>
+<p><code>
+{
+  type: &#39;subscribe&#39;,
+  marketType: &#39;spot&#39;,
+  channel: &#39;orderbook&#39;,
+  market: &#39;SOL&#39;
+}
+</code></p>
+<div class="highlight"><pre class="highlight typescript tab-typescript"><code>
+<span class="k">import</span> <span class="nx">WebSocket</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">ws</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">ws</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebSocket</span><span class="p">(</span><span class="dl">'</span><span class="s1">wss://dlob.drift.trade/ws</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="nx">ws</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">open</span><span class="dl">'</span><span class="p">,</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Connected to the server</span><span class="dl">'</span><span class="p">);</span>
+
+  <span class="c1">// Subscribe to orderbook data</span>
+  <span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span> <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">subscribe</span><span class="dl">'</span><span class="p">,</span> <span class="na">marketType</span><span class="p">:</span> <span class="dl">'</span><span class="s1">perp</span><span class="dl">'</span><span class="p">,</span> <span class="na">channel</span><span class="p">:</span> <span class="dl">'</span><span class="s1">orderbook</span><span class="dl">'</span><span class="p">,</span> <span class="na">market</span><span class="p">:</span> <span class="dl">'</span><span class="s1">SOL-PERP</span><span class="dl">'</span> <span class="p">}));</span>  
+  <span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span> <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">subscribe</span><span class="dl">'</span><span class="p">,</span> <span class="na">marketType</span><span class="p">:</span> <span class="dl">'</span><span class="s1">spot</span><span class="dl">'</span><span class="p">,</span> <span class="na">channel</span><span class="p">:</span> <span class="dl">'</span><span class="s1">orderbook</span><span class="dl">'</span><span class="p">,</span> <span class="na">market</span><span class="p">:</span> <span class="dl">'</span><span class="s1">SOL</span><span class="dl">'</span> <span class="p">}));</span>
+
+
+  <span class="c1">// Subscribe to trades data</span>
+  <span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span> <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">subscribe</span><span class="dl">'</span><span class="p">,</span> <span class="na">marketType</span><span class="p">:</span> <span class="dl">'</span><span class="s1">perp</span><span class="dl">'</span><span class="p">,</span> <span class="na">channel</span><span class="p">:</span> <span class="dl">'</span><span class="s1">trades</span><span class="dl">'</span><span class="p">,</span> <span class="na">market</span><span class="p">:</span> <span class="dl">'</span><span class="s1">SOL-PERP</span><span class="dl">'</span> <span class="p">}));</span>  
+<span class="p">});</span>
+
+<span class="nx">ws</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">message</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">data</span><span class="p">:</span> <span class="nx">WebSocket</span><span class="p">.</span><span class="nx">Data</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">message</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`Received data from channel: </span><span class="p">${</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">message</span><span class="p">.</span><span class="nx">channel</span><span class="p">)}</span><span class="s2">`</span><span class="p">);</span>
+    <span class="c1">// book and trades data is in message.data</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="dl">'</span><span class="s1">Invalid message:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">websocket</span>
+<span class="kn">import</span> <span class="nn">ssl</span>
+
+<span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Received data from channel: </span><span class="si">{</span><span class="n">json</span><span class="p">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s">'channel'</span><span class="p">])</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+        <span class="c1"># book and trades data is in message['data']
+</span>    <span class="k">except</span> <span class="nb">ValueError</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Invalid message: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">on_error</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">error</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Error: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">close_status_code</span><span class="p">,</span> <span class="n">close_msg</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"### Closed ###"</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">on_open</span><span class="p">(</span><span class="n">ws</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"Connected to the server"</span><span class="p">)</span>
+
+    <span class="c1"># Subscribe to orderbook data
+</span>    <span class="n">ws</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">json</span><span class="p">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">'type'</span><span class="p">:</span> <span class="s">'subscribe'</span><span class="p">,</span> <span class="s">'marketType'</span><span class="p">:</span> <span class="s">'perp'</span><span class="p">,</span> <span class="s">'channel'</span><span class="p">:</span> <span class="s">'orderbook'</span><span class="p">,</span> <span class="s">'market'</span><span class="p">:</span> <span class="s">'SOL-PERP'</span><span class="p">}))</span>
+    <span class="n">ws</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">json</span><span class="p">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">'type'</span><span class="p">:</span> <span class="s">'subscribe'</span><span class="p">,</span> <span class="s">'marketType'</span><span class="p">:</span> <span class="s">'spot'</span><span class="p">,</span> <span class="s">'channel'</span><span class="p">:</span> <span class="s">'orderbook'</span><span class="p">,</span> <span class="s">'market'</span><span class="p">:</span> <span class="s">'SOL'</span><span class="p">}))</span>
+
+    <span class="c1"># Subscribe to trades data
+</span>    <span class="n">ws</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">json</span><span class="p">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">'type'</span><span class="p">:</span> <span class="s">'subscribe'</span><span class="p">,</span> <span class="s">'marketType'</span><span class="p">:</span> <span class="s">'perp'</span><span class="p">,</span> <span class="s">'channel'</span><span class="p">:</span> <span class="s">'trades'</span><span class="p">,</span> <span class="s">'market'</span><span class="p">:</span> <span class="s">'SOL-PERP'</span><span class="p">}))</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+    <span class="n">websocket</span><span class="p">.</span><span class="n">enableTrace</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">ws</span> <span class="o">=</span> <span class="n">websocket</span><span class="p">.</span><span class="n">WebSocketApp</span><span class="p">(</span><span class="s">"wss://dlob.drift.trade/ws"</span><span class="p">,</span>
+                                <span class="n">on_open</span><span class="o">=</span><span class="n">on_open</span><span class="p">,</span>
+                                <span class="n">on_message</span><span class="o">=</span><span class="n">on_message</span><span class="p">,</span>
+                                <span class="n">on_error</span><span class="o">=</span><span class="n">on_error</span><span class="p">,</span>
+                                <span class="n">on_close</span><span class="o">=</span><span class="n">on_close</span><span class="p">)</span>
+
+    <span class="n">ws</span><span class="p">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">sslopt</span><span class="o">=</span><span class="p">{</span><span class="s">"cert_reqs"</span><span class="p">:</span> <span class="n">ssl</span><span class="p">.</span><span class="n">CERT_NONE</span><span class="p">})</span>
+</code></pre></div><h4 id='update-frequency'>Update frequency</h4>
+<p>Currently, orderbook websockets send messages every 1000ms. Connections that contain frequent updates are coming soon.</p>
+<h3 id='trades'>Trades</h3>
+<p>Trades feed subscribe messages take a similar form to orderbook data, just change the channel.</p>
+<h4 id='perp-markets-2'>Perp markets</h4>
+<p><code>
+{
+  type: &#39;subscribe&#39;,
+  marketType: &#39;perp&#39;,
+  channel: &#39;trades&#39;,
+  market: &#39;SOL-PERP&#39;
+}
+</code></p>
+<h4 id='spot-markets-2'>Spot markets</h4>
+<p><code>
+{
+  type: &#39;subscribe&#39;,
+  marketType: &#39;spot&#39;,
+  channel: &#39;trades&#39;,
+  market: &#39;SOL&#39;
+}
+</code></p>
+<h2 id='unsubscribing'>Unsubscribing</h2>
+<p>To unsubscribe to a channel, send a subscribe-like message, with the message type set to <code>unsubscribe</code>. Unsubscribe requests to channels not previously subscribed to will have no impact.</p>
+<h2 id='liveness-measure'>Liveness measure</h2>
+<p>To alleviate backpressure on websocket servers, drift websockets stop sending messages to clients that have more than 50 messages unproccessed in their buffer, until the buffer is cleared and the messages are processed. We recommend listening for heartbeat messages from the server to determine if your client is still receiving messages. </p>
+
+<p>Heartbeat messages are sent every 5 seconds and take the following form:
+<code>
+  {channel: &#39;heartbeat&#39;}
+</code></p>
+<h3 id='ping-pong'>Ping/pong</h3>
+<p>No ping messages are sent from the websocket server. Unsolicited ping messages are allowed and will receive pongs back.</p>
+<h2 id='feedback'>Feedback</h2>
+<p>For any feedback on websockets, please reach out on discord under the channel research-and-dev-chat</p>
+<h1 id='errors'>Errors</h1>
 <aside class="notice">
 This is a table of program errors as described in the programs IDL.
 </aside>
