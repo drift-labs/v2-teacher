@@ -1,4 +1,4 @@
-# Websockets
+# Websocket API
 
 Drift currently offers websocket streaming for two data streams: orderbooks and trades. The data streams are constructed from blockhain data. More data sources and user specific feeds will be added as this functionality is expanded.
 

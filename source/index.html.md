@@ -1076,7 +1076,7 @@ Leverage is the total liability value (borrows plus total perp position) divided
 
 
 
-# Orderbook
+# Orderbook (Blockchain)
 
 ## Slot Subscription
 
@@ -1151,24 +1151,6 @@ await userMap.subscribe();
  });
 
 await dlobSubscriber.subscribe();
-```
-
-```typescript
-import {DLOBApiClient, DLOBSubscriber} from "@drift-labs/sdk";
-
- // Polling from api
- const dlobApiClient = new DLOBApiClient({
-   url: 'https://dlob.drift.trade/orders/idlWithSlot',
- });
-
- const dlobSubscriber = new DLOBSubscriber({
-    driftClient,
-    dlobSource: dlobApiClient,
-    slotSource: slotSubscriber,
-    updateFrequency: 1000,
- });
-
- await dlobSubscriber.subscribe();
 ```
 
 | Parameter   | Description | Optional | Default |
