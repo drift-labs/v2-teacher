@@ -1084,7 +1084,7 @@ The drift orderbook is a collection of all open orders on the Drift protocol. Th
 
 This is the main source of orders for maintaing the orderbook.
 
-### `UserMap`
+## Dlob Source - `UserMap`
 
 `UserMap` stores a complete map of all user accounts (idle users are commonly filtered ou).
 
@@ -1132,7 +1132,7 @@ const userMap = new UserMap({
 await userMap.subscribe();
 ```
 
-### `OrderSubscriber`
+## Dlob Source - `OrderSubscriber`
 
 `OrderSubscriber` is a more efficient version of `UserMap`, only tracking user accounts that have orders.
 
@@ -1240,11 +1240,8 @@ The L3 orderbook contains every maker order on drift dlob, including the address
 
 Drift runs a [`dlob-server`](https://github.com/drift-labs/dlob-server) to reduce the RPC load on UI users and traders. You can access this server (or run your own!) instead of [maintaing an order book from the blockchain](#orderbook-blockchain).
 
-## Polling
 
-The mainnet-beta http endpoint is: `https://dlob.drift.trade/`
-
-### Specifying a market
+The mainnet-beta http endpoint is: [https://dlob.drift.trade/](https://dlob.drift.trade/)
 
 All endpoints follow the same query parameter scheme to specify a market:
 
@@ -1254,9 +1251,11 @@ All endpoints follow the same query parameter scheme to specify a market:
 | marketIndex | The market index of the orderbook to get. If not set, marketName must be set | Yes | |
 | marketType | The market type of the orderbook to get. If not set, marketName must be set | Yes | |
 
-### `GET /l2` and `Get /l3`
+## `GET /l2`
+## `GET /l3`
 
-Returns an L2/L3 orderbook for the specificed market.
+
+Returns an L2 (aggregate price levels) or L3 (individual orders) orderbook for the specificed market.
 
 | Parameter     | Description                                      | Optional | Default    | L2 only |
 | ------------- | ------------------------------------------------ | -------- | ---------- | ------- |
@@ -1264,11 +1263,11 @@ Returns an L2/L3 orderbook for the specificed market.
 | includeVamm   | `true` to include vAMM liquidity in the response | Yes      | `false`    | Yes     |
 | includeOracle | `true` to include oracle data with the response  | Yes      | `false`    | No      |
 
-Example: https://dlob.drift.trade/l2?marketName=JTO-PERP&depth=10&includeOracle=true&includeVamm=true
+Example: [https://dlob.drift.trade/l2?marketName=JTO-PERP&depth=10&includeOracle=true&includeVamm=true](https://dlob.drift.trade/l2?marketName=JTO-PERP&depth=10&includeOracle=true&includeVamm=true)
 
-Example: https://dlob.drift.trade/l3?marketName=JTO-PERP&includeOracle=true
+Example: [https://dlob.drift.trade/l3?marketName=JTO-PERP&includeOracle=true](https://dlob.drift.trade/l3?marketName=JTO-PERP&includeOracle=true)
 
-### `GET /topMakers`
+## `GET /topMakers`
 
 Returns the top makers (currently returns an exhaustive list) for a given market (useful for `place_and_take` orders).
 
@@ -1278,11 +1277,11 @@ Returns the top makers (currently returns an exhaustive list) for a given market
 | limit            | Limit number of makers to return                 | Yes      | all        |
 | includeUserStats | `true` to include full UserStats                 | Yes      | `false`    |
 
-Example: https://dlob.drift.trade/topMakers?marketName=JTO-PERP&side=bid&limit=5
+Example: [https://dlob.drift.trade/topMakers?marketName=JTO-PERP&side=bid&limit=5](https://dlob.drift.trade/topMakers?marketName=JTO-PERP&side=bid&limit=5)
 
 ## Websocket
 
-The mainnet-beta websocket endpoint is: `wss://dlob.drift.trade/ws`
+The mainnet-beta websocket endpoint is: [wss://dlob.drift.trade/ws](wss://dlob.drift.trade/ws)
 
 The websocket server currently only sends L2 orderbook data, roughly every 1s. Ensure you have reconnect logc in place in case the connection is terminated by the server.
 
