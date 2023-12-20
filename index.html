@@ -468,6 +468,12 @@
                     <a href="#dlob-source" class="toc-h2 toc-link" data-title="Dlob Source">Dlob Source</a>
                   </li>
                   <li>
+                    <a href="#dlob-source-usermap" class="toc-h2 toc-link" data-title="Dlob Source - UserMap">Dlob Source - <code>UserMap</code></a>
+                  </li>
+                  <li>
+                    <a href="#dlob-source-ordersubscriber" class="toc-h2 toc-link" data-title="Dlob Source - OrderSubscriber">Dlob Source - <code>OrderSubscriber</code></a>
+                  </li>
+                  <li>
                     <a href="#orderbook-subscription" class="toc-h2 toc-link" data-title="Orderbook Subscription">Orderbook Subscription</a>
                   </li>
                   <li>
@@ -482,7 +488,13 @@
             <a href="#orderbook-dlob-server" class="toc-h1 toc-link" data-title="Orderbook (Dlob Server)">Orderbook (Dlob Server)</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#polling" class="toc-h2 toc-link" data-title="Polling">Polling</a>
+                    <a href="#get-l2" class="toc-h2 toc-link" data-title="GET /l2"><code>GET /l2</code></a>
+                  </li>
+                  <li>
+                    <a href="#get-l3" class="toc-h2 toc-link" data-title="GET /l3"><code>GET /l3</code></a>
+                  </li>
+                  <li>
+                    <a href="#get-topmakers" class="toc-h2 toc-link" data-title="GET /topMakers"><code>GET /topMakers</code></a>
                   </li>
                   <li>
                     <a href="#websocket" class="toc-h2 toc-link" data-title="Websocket">Websocket</a>
@@ -2066,7 +2078,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <p>The drift orderbook is a collection of all open orders on the Drift protocol. There is no single source of truth for the orderbook. The most up to date view of the orderbook is one where you track user orders and maintain the orderbook structure yourself. This section shows how to do that with the various SDKs.</p>
 <h2 id='dlob-source'>Dlob Source</h2>
 <p>This is the main source of orders for maintaing the orderbook.</p>
-<h3 id='usermap'><code>UserMap</code></h3>
+<h2 id='dlob-source-usermap'>Dlob Source - <code>UserMap</code></h2>
 <p><code>UserMap</code> stores a complete map of all user accounts (idle users are commonly filtered ou).</p>
 <div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
 <span class="k">import</span> <span class="p">{</span><span class="nx">DriftClient</span><span class="p">,</span> <span class="nx">UserMap</span><span class="p">,</span> <span class="nx">Wallet</span><span class="p">,</span> <span class="nx">loadKeypair</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
@@ -2109,7 +2121,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <span class="p">});</span>
 
 <span class="k">await</span> <span class="nx">userMap</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">();</span>
-</code></pre></div><h3 id='ordersubscriber'><code>OrderSubscriber</code></h3>
+</code></pre></div><h2 id='dlob-source-ordersubscriber'>Dlob Source - <code>OrderSubscriber</code></h2>
 <p><code>OrderSubscriber</code> is a more efficient version of <code>UserMap</code>, only tracking user accounts that have orders.</p>
 <div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
 <span class="k">import</span> <span class="p">{</span><span class="nx">DriftClient</span><span class="p">,</span> <span class="nx">OrderSubscriber</span><span class="p">,</span> <span class="nx">Wallet</span><span class="p">,</span> <span class="nx">loadKeypair</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
@@ -2281,9 +2293,9 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <p>The L3 orderbook contains every maker order on drift dlob, including the address for the user that placed the order.</p>
 <h1 id='orderbook-dlob-server'>Orderbook (Dlob Server)</h1>
 <p>Drift runs a <a href="https://github.com/drift-labs/dlob-server"><code>dlob-server</code></a> to reduce the RPC load on UI users and traders. You can access this server (or run your own!) instead of <a href="#orderbook-blockchain">maintaing an order book from the blockchain</a>.</p>
-<h2 id='polling'>Polling</h2>
-<p>The mainnet-beta http endpoint is: <code>https://dlob.drift.trade/</code></p>
-<h3 id='specifying-a-market'>Specifying a market</h3>
+
+<p>The mainnet-beta http endpoint is: <a href="https://dlob.drift.trade/">https://dlob.drift.trade/</a></p>
+
 <p>All endpoints follow the same query parameter scheme to specify a market:</p>
 
 <table><thead>
@@ -2313,8 +2325,8 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td></td>
 </tr>
 </tbody></table>
-<h3 id='get-l2-and-get-l3'><code>GET /l2</code> and <code>Get /l3</code></h3>
-<p>Returns an L2/L3 orderbook for the specificed market.</p>
+<h2 id='get-l2'><code>GET /l2</code></h2><h2 id='get-l3'><code>GET /l3</code></h2>
+<p>Returns an L2 (aggregate price levels) or L3 (individual orders) orderbook for the specificed market.</p>
 
 <table><thead>
 <tr>
@@ -2348,10 +2360,10 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tr>
 </tbody></table>
 
-<p>Example: https://dlob.drift.trade/l2?marketName=JTO-PERP&amp;depth=10&amp;includeOracle=true&amp;includeVamm=true</p>
+<p>Example: <a href="https://dlob.drift.trade/l2?marketName=JTO-PERP&amp;depth=10&amp;includeOracle=true&amp;includeVamm=true">https://dlob.drift.trade/l2?marketName=JTO-PERP&amp;depth=10&amp;includeOracle=true&amp;includeVamm=true</a></p>
 
-<p>Example: https://dlob.drift.trade/l3?marketName=JTO-PERP&amp;includeOracle=true</p>
-<h3 id='get-topmakers'><code>GET /topMakers</code></h3>
+<p>Example: <a href="https://dlob.drift.trade/l3?marketName=JTO-PERP&amp;includeOracle=true">https://dlob.drift.trade/l3?marketName=JTO-PERP&amp;includeOracle=true</a></p>
+<h2 id='get-topmakers'><code>GET /topMakers</code></h2>
 <p>Returns the top makers (currently returns an exhaustive list) for a given market (useful for <code>place_and_take</code> orders).</p>
 
 <table><thead>
@@ -2382,9 +2394,9 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tr>
 </tbody></table>
 
-<p>Example: https://dlob.drift.trade/topMakers?marketName=JTO-PERP&amp;side=bid&amp;limit=5</p>
+<p>Example: <a href="https://dlob.drift.trade/topMakers?marketName=JTO-PERP&amp;side=bid&amp;limit=5">https://dlob.drift.trade/topMakers?marketName=JTO-PERP&amp;side=bid&amp;limit=5</a></p>
 <h2 id='websocket'>Websocket</h2>
-<p>The mainnet-beta websocket endpoint is: <code>wss://dlob.drift.trade/ws</code></p>
+<p>The mainnet-beta websocket endpoint is: <a href="wss://dlob.drift.trade/ws">wss://dlob.drift.trade/ws</a></p>
 
 <p>The websocket server currently only sends L2 orderbook data, roughly every 1s. Ensure you have reconnect logc in place in case the connection is terminated by the server.</p>
 <div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="nx">WebSocket</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">ws</span><span class="dl">'</span><span class="p">;</span>
