@@ -585,7 +585,7 @@ order_params = OrderParams(
 await drift_client.place_perp_order(order_params)
 ```
 
-Oracle market orders enable a user to define their auction params as an offset (or relative to) the oracle price. 
+Oracle market orders enable a user to define their auction params as an offset (or relative to) the oracle price.
 
 ## Canceling Order
 
@@ -1078,75 +1078,115 @@ Leverage is the total liability value (borrows plus total perp position) divided
 
 # Orderbook (Blockchain)
 
-## Slot Subscription
+The drift orderbook is a collection of all open orders on the Drift protocol. There is no single source of truth for the orderbook. The most up to date view of the orderbook is one where you track user orders and maintain the orderbook structure yourself. This section shows how to do that with the various SDKs.
+
+## Dlob Source
+
+This is the main source of orders for maintaing the orderbook.
+
+### `UserMap`
+
+`UserMap` stores a complete map of all user accounts (idle users are commonly filtered ou).
 
 ```typescript
-   import {Connection} from "@solana/web3.js";
-   import {SlotSubscriber} from "@drift-labs/sdk";
+import {Connection} from "@solana/web3.js";
+import {DriftClient, UserMap, Wallet, loadKeypair} from "@drift-labs/sdk";
 
-   const connection = new Connection("https://api.mainnet-beta.solana.com");
-   const slotSubscriber = new SlotSubscriber(connection);
+const connection = new Connection("https://api.mainnet-beta.solana.com");
 
-   await slotSubscriber.subscribe();
-   const slot = slotSubscriber.getSlot();
+const keyPairFile = '~/.config/solana/my-keypair.json';
+const wallet = new Wallet(loadKeypair(privateKeyFile))
 
-   slotSubscriber.eventEmitter.on('newSlot', async (slot) => {
-      console.log('new slot', slot);
-   });
+const driftClient = new DriftClient({
+  connection,
+  wallet,
+  env: 'mainnet-beta',
+});
+await driftClient.subscribe();
+
+// polling keep users updated with periodic calls to getProgramAccounts
+// websocket keep users updated via programSubscribe
+const subscriptionConfig:
+  | {
+    type: 'polling';
+    frequency: number;
+    commitment?: Commitment;
+  } | {
+    type: 'websocket';
+    resubTimeoutMs?: number;
+    commitment?: Commitment;
+  } = {
+    type: 'websocket',
+    resubTimeoutMs: 30_000,
+    commitment: stateCommitment,
+  };
+
+const userMap = new UserMap({
+  driftClient,
+  connection,
+  subscriptionConfig,
+  skipInitialLoad: false, // skips initial load of user accounts
+  includeIdle: false, // filters out idle users
+});
+
+await userMap.subscribe();
 ```
 
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| connection | Connection object specifying solana rpc url   | No | |
+### `OrderSubscriber`
 
-The slot subscriber subscribes to the latest slot and updates the slot value every time a new slot is received. The state of the orderbook is dependent on the slot value, so to build the orderbook you must keep track of the slot value.
-
-## User Subscription
+`OrderSubscriber` is a more efficient version of `UserMap`, only tracking user accounts that have orders.
 
 ```typescript
-   import {Connection} from "@solana/web3.js";
-   import {DriftClient, UserMap, Wallet, loadKeypair} from "@drift-labs/sdk";
+import {Connection} from "@solana/web3.js";
+import {DriftClient, OrderSubscriber, Wallet, loadKeypair} from "@drift-labs/sdk";
 
-   const connection = new Connection("https://api.mainnet-beta.solana.com");
+const connection = new Connection("https://api.mainnet-beta.solana.com");
 
-   const keyPairFile = '~/.config/solana/my-keypair.json';
-   const wallet = new Wallet(loadKeypair(privateKeyFile))
+const keyPairFile = '~/.config/solana/my-keypair.json';
+const wallet = new Wallet(loadKeypair(privateKeyFile))
 
-   const driftClient = new DriftClient({
-     connection,
-     wallet,
-     env: 'mainnet-beta',
-   });
+const driftClient = new DriftClient({
+  connection,
+  wallet,
+  env: 'mainnet-beta',
+});
+await driftClient.subscribe();
 
-   await driftClient.subscribe();
+const subscriptionConfig:
+  | {
+    type: 'polling',
+    frequency: ORDERBOOK_UPDATE_INTERVAL,
+    commitment: stateCommitment,
+  }
+  | {
+    type: 'websocket',
+    commitment: stateCommitment,
+    resyncIntervalMs: WS_FALLBACK_FETCH_INTERVAL,
+  } = {
+    type: 'websocket',
+    commitment: stateCommitment,
+    resyncIntervalMs: WS_FALLBACK_FETCH_INTERVAL, // periodically resyncs the orders in case of missed websocket messages
+  };
 
-   const includeIdleUsers = false;
-   const userMap = new UserMap(driftClient, {type: 'websocket'}, false);
-   await userMap.subscribe();
+const orderSubscriber = new OrderSubscriber({
+  driftClient,
+  subscriptionConfig,
+});
+
+await orderSubscriber.subscribe();
 ```
-
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| driftClient | DriftClient object | No | |
-| accountSubscription | Whether to use websocket or polling to subscribe to users | No | |
-| includeIdle | Whether to include idle users. An idle user has had no orders, perp position or borrow for 7 days  | Yes | |
-
-Orders are stored on user accounts. To reconstruct the orderbook, you must keep track of the user accounts that have orders.
-The user map subscribes to user account updates.
 
 ## Orderbook Subscription
+
+With a `DlobSource` you can then subscribe to the orderbook.
 
 ```typescript
 import {DLOBSubscriber} from "@drift-labs/sdk";
 
-// on-chain subscription to users
-const userMap = new UserMap(driftClient, {type: 'websocket'}, false);
-await userMap.subscribe();
-
  const dlobSubscriber = new DLOBSubscriber({
     driftClient,
-    dlobSource: userMap,
-    slotSource: slotSubscriber,
+    dlobSource: orderSubscriber, // or UserMap
+    slotSource: orderSubscriber, // or UserMap
     updateFrequency: 1000,
  });
 
@@ -1195,6 +1235,83 @@ const l3 = dlobSubscriber.getL3({
 | marketType | The market type of the orderbook to get. If not set, marketName must be set | Yes | |
 
 The L3 orderbook contains every maker order on drift dlob, including the address for the user that placed the order.
+
+# Orderbook (Dlob Server)
+
+Drift runs a [`dlob-server`](https://github.com/drift-labs/dlob-server) to reduce the RPC load on UI users and traders. You can access this server (or run your own!) instead of [maintaing an order book from the blockchain](#orderbook-blockchain).
+
+## Polling
+
+The mainnet-beta http endpoint is: `https://dlob.drift.trade/`
+
+### Specifying a market
+
+All endpoints follow the same query parameter scheme to specify a market:
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| marketName | The market name of the orderbook to get. If not set, marketIndex and marketType must be set | Yes | |
+| marketIndex | The market index of the orderbook to get. If not set, marketName must be set | Yes | |
+| marketType | The market type of the orderbook to get. If not set, marketName must be set | Yes | |
+
+### `GET /l2` and `Get /l3`
+
+Returns an L2/L3 orderbook for the specificed market.
+
+| Parameter     | Description                                      | Optional | Default    | L2 only |
+| ------------- | ------------------------------------------------ | -------- | ---------- | ------- |
+| depth         | Number of records to return per side             | Yes      | all orders | Yes     |
+| includeVamm   | `true` to include vAMM liquidity in the response | Yes      | `false`    | Yes     |
+| includeOracle | `true` to include oracle data with the response  | Yes      | `false`    | No      |
+
+Example: https://dlob.drift.trade/l2?marketName=JTO-PERP&depth=10&includeOracle=true&includeVamm=true
+
+Example: https://dlob.drift.trade/l3?marketName=JTO-PERP&includeOracle=true
+
+### `GET /topMakers`
+
+Returns the top makers (currently returns an exhaustive list) for a given market (useful for `place_and_take` orders).
+
+| Parameter        | Description                                      | Optional | Default    |
+| ---------------- | ------------------------------------------------ | -------- | ---------- |
+| side             | Side to return makers for (`bid` or `ask`)       | No       |            |
+| limit            | Limit number of makers to return                 | Yes      | all        |
+| includeUserStats | `true` to include full UserStats                 | Yes      | `false`    |
+
+Example: https://dlob.drift.trade/topMakers?marketName=JTO-PERP&side=bid&limit=5
+
+## Websocket
+
+The mainnet-beta websocket endpoint is: `wss://dlob.drift.trade/ws`
+
+The websocket server currently only sends L2 orderbook data, roughly every 1s. Ensure you have reconnect logc in place in case the connection is terminated by the server.
+
+```typescript
+import WebSocket from 'ws';
+
+const ws = new WebSocket('wss://dlob.drift.trade/ws');
+ws.on('open', async () => {
+    ws.send(JSON.stringify({ type: 'subscribe', marketType: 'perp', channel: 'orderbook', market: 'SOL-PERP' }));
+});
+
+ws.on('message', (data: WebSocket.Data) => {
+  try {
+    const message = JSON.parse(data.toString());
+    console.log(`Received data from channel: ${JSON.stringify(message.channel)}`);
+    // book and trades data is in message.data
+  } catch (e) {
+    console.error('Invalid message:', data);
+  }
+});
+
+wsConn.on('close', () => {
+  console.log('Connection closed');
+  // if you did not close the connection yourself, you should reconnect here
+});
+
+```
+
+
 
 # Events
 
