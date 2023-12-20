@@ -11,8 +11,9 @@ toc_footers:
   - <a href='https://docs.drift.trade/'> Documentation </a>
 includes:
   - examples
+  - orderbook_blockchain
+  - orderbook_dlobserver
   - historicaldata
-  - websockets
   - errors
 
 search: true

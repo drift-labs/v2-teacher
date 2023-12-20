@@ -52,9 +52,7 @@ bundle config set force_ruby_platform true
 Build the docs
 ```
 bundle install
-```
-
-# Build and run docs locally
+``
 
 After doing the above, you can work on docs locally via:
 ```
