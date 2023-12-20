@@ -465,10 +465,7 @@
             <a href="#orderbook-blockchain" class="toc-h1 toc-link" data-title="Orderbook (Blockchain)">Orderbook (Blockchain)</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#slot-subscription" class="toc-h2 toc-link" data-title="Slot Subscription">Slot Subscription</a>
-                  </li>
-                  <li>
-                    <a href="#user-subscription" class="toc-h2 toc-link" data-title="User Subscription">User Subscription</a>
+                    <a href="#dlob-source" class="toc-h2 toc-link" data-title="Dlob Source">Dlob Source</a>
                   </li>
                   <li>
                     <a href="#orderbook-subscription" class="toc-h2 toc-link" data-title="Orderbook Subscription">Orderbook Subscription</a>
@@ -478,6 +475,17 @@
                   </li>
                   <li>
                     <a href="#get-l3-orderbook" class="toc-h2 toc-link" data-title="Get L3 Orderbook">Get L3 Orderbook</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#orderbook-dlob-server" class="toc-h1 toc-link" data-title="Orderbook (Dlob Server)">Orderbook (Dlob Server)</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#polling" class="toc-h2 toc-link" data-title="Polling">Polling</a>
+                  </li>
+                  <li>
+                    <a href="#websocket" class="toc-h2 toc-link" data-title="Websocket">Websocket</a>
                   </li>
               </ul>
           </li>
@@ -543,6 +551,9 @@
                   </li>
                   <li>
                     <a href="#examples" class="toc-h2 toc-link" data-title="Examples">Examples</a>
+                  </li>
+                  <li>
+                    <a href="#records-columns" class="toc-h2 toc-link" data-title="Records Columns">Records Columns</a>
                   </li>
               </ul>
           </li>
@@ -1377,7 +1388,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <span class="p">)</span>
 <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">place_perp_order</span><span class="p">(</span><span class="n">order_params</span><span class="p">)</span>
 </code></pre></div>
-<p>Oracle market orders enable a user to define their auction params as an offset (or relative to) the oracle price. </p>
+<p>Oracle market orders enable a user to define their auction params as an offset (or relative to) the oracle price.</p>
 <h2 id='canceling-order'>Canceling Order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
 <span class="kd">const</span> <span class="nx">orderId</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">cancelOrder</span><span class="p">(</span><span class="nx">orderId</span><span class="p">);</span>
@@ -2051,96 +2062,100 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tbody></table>
 
 <p>Leverage is the total liability value (borrows plus total perp position) divided by net asset value (total assets plus total liabilities)</p>
-<h1 id='orderbook-blockchain'>Orderbook (Blockchain)</h1><h2 id='slot-subscription'>Slot Subscription</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>   <span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
-   <span class="k">import</span> <span class="p">{</span><span class="nx">SlotSubscriber</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
+<h1 id='orderbook-blockchain'>Orderbook (Blockchain)</h1>
+<p>The drift orderbook is a collection of all open orders on the Drift protocol. There is no single source of truth for the orderbook. The most up to date view of the orderbook is one where you track user orders and maintain the orderbook structure yourself. This section shows how to do that with the various SDKs.</p>
+<h2 id='dlob-source'>Dlob Source</h2>
+<p>This is the main source of orders for maintaing the orderbook.</p>
+<h3 id='usermap'><code>UserMap</code></h3>
+<p><code>UserMap</code> stores a complete map of all user accounts (idle users are commonly filtered ou).</p>
+<div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span><span class="nx">DriftClient</span><span class="p">,</span> <span class="nx">UserMap</span><span class="p">,</span> <span class="nx">Wallet</span><span class="p">,</span> <span class="nx">loadKeypair</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
 
-   <span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">"</span><span class="s2">https://api.mainnet-beta.solana.com</span><span class="dl">"</span><span class="p">);</span>
-   <span class="kd">const</span> <span class="nx">slotSubscriber</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SlotSubscriber</span><span class="p">(</span><span class="nx">connection</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">"</span><span class="s2">https://api.mainnet-beta.solana.com</span><span class="dl">"</span><span class="p">);</span>
 
-   <span class="k">await</span> <span class="nx">slotSubscriber</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">();</span>
-   <span class="kd">const</span> <span class="nx">slot</span> <span class="o">=</span> <span class="nx">slotSubscriber</span><span class="p">.</span><span class="nx">getSlot</span><span class="p">();</span>
+<span class="kd">const</span> <span class="nx">keyPairFile</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">~/.config/solana/my-keypair.json</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">wallet</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Wallet</span><span class="p">(</span><span class="nx">loadKeypair</span><span class="p">(</span><span class="nx">privateKeyFile</span><span class="p">))</span>
 
-   <span class="nx">slotSubscriber</span><span class="p">.</span><span class="nx">eventEmitter</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">newSlot</span><span class="dl">'</span><span class="p">,</span> <span class="k">async</span> <span class="p">(</span><span class="nx">slot</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
-      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">new slot</span><span class="dl">'</span><span class="p">,</span> <span class="nx">slot</span><span class="p">);</span>
-   <span class="p">});</span>
-</code></pre></div>
-<table><thead>
-<tr>
-<th>Parameter</th>
-<th>Description</th>
-<th>Optional</th>
-<th>Default</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>connection</td>
-<td>Connection object specifying solana rpc url</td>
-<td>No</td>
-<td></td>
-</tr>
-</tbody></table>
+<span class="kd">const</span> <span class="nx">driftClient</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DriftClient</span><span class="p">({</span>
+  <span class="nx">connection</span><span class="p">,</span>
+  <span class="nx">wallet</span><span class="p">,</span>
+  <span class="na">env</span><span class="p">:</span> <span class="dl">'</span><span class="s1">mainnet-beta</span><span class="dl">'</span><span class="p">,</span>
+<span class="p">});</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">();</span>
 
-<p>The slot subscriber subscribes to the latest slot and updates the slot value every time a new slot is received. The state of the orderbook is dependent on the slot value, so to build the orderbook you must keep track of the slot value.</p>
-<h2 id='user-subscription'>User Subscription</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>   <span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
-   <span class="k">import</span> <span class="p">{</span><span class="nx">DriftClient</span><span class="p">,</span> <span class="nx">UserMap</span><span class="p">,</span> <span class="nx">Wallet</span><span class="p">,</span> <span class="nx">loadKeypair</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
+<span class="c1">// polling keep users updated with periodic calls to getProgramAccounts</span>
+<span class="c1">// websocket keep users updated via programSubscribe</span>
+<span class="kd">const</span> <span class="nx">subscriptionConfig</span><span class="p">:</span>
+  <span class="o">|</span> <span class="p">{</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">polling</span><span class="dl">'</span><span class="p">;</span>
+    <span class="nl">frequency</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+    <span class="nl">commitment</span><span class="p">?:</span> <span class="nx">Commitment</span><span class="p">;</span>
+  <span class="p">}</span> <span class="o">|</span> <span class="p">{</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">websocket</span><span class="dl">'</span><span class="p">;</span>
+    <span class="nl">resubTimeoutMs</span><span class="p">?:</span> <span class="kr">number</span><span class="p">;</span>
+    <span class="nl">commitment</span><span class="p">?:</span> <span class="nx">Commitment</span><span class="p">;</span>
+  <span class="p">}</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">websocket</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">resubTimeoutMs</span><span class="p">:</span> <span class="mi">30</span><span class="nx">_000</span><span class="p">,</span>
+    <span class="na">commitment</span><span class="p">:</span> <span class="nx">stateCommitment</span><span class="p">,</span>
+  <span class="p">};</span>
 
-   <span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">"</span><span class="s2">https://api.mainnet-beta.solana.com</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">userMap</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">UserMap</span><span class="p">({</span>
+  <span class="nx">driftClient</span><span class="p">,</span>
+  <span class="nx">connection</span><span class="p">,</span>
+  <span class="nx">subscriptionConfig</span><span class="p">,</span>
+  <span class="na">skipInitialLoad</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="c1">// skips initial load of user accounts</span>
+  <span class="na">includeIdle</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="c1">// filters out idle users</span>
+<span class="p">});</span>
 
-   <span class="kd">const</span> <span class="nx">keyPairFile</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">~/.config/solana/my-keypair.json</span><span class="dl">'</span><span class="p">;</span>
-   <span class="kd">const</span> <span class="nx">wallet</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Wallet</span><span class="p">(</span><span class="nx">loadKeypair</span><span class="p">(</span><span class="nx">privateKeyFile</span><span class="p">))</span>
-
-   <span class="kd">const</span> <span class="nx">driftClient</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DriftClient</span><span class="p">({</span>
-     <span class="nx">connection</span><span class="p">,</span>
-     <span class="nx">wallet</span><span class="p">,</span>
-     <span class="na">env</span><span class="p">:</span> <span class="dl">'</span><span class="s1">mainnet-beta</span><span class="dl">'</span><span class="p">,</span>
-   <span class="p">});</span>
-
-   <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">();</span>
-
-   <span class="kd">const</span> <span class="nx">includeIdleUsers</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-   <span class="kd">const</span> <span class="nx">userMap</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">UserMap</span><span class="p">(</span><span class="nx">driftClient</span><span class="p">,</span> <span class="p">{</span><span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">websocket</span><span class="dl">'</span><span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
-   <span class="k">await</span> <span class="nx">userMap</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">();</span>
-</code></pre></div>
-<table><thead>
-<tr>
-<th>Parameter</th>
-<th>Description</th>
-<th>Optional</th>
-<th>Default</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>driftClient</td>
-<td>DriftClient object</td>
-<td>No</td>
-<td></td>
-</tr>
-<tr>
-<td>accountSubscription</td>
-<td>Whether to use websocket or polling to subscribe to users</td>
-<td>No</td>
-<td></td>
-</tr>
-<tr>
-<td>includeIdle</td>
-<td>Whether to include idle users. An idle user has had no orders, perp position or borrow for 7 days</td>
-<td>Yes</td>
-<td></td>
-</tr>
-</tbody></table>
-
-<p>Orders are stored on user accounts. To reconstruct the orderbook, you must keep track of the user accounts that have orders.
-The user map subscribes to user account updates.</p>
-<h2 id='orderbook-subscription'>Orderbook Subscription</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">DLOBSubscriber</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
-
-<span class="c1">// on-chain subscription to users</span>
-<span class="kd">const</span> <span class="nx">userMap</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">UserMap</span><span class="p">(</span><span class="nx">driftClient</span><span class="p">,</span> <span class="p">{</span><span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">websocket</span><span class="dl">'</span><span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
 <span class="k">await</span> <span class="nx">userMap</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">();</span>
+</code></pre></div><h3 id='ordersubscriber'><code>OrderSubscriber</code></h3>
+<p><code>OrderSubscriber</code> is a more efficient version of <code>UserMap</code>, only tracking user accounts that have orders.</p>
+<div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span><span class="nx">DriftClient</span><span class="p">,</span> <span class="nx">OrderSubscriber</span><span class="p">,</span> <span class="nx">Wallet</span><span class="p">,</span> <span class="nx">loadKeypair</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">"</span><span class="s2">https://api.mainnet-beta.solana.com</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">keyPairFile</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">~/.config/solana/my-keypair.json</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">wallet</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Wallet</span><span class="p">(</span><span class="nx">loadKeypair</span><span class="p">(</span><span class="nx">privateKeyFile</span><span class="p">))</span>
+
+<span class="kd">const</span> <span class="nx">driftClient</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DriftClient</span><span class="p">({</span>
+  <span class="nx">connection</span><span class="p">,</span>
+  <span class="nx">wallet</span><span class="p">,</span>
+  <span class="na">env</span><span class="p">:</span> <span class="dl">'</span><span class="s1">mainnet-beta</span><span class="dl">'</span><span class="p">,</span>
+<span class="p">});</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">();</span>
+
+<span class="kd">const</span> <span class="nx">subscriptionConfig</span><span class="p">:</span>
+  <span class="o">|</span> <span class="p">{</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">polling</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">frequency</span><span class="p">:</span> <span class="nx">ORDERBOOK_UPDATE_INTERVAL</span><span class="p">,</span>
+    <span class="na">commitment</span><span class="p">:</span> <span class="nx">stateCommitment</span><span class="p">,</span>
+  <span class="p">}</span>
+  <span class="o">|</span> <span class="p">{</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">websocket</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">commitment</span><span class="p">:</span> <span class="nx">stateCommitment</span><span class="p">,</span>
+    <span class="na">resyncIntervalMs</span><span class="p">:</span> <span class="nx">WS_FALLBACK_FETCH_INTERVAL</span><span class="p">,</span>
+  <span class="p">}</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">websocket</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">commitment</span><span class="p">:</span> <span class="nx">stateCommitment</span><span class="p">,</span>
+    <span class="na">resyncIntervalMs</span><span class="p">:</span> <span class="nx">WS_FALLBACK_FETCH_INTERVAL</span><span class="p">,</span> <span class="c1">// periodically resyncs the orders in case of missed websocket messages</span>
+  <span class="p">};</span>
+
+<span class="kd">const</span> <span class="nx">orderSubscriber</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">OrderSubscriber</span><span class="p">({</span>
+  <span class="nx">driftClient</span><span class="p">,</span>
+  <span class="nx">subscriptionConfig</span><span class="p">,</span>
+<span class="p">});</span>
+
+<span class="k">await</span> <span class="nx">orderSubscriber</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">();</span>
+</code></pre></div><h2 id='orderbook-subscription'>Orderbook Subscription</h2>
+<p>With a <code>DlobSource</code> you can then subscribe to the orderbook.</p>
+<div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">DLOBSubscriber</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
 
  <span class="kd">const</span> <span class="nx">dlobSubscriber</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DLOBSubscriber</span><span class="p">({</span>
     <span class="nx">driftClient</span><span class="p">,</span>
-    <span class="na">dlobSource</span><span class="p">:</span> <span class="nx">userMap</span><span class="p">,</span>
-    <span class="na">slotSource</span><span class="p">:</span> <span class="nx">slotSubscriber</span><span class="p">,</span>
+    <span class="na">dlobSource</span><span class="p">:</span> <span class="nx">orderSubscriber</span><span class="p">,</span> <span class="c1">// or UserMap</span>
+    <span class="na">slotSource</span><span class="p">:</span> <span class="nx">orderSubscriber</span><span class="p">,</span> <span class="c1">// or UserMap</span>
     <span class="na">updateFrequency</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
  <span class="p">});</span>
 
@@ -2264,7 +2279,137 @@ The user map subscribes to user account updates.</p>
 </tbody></table>
 
 <p>The L3 orderbook contains every maker order on drift dlob, including the address for the user that placed the order.</p>
-<h1 id='events'>Events</h1><h2 id='event-subscription'>Event Subscription</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">EventSubscriber</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
+<h1 id='orderbook-dlob-server'>Orderbook (Dlob Server)</h1>
+<p>Drift runs a <a href="https://github.com/drift-labs/dlob-server"><code>dlob-server</code></a> to reduce the RPC load on UI users and traders. You can access this server (or run your own!) instead of <a href="#orderbook-blockchain">maintaing an order book from the blockchain</a>.</p>
+<h2 id='polling'>Polling</h2>
+<p>The mainnet-beta http endpoint is: <code>https://dlob.drift.trade/</code></p>
+<h3 id='specifying-a-market'>Specifying a market</h3>
+<p>All endpoints follow the same query parameter scheme to specify a market:</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>marketName</td>
+<td>The market name of the orderbook to get. If not set, marketIndex and marketType must be set</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>marketIndex</td>
+<td>The market index of the orderbook to get. If not set, marketName must be set</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>marketType</td>
+<td>The market type of the orderbook to get. If not set, marketName must be set</td>
+<td>Yes</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id='get-l2-and-get-l3'><code>GET /l2</code> and <code>Get /l3</code></h3>
+<p>Returns an L2/L3 orderbook for the specificed market.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+<th>L2 only</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>depth</td>
+<td>Number of records to return per side</td>
+<td>Yes</td>
+<td>all orders</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>includeVamm</td>
+<td><code>true</code> to include vAMM liquidity in the response</td>
+<td>Yes</td>
+<td><code>false</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>includeOracle</td>
+<td><code>true</code> to include oracle data with the response</td>
+<td>Yes</td>
+<td><code>false</code></td>
+<td>No</td>
+</tr>
+</tbody></table>
+
+<p>Example: https://dlob.drift.trade/l2?marketName=JTO-PERP&amp;depth=10&amp;includeOracle=true&amp;includeVamm=true</p>
+
+<p>Example: https://dlob.drift.trade/l3?marketName=JTO-PERP&amp;includeOracle=true</p>
+<h3 id='get-topmakers'><code>GET /topMakers</code></h3>
+<p>Returns the top makers (currently returns an exhaustive list) for a given market (useful for <code>place_and_take</code> orders).</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>side</td>
+<td>Side to return makers for (<code>bid</code> or <code>ask</code>)</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>limit</td>
+<td>Limit number of makers to return</td>
+<td>Yes</td>
+<td>all</td>
+</tr>
+<tr>
+<td>includeUserStats</td>
+<td><code>true</code> to include full UserStats</td>
+<td>Yes</td>
+<td><code>false</code></td>
+</tr>
+</tbody></table>
+
+<p>Example: https://dlob.drift.trade/topMakers?marketName=JTO-PERP&amp;side=bid&amp;limit=5</p>
+<h2 id='websocket'>Websocket</h2>
+<p>The mainnet-beta websocket endpoint is: <code>wss://dlob.drift.trade/ws</code></p>
+
+<p>The websocket server currently only sends L2 orderbook data, roughly every 1s. Ensure you have reconnect logc in place in case the connection is terminated by the server.</p>
+<div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="nx">WebSocket</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">ws</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">ws</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebSocket</span><span class="p">(</span><span class="dl">'</span><span class="s1">wss://dlob.drift.trade/ws</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">ws</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">open</span><span class="dl">'</span><span class="p">,</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span> <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">subscribe</span><span class="dl">'</span><span class="p">,</span> <span class="na">marketType</span><span class="p">:</span> <span class="dl">'</span><span class="s1">perp</span><span class="dl">'</span><span class="p">,</span> <span class="na">channel</span><span class="p">:</span> <span class="dl">'</span><span class="s1">orderbook</span><span class="dl">'</span><span class="p">,</span> <span class="na">market</span><span class="p">:</span> <span class="dl">'</span><span class="s1">SOL-PERP</span><span class="dl">'</span> <span class="p">}));</span>
+<span class="p">});</span>
+
+<span class="nx">ws</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">message</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">data</span><span class="p">:</span> <span class="nx">WebSocket</span><span class="p">.</span><span class="nx">Data</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">message</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`Received data from channel: </span><span class="p">${</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">message</span><span class="p">.</span><span class="nx">channel</span><span class="p">)}</span><span class="s2">`</span><span class="p">);</span>
+    <span class="c1">// book and trades data is in message.data</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="dl">'</span><span class="s1">Invalid message:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">wsConn</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">close</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Connection closed</span><span class="dl">'</span><span class="p">);</span>
+  <span class="c1">// if you did not close the connection yourself, you should reconnect here</span>
+<span class="p">});</span>
+
+</code></pre></div><h1 id='events'>Events</h1><h2 id='event-subscription'>Event Subscription</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">EventSubscriber</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
 
 <span class="kd">const</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
   <span class="na">eventTypes</span><span class="p">:</span> <span class="p">[</span>
@@ -2684,7 +2829,7 @@ This examples should be used as code reference only. Be cautious running any unr
 <h2 id='python'>Python</h2>
 <p><a href="https://github.com/drift-labs/driftpy/tree/master/examples">driftpy examples/</a></p>
 <h1 id='historical-data'>Historical Data</h1>
-<p>Snapshots are collected by parsing on-chain transaction logs. For convience the below are parsed logs collected, stored as a CSV, and stored off-chain (~99% of records). </p>
+<p>Snapshots are collected by parsing on-chain transaction logs. For convience the below are parsed logs collected, stored as a CSV, and stored off-chain (~99% of records).</p>
 
 <p>Please share any transaction signatures or time ranges you believe might be missing in Drift Protocol Discord.</p>
 <h2 id='url-prefix'>URL Prefix</h2>
@@ -2770,7 +2915,28 @@ This examples should be used as code reference only. Be cautious running any unr
 <td>1M</td>
 </tr>
 </tbody></table>
-<h2 id='examples'>Examples</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
+<h2 id='examples'>Examples</h2>
+<p>Get historical trades on <code>SOL-PERP</code> for August 5, 2023:
+<code>
+https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/market/SOL-PERP/trades/2023/8/5
+</code></p>
+<h2 id='records-columns'>Records Columns</h2>
+<p>Below are definitions of the columns in each record type.</p>
+<h3 id='trades'>trades</h3>
+<table><thead>
+<tr>
+<th>variable</th>
+<th>description</th>
+<th>example</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>accountKey</td>
+<td>user sub account public key (not authority)</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id='market-trades'>market-trades</h3><h3 id='funding-rates'>funding-rates</h3><h3 id='funding-payments'>funding-payments</h3><h3 id='deposits'>deposits</h3><h3 id='liquidations'>liquidations</h3><h3 id='candles'>candles</h3><h3 id='settle-pnl-records'>settle-pnl-records</h3><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
 
 <span class="n">outcsv</span> <span class="o">=</span> <span class="n">requets</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/user/2dy78vpWpquDgAoLB8w8Ewfns9WXYzQx4CGt3HSgZLEe/trades/2023/4'</span><span class="p">)</span><span class="s">'
 </span></code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/user/2dy78vpWpquDgAoLB8w8Ewfns9WXYzQx4CGt3HSgZLEe/trades/2023/4 <span class="nt">--output</span> out.csv.gz
