@@ -4,7 +4,7 @@ title: protocol-v2 API
 language_tabs: # must be one of https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers
   - typescript
   - python
-  - shell
+  - http
 
 toc_footers:
   - <a href='https://github.com/drift-labs/protocol-v2/releases/'> Release History </a>
@@ -92,6 +92,9 @@ Install driftpy from PyPI using pip:
 
 auto-generated documentation here: [https://drift-labs.github.io/driftpy/]
 
+## HTTP
+Use the self-hosted HTTP [gateway](https://github.com/drift-labs/gateway)
+
 ## Connection
 
   ```typescript
@@ -108,7 +111,12 @@ url = 'https://api.mainnet-beta.solana.com' # replace w/ any rpc
 connection = AsyncClient(url)
 ```
 
+```HTTP
+drift-gateway https://api.mainnet-beta.solana.com --port 8080
+```
+
 The connection object is used to send transactions to the Solana blockchain. It is used by the DriftClient to send transactions to the blockchain.
+
 
 ## Wallet
 
@@ -125,6 +133,11 @@ from driftpy.keypair import load_keypair
 keypair_file = '~/.config/solana/my-keypair.json'
 keypair = load_keypair(keypair_file)
 wallet = Wallet(kp)
+```
+```http
+# use `DRIFT_GATEWAY_KEY` environment variable to confiture the gateway wallet
+# either path to .json keypair or base58 seed string
+export DRIFT_GATEWAY_KEY="</path/to/my-keypair.json|<KEYPAIR_BASE58_SEED>"
 ```
 
 The wallet used to sign solana transactions. The wallet can be created from a private key or from a keypair file.
@@ -336,7 +349,7 @@ driftClient.transferDeposit(
 
 ```python
 market_index = 0
-amount = drift_client.convert_to_spot_precision(market_ndex, 100)
+amount = drift_client.convert_to_spot_precision(market_index, 100)
 from_sub_account_id = 0
 to_sub_account_id = 0
 
@@ -446,6 +459,23 @@ order_params = OrderParams(
 await drift_client.get_place_perp_order(order_params)
 ```
 
+```shell
+curl -X POST -H 'content-type: application/json' \
+  -d '{
+    "orders": [{
+        "marketIndex": 0,
+        "marketType": "perp",
+        "amount": 1.23,
+        "price": 80.0,
+        "postOnly": true,
+        "orderType": "limit",
+        "immediateOrCancel": false,
+        "reduceOnly": false
+    }]
+   }' \
+localhost:8080/v2/orders
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | orderParams | The order params  | No | |
@@ -480,6 +510,23 @@ order_params = OrderParams(
         )
 
 await driftClient.place_spot_order(order_params);
+```
+
+```shell
+curl -X POST -H 'content-type: application/json' \
+  -d '{
+    "orders": [{
+        "marketIndex": 0,
+        "marketType": "spot",
+        "amount": -1.23,
+        "price": 80.0,
+        "postOnly": true,
+        "orderType": "limit",
+        "immediateOrCancel": false,
+        "reduceOnly": false
+    }]
+   }' \
+localhost:8080/v2/orders
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -536,6 +583,23 @@ place_order_params = [
 ]
 
 await drift_client.place_orders(place_order_params);
+```
+
+```shell
+curl -X POST -H 'content-type: application/json' \
+  -d '{
+      "orders": [{
+          "marketIndex": 0,
+          "marketType": "spot",
+          "amount": 1.23,
+          "price": 80.0,
+          "postOnly": true,
+          "orderType": "limit",
+          "immediateOrCancel": false,
+          "reduceOnly": false
+      }]
+    }' \
+localhost:8080/v2/orders
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -604,6 +668,13 @@ await drift_client.cancel_order(order_id);
 | ----------- | ----------- | -------- | ------- |
 | orderId | The order being canceled  | No | |
 
+
+```shell
+curl -X DELETE -H 'content-type: application/json' \
+  -d '{ "ids": [1] }' \
+  localhost:8080/v2/orders
+```
+
 ## Canceling Order By User Order Id
 
 ```typescript
@@ -616,6 +687,12 @@ await driftClient.cancelOrderByUserOrderId(userOrderId);
 
 const user_order_id = 1;
 await drift_client.cancel_order_by_user_order_id(user_order_id);
+```
+
+```shell
+curl -X DELETE -H 'content-type: application/json' \
+  -d '{ "userIds": [1] }' \
+  localhost:8080/v2/orders
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -639,6 +716,12 @@ direction = PositionDirection.LONG
 await drift_client.cancel_orders(market_type, market_index, direction) # cancel bids in perp market 0
 
 await drift_client.cancel_orders() # cancels all orders
+```
+
+```shell
+curl -X DELETE -H 'content-type: application/json' \
+  -d '{ "marketIndex": 1, "marketType": "spot" }' \
+  localhost:8080/v2/orders
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -703,6 +786,29 @@ place_order_params = [
 await drift_client.cancel_and_place_orders(canel_order_params, place_order_params);
 ```
 
+```shell
+curl -X POST -H 'content-type: application/json' \
+-d '{
+      "cancel": {
+        "marketIndex": 0,
+        "marketType": "perp"
+      },
+      "place": {
+        "orders": [{
+            "marketIndex": 0,
+            "marketType": "perp",
+            "amount": -1.23,
+            "price": 80.0,
+            "postOnly": true,
+            "orderType": "limit",
+            "immediateOrCancel": false,
+            "reduceOnly": false
+        }]
+      }
+   }' \
+localhost:8080/v2/orders/cancelAndPlace
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | cancelOrderParams | Parameters for cancel orders instruction | | |
@@ -744,12 +850,24 @@ await driftClient.modifyOrder(orderParams);
 
 order_id = 1
 
-modfiy_order_params = ModifyOrderParams(
+modify_order_params = ModifyOrderParams(
   base_asset_amount=drift_client.convert_to_perp_precision(1),
   price=drift_client.convert_to_price_precision(20),
 )
 
 await drift_client.modify_order(order_id, modify_order_params);
+```
+
+```shell
+curl -X PATCH -H 'content-type: application/json' \
+  -d '{
+    "orders": [{
+        "orderId": 32,
+        "amount": 1.05,
+        "price": 61.0
+    }]
+   }' \
+localhost:8080/v2/orders
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -777,12 +895,24 @@ await driftClient.modifyOrderByUserOrderId(orderParams);
 
 user_order_id = 1
 
-modfiy_order_params = ModifyOrderParams(
+modify_order_params = ModifyOrderParams(
   base_asset_amount=drift_client.convert_to_perp_precision(1),
   price=drift_client.convert_to_price_precision(20),
 )
 
 await drift_client.modify_order_by_user_id(user_order_id, modify_order_params);
+```
+
+```shell
+curl -X PATCH -H 'content-type: application/json' \
+  -d '{
+    "orders": [{
+        "userOrderId": 69,
+        "amount": 1.05,
+        "price": 61.0
+    }]
+   }' \
+localhost:8080/v2/orders
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -818,8 +948,8 @@ await drift_client.settle_pnl(
 
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
-| settleeUserAccountPublicKey | User address you're settling pnl for | No | |
-| settleeUserAccount | User account data you're settling pnl for | No | |
+| settleUserAccountPublicKey | User address you're settling pnl for | No | |
+| settleUserAccount | User account data you're settling pnl for | No | |
 | marketIndex | Market index for the perp market  | No | |
 
 ## Get Spot Market Account
@@ -895,6 +1025,13 @@ is_deposit = token_amount > 0
 is_borrow = token_amount < 0
 ```
 
+```shell
+ curl -X GET \
+  -H 'content-type: application/json' \
+  -d '{"marketIndex":0,"marketType":"spot"}' \
+localhost:8080/v2/positions
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marketIndex | Market index for the spot market  | No | |
@@ -924,6 +1061,12 @@ is_long = base_asset_amount > 0
 is_short = base_asset_amount < 0
 ```
 
+```shell
+curl -X GET \
+  -H 'content-type: application/json' \
+  -d '{"marketIndex":0,"marketType":"perp"}' \
+localhost:8080/v2/positions
+```
 
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
@@ -977,6 +1120,10 @@ const orders = user.getOpenOrders();
 
 ```python
 orders = user.get_open_orders()
+```
+
+```shell
+curl localhost:8080/v2/orders
 ```
 
 ## Get Unrealized Perp Pnl
