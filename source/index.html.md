@@ -4,7 +4,7 @@ title: protocol-v2 API
 language_tabs: # must be one of https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers
   - typescript
   - python
-  - http
+  - shell: http
 
 toc_footers:
   - <a href='https://github.com/drift-labs/protocol-v2/releases/'> Release History </a>
@@ -111,7 +111,7 @@ url = 'https://api.mainnet-beta.solana.com' # replace w/ any rpc
 connection = AsyncClient(url)
 ```
 
-```HTTP
+```shell
 drift-gateway https://api.mainnet-beta.solana.com --port 8080
 ```
 
@@ -134,8 +134,8 @@ keypair_file = '~/.config/solana/my-keypair.json'
 keypair = load_keypair(keypair_file)
 wallet = Wallet(kp)
 ```
-```http
-# use `DRIFT_GATEWAY_KEY` environment variable to confiture the gateway wallet
+```shell
+# use `DRIFT_GATEWAY_KEY` environment variable to configure the gateway wallet
 # either path to .json keypair or base58 seed string
 export DRIFT_GATEWAY_KEY="</path/to/my-keypair.json|<KEYPAIR_BASE58_SEED>"
 ```
@@ -254,6 +254,10 @@ driftClient.switchActiveUser(
 
 ```python
 drift_client.switch_active_user(sub_account_id=1)
+```
+
+```shell
+curl http://localhost:8080/v2/resource?subAccountId=1
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -597,6 +601,13 @@ curl -X POST -H 'content-type: application/json' \
           "orderType": "limit",
           "immediateOrCancel": false,
           "reduceOnly": false
+      },
+      {
+          "marketIndex": 2,
+          "marketType": "perp",
+          "amount": 0.1,
+          "price": 10000.0,
+          "orderType": "market",
       }]
     }' \
 localhost:8080/v2/orders
@@ -948,8 +959,8 @@ await drift_client.settle_pnl(
 
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
-| settleUserAccountPublicKey | User address you're settling pnl for | No | |
-| settleUserAccount | User account data you're settling pnl for | No | |
+| settleeUserAccountPublicKey | User address you're settling pnl for | No | |
+| settleeUserAccount | User account data you're settling pnl for | No | |
 | marketIndex | Market index for the perp market  | No | |
 
 ## Get Spot Market Account
