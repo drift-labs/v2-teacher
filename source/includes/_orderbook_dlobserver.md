@@ -63,20 +63,20 @@ Each market currently requires its own subscribe message. The two examples below
 #### Perp markets
 `
 {
-  type: 'subscribe',
-  marketType: 'perp',
-  channel: 'orderbook',
-  market: 'SOL-PERP'
+  "type": "subscribe",
+  "marketType": "perp",
+  "channel": "orderbook",
+  "market": "SOL-PERP"
 }
 `
 
 #### Spot markets
 `
 {
-  type: 'subscribe',
-  marketType: 'spot',
-  channel: 'orderbook',
-  market: 'SOL'
+  "type": "subscribe",
+  "marketType": "spot",
+  "channel": "orderbook",
+  "market": "SOL"
 }
 `
 
@@ -160,33 +160,32 @@ Trades feed subscribe messages take a similar form to orderbook data, just chang
 #### Perp markets
 `
 {
-  type: 'subscribe',
-  marketType: 'perp',
-  channel: 'trades',
-  market: 'SOL-PERP'
+  "type": "subscribe",
+  "marketType": "perp",
+  "channel": "trades",
+  "market": "SOL-PERP"
 }
 `
 
 #### Spot markets
 `
 {
-  type: 'subscribe',
-  marketType: 'spot',
-  channel: 'trades',
-  market: 'SOL'
+  "type": "subscribe",
+  "marketType": "spot",
+  "channel": "trades",
+  "market": "SOL"
 }
 `
 
 ## Websocket - Unsubscribing
 
 To unsubscribe to a channel, send a subscribe-like message, with the message type set to `unsubscribe`. Unsubscribe requests to channels not previously subscribed to will have no impact.
-
 `
 {
-  type: 'unsubscribe',
-  marketType: 'perp',
-  channel: 'orderbook',
-  market: 'SOL-PERP'
+  "type": "unsubscribe",
+  "marketType": "perp",
+  "channel": "orderbook",
+  "market": "SOL-PERP"
 }
 `
 
@@ -196,7 +195,7 @@ To alleviate backpressure on websocket servers, drift websockets stop sending me
 
 Heartbeat messages are sent every 5 seconds and take the following form:
 `
-  {channel: 'heartbeat'}
+  {"channel": "heartbeat"}
 `
 
 ### Ping/pong
