@@ -2822,19 +2822,19 @@ devnet: <a href="https://master.dlob.drift.trade/">https://master.dlob.drift.tra
 <h4 id='perp-markets'>Perp markets</h4>
 <p><code>
 {
-  type: &#39;subscribe&#39;,
-  marketType: &#39;perp&#39;,
-  channel: &#39;orderbook&#39;,
-  market: &#39;SOL-PERP&#39;
+  &quot;type&quot;: &quot;subscribe&quot;,
+  &quot;marketType&quot;: &quot;perp&quot;,
+  &quot;channel&quot;: &quot;orderbook&quot;,
+  &quot;market&quot;: &quot;SOL-PERP&quot;
 }
 </code></p>
 <h4 id='spot-markets'>Spot markets</h4>
 <p><code>
 {
-  type: &#39;subscribe&#39;,
-  marketType: &#39;spot&#39;,
-  channel: &#39;orderbook&#39;,
-  market: &#39;SOL&#39;
+  &quot;type&quot;: &quot;subscribe&quot;,
+  &quot;marketType&quot;: &quot;spot&quot;,
+  &quot;channel&quot;: &quot;orderbook&quot;,
+  &quot;market&quot;: &quot;SOL&quot;
 }
 </code></p>
 <div class="highlight"><pre class="highlight typescript tab-typescript"><code>
@@ -2907,30 +2907,29 @@ devnet: <a href="https://master.dlob.drift.trade/">https://master.dlob.drift.tra
 <h4 id='perp-markets-2'>Perp markets</h4>
 <p><code>
 {
-  type: &#39;subscribe&#39;,
-  marketType: &#39;perp&#39;,
-  channel: &#39;trades&#39;,
-  market: &#39;SOL-PERP&#39;
+  &quot;type&quot;: &quot;subscribe&quot;,
+  &quot;marketType&quot;: &quot;perp&quot;,
+  &quot;channel&quot;: &quot;trades&quot;,
+  &quot;market&quot;: &quot;SOL-PERP&quot;
 }
 </code></p>
 <h4 id='spot-markets-2'>Spot markets</h4>
 <p><code>
 {
-  type: &#39;subscribe&#39;,
-  marketType: &#39;spot&#39;,
-  channel: &#39;trades&#39;,
-  market: &#39;SOL&#39;
+  &quot;type&quot;: &quot;subscribe&quot;,
+  &quot;marketType&quot;: &quot;spot&quot;,
+  &quot;channel&quot;: &quot;trades&quot;,
+  &quot;market&quot;: &quot;SOL&quot;
 }
 </code></p>
 <h2 id='websocket-unsubscribing'>Websocket - Unsubscribing</h2>
-<p>To unsubscribe to a channel, send a subscribe-like message, with the message type set to <code>unsubscribe</code>. Unsubscribe requests to channels not previously subscribed to will have no impact.</p>
-
-<p><code>
+<p>To unsubscribe to a channel, send a subscribe-like message, with the message type set to <code>unsubscribe</code>. Unsubscribe requests to channels not previously subscribed to will have no impact.
+<code>
 {
-  type: &#39;unsubscribe&#39;,
-  marketType: &#39;perp&#39;,
-  channel: &#39;orderbook&#39;,
-  market: &#39;SOL-PERP&#39;
+  &quot;type&quot;: &quot;unsubscribe&quot;,
+  &quot;marketType&quot;: &quot;perp&quot;,
+  &quot;channel&quot;: &quot;orderbook&quot;,
+  &quot;market&quot;: &quot;SOL-PERP&quot;
 }
 </code></p>
 <h2 id='websocket-liveness-measure'>Websocket - Liveness measure</h2>
@@ -2938,7 +2937,7 @@ devnet: <a href="https://master.dlob.drift.trade/">https://master.dlob.drift.tra
 
 <p>Heartbeat messages are sent every 5 seconds and take the following form:
 <code>
-  {channel: &#39;heartbeat&#39;}
+  {&quot;channel&quot;: &quot;heartbeat&quot;}
 </code></p>
 <h3 id='ping-pong'>Ping/pong</h3>
 <p>No ping messages are sent from the websocket server. Unsolicited ping messages are allowed and will receive pongs back.</p>
