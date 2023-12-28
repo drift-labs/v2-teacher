@@ -117,14 +117,15 @@ The connection object is used to send transactions to the Solana blockchain. It 
   ```typescript
 import {Wallet, loadKeypair} from "@drift-labs/sdk";
 
-const keyPairFile = '~/.config/solana/my-keypair.json';
+const keyPairFile = `${process.env.HOME}/.config/solana/my-keypair.json`;
 const wallet = new Wallet(loadKeypair(keyPairFile));
 ```
 ```python
+import os
 from anchorpy import Wallet
 from driftpy.keypair import load_keypair
 
-keypair_file = '~/.config/solana/my-keypair.json'
+keypair_file = os.path.expanduser('~/.config/solana/my-keypair.json')
 keypair = load_keypair(keypair_file)
 wallet = Wallet(kp)
 ```
@@ -142,7 +143,7 @@ import {Wallet, loadKeypair, DriftClient} from "@drift-labs/sdk";
 const connection = new Connection('https://api.mainnet-beta.solana.com');
 
 const keyPairFile = '~/.config/solana/my-keypair.json';
-const wallet = new Wallet(loadKeypair(privateKeyFile))
+const wallet = new Wallet(loadKeypair(keyPairFile))
 
 const driftClient = new DriftClient({
   connection,
