@@ -159,7 +159,7 @@ from driftpy.dlob.dlob_client import DLOBClient
 from driftpy.dlob.client_types import DLOBClientConfig
 
 config = DLOBClientConfig(drift_client, user_map, slot_subscriber, 1_000)
-dlob_client = DLOBClient("https://dlob.drift.trade", config)
+dlob_client = DLOBClient(config = config)
 
 await dlob_client.subscribe()
 ```
@@ -193,18 +193,19 @@ const l2 = dlobSubscriber.getL2({
 | fallbackL2Generators | L2OrderbookGenerators for fallback liquidity e.g. vAmm, openbook, phoenix. Unnecessary if includeVamm is true | Yes | |
 
 ```python
-from driftpy.dlob.dlob_client import MarketId
-from driftpy.types import MarketType
-
-market_id = MarketId(0, MarketType.Perp())
-
-l2 = await dlob_client.get_l2_orderbook(market_id)
+l2 = dlob_client.get_l2_orderbook_sync("SOL-PERP")
 ```
 
 ### Python
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
-| market_id | The market ID of the orderbook to get. | No | |
+| market_name | The market name of the orderbook to get. If not set, market_index and market_type must be set | Yes | |
+| market_index | The market index of the orderbook to get. If not set, market_name must be set | Yes | |
+| market_type | The market type of the orderbook to get. If not set, market_name must be set | Yes | |
+| depth | The depth of the orderbook to get | Yes | 10 |
+| include_vamm | Whether to include vAMM | Yes | false |
+| num_vamm_orders | Number of orders to include from the vAMM.  If not provided, depth is used. | Yes | |
+| fallback_l2_generators | L2OrderbookGenerators for fallback liquidity e.g. vAmm, openbook, phoenix. Unnecessary if includeVamm is true | Yes | |
 
 The L2 orderbook is an aggregate of drift dlob orders and, optionally, fallback liquidity.
 
@@ -224,17 +225,14 @@ const l3 = dlobSubscriber.getL3({
 | marketType | The market type of the orderbook to get. If not set, marketName must be set | Yes | |
 
 ```python
-from driftpy.dlob.dlob_client import MarketId
-from driftpy.types import MarketType
-
-market_id = MarketId(0, MarketType.Perp())
-
-l3 = await dlob_client.get_l3_orderbook(market_id)
+l3 = dlob_client.get_l3_orderbook_sync("SOL-PERP")
 ```
 
 ### Python
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
-| market_id | The market ID of the orderbook to get. | No | |
+| market_name | The market name of the orderbook to get. If not set, market_index and market_type must be set | Yes | |
+| market_index | The market index of the orderbook to get. If not set, market_name must be set | Yes | |
+| market_type | The market type of the orderbook to get. If not set, market_name must be set | Yes | |
 
 The L3 orderbook contains every maker order on drift dlob, including the address for the user that placed the order.
