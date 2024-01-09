@@ -54,6 +54,36 @@ const userMap = new UserMap({
 await userMap.subscribe();
 ```
 
+
+```python
+from solana.rpc.async_api import AsyncClient
+from solders.keypair import Keypair
+from anchorpy import Wallet
+from driftpy.drift_client import DriftClient
+from driftpy.keypair import load_keypair
+from driftpy.user_map.user_map import UserMap
+from driftpy.user_map.user_map_config import UserMapConfig, WebsocketConfig
+
+connection = AsyncClient("https://api.mainnet-beta.solana/com")
+
+keypair_file = "~/.config/solana/my-keypair.json"
+
+wallet = Wallet(load_keypair(keypair_file))
+
+drift_client = DriftClient(
+  connnection,
+  wallet,
+  "mainnet"
+)
+
+await drift_client.subscribe()
+
+user_map_config = UserMapConfig(drift_client, WebsocketConfig())
+user_map = UserMap(user_map_config)
+
+await user_map.subscribe()
+```
+
 ## Dlob Source - `OrderSubscriber`
 
 `OrderSubscriber` is a more efficient version of `UserMap`, only tracking user accounts that have orders.
@@ -115,12 +145,33 @@ import {DLOBSubscriber} from "@drift-labs/sdk";
 await dlobSubscriber.subscribe();
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | driftClient | DriftClient object | No | |
 | dlobSource | Where to build the orderbook from. Can subscribe to user accounts on-chain using UserMap or request DLOB from api using DLOBApiClient | No | |
 | slotSource | Where to get slot from | No | |
 | updateFrequency | How often to rebuild the orderbook from the dlobSource in milliseconds | No | |
+
+
+```python
+from driftpy.dlob.dlob_client import DLOBClient
+from driftpy.dlob.client_types import DLOBClientConfig
+
+config = DLOBClientConfig(drift_client, user_map, slot_subscriber, 1_000)
+dlob_client = DLOBClient("https://dlob.drift.trade", config)
+
+await dlob_client.subscribe()
+```
+
+### Python
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| drift_client | DriftClient object | No | |
+| dlob_source | Where to build the orderbook from. Can subscribe to user accounts on-chain using UserMap. | No | |
+| slot_source | Where to get slot from | No | |
+| update_frequency | How often to rebuild the orderbook from the dlob_source in milliseconds | No | |
+
 
 ## Get L2 Orderbook
 
@@ -131,6 +182,7 @@ const l2 = dlobSubscriber.getL2({
 });
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marketName | The market name of the orderbook to get. If not set, marketIndex and marketType must be set | Yes | |
@@ -139,6 +191,20 @@ const l2 = dlobSubscriber.getL2({
 | depth | The depth of the orderbook to get | Yes | 10 |
 | includeVamm | Whether to include vAMM | Yes | false |
 | fallbackL2Generators | L2OrderbookGenerators for fallback liquidity e.g. vAmm, openbook, phoenix. Unnecessary if includeVamm is true | Yes | |
+
+```python
+from driftpy.dlob.dlob_client import MarketId
+from driftpy.types import MarketType
+
+market_id = MarketId(0, MarketType.Perp())
+
+l2 = await dlob_client.get_l2_orderbook(market_id)
+```
+
+### Python
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| market_id | The market ID of the orderbook to get. | No | |
 
 The L2 orderbook is an aggregate of drift dlob orders and, optionally, fallback liquidity.
 
@@ -150,10 +216,25 @@ const l3 = dlobSubscriber.getL3({
 });
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marketName | The market name of the orderbook to get. If not set, marketIndex and marketType must be set | Yes | |
 | marketIndex | The market index of the orderbook to get. If not set, marketName must be set | Yes | |
 | marketType | The market type of the orderbook to get. If not set, marketName must be set | Yes | |
+
+```python
+from driftpy.dlob.dlob_client import MarketId
+from driftpy.types import MarketType
+
+market_id = MarketId(0, MarketType.Perp())
+
+l3 = await dlob_client.get_l3_orderbook(market_id)
+```
+
+### Python
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| market_id | The market ID of the orderbook to get. | No | |
 
 The L3 orderbook contains every maker order on drift dlob, including the address for the user that placed the order.
