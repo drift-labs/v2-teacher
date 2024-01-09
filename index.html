@@ -2533,6 +2533,32 @@ This examples should be used as code reference only. Be cautious running any unr
 <span class="p">});</span>
 
 <span class="k">await</span> <span class="nx">userMap</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">();</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">solana.rpc.async_api</span> <span class="kn">import</span> <span class="n">AsyncClient</span>
+<span class="kn">from</span> <span class="nn">solders.keypair</span> <span class="kn">import</span> <span class="n">Keypair</span>
+<span class="kn">from</span> <span class="nn">anchorpy</span> <span class="kn">import</span> <span class="n">Wallet</span>
+<span class="kn">from</span> <span class="nn">driftpy.drift_client</span> <span class="kn">import</span> <span class="n">DriftClient</span>
+<span class="kn">from</span> <span class="nn">driftpy.keypair</span> <span class="kn">import</span> <span class="n">load_keypair</span>
+<span class="kn">from</span> <span class="nn">driftpy.user_map.user_map</span> <span class="kn">import</span> <span class="n">UserMap</span>
+<span class="kn">from</span> <span class="nn">driftpy.user_map.user_map_config</span> <span class="kn">import</span> <span class="n">UserMapConfig</span><span class="p">,</span> <span class="n">WebsocketConfig</span>
+
+<span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncClient</span><span class="p">(</span><span class="s">"https://api.mainnet-beta.solana/com"</span><span class="p">)</span>
+
+<span class="n">keypair_file</span> <span class="o">=</span> <span class="s">"~/.config/solana/my-keypair.json"</span>
+
+<span class="n">wallet</span> <span class="o">=</span> <span class="n">Wallet</span><span class="p">(</span><span class="n">load_keypair</span><span class="p">(</span><span class="n">keypair_file</span><span class="p">))</span>
+
+<span class="n">drift_client</span> <span class="o">=</span> <span class="n">DriftClient</span><span class="p">(</span>
+  <span class="n">connnection</span><span class="p">,</span>
+  <span class="n">wallet</span><span class="p">,</span>
+  <span class="s">"mainnet"</span>
+<span class="p">)</span>
+
+<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">subscribe</span><span class="p">()</span>
+
+<span class="n">user_map_config</span> <span class="o">=</span> <span class="n">UserMapConfig</span><span class="p">(</span><span class="n">drift_client</span><span class="p">,</span> <span class="n">WebsocketConfig</span><span class="p">())</span>
+<span class="n">user_map</span> <span class="o">=</span> <span class="n">UserMap</span><span class="p">(</span><span class="n">user_map_config</span><span class="p">)</span>
+
+<span class="k">await</span> <span class="n">user_map</span><span class="p">.</span><span class="n">subscribe</span><span class="p">()</span>
 </code></pre></div><h2 id='dlob-source-ordersubscriber'>Dlob Source - <code>OrderSubscriber</code></h2>
 <p><code>OrderSubscriber</code> is a more efficient version of <code>UserMap</code>, only tracking user accounts that have orders.</p>
 <div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
@@ -2584,7 +2610,7 @@ This examples should be used as code reference only. Be cautious running any unr
  <span class="p">});</span>
 
 <span class="k">await</span> <span class="nx">dlobSubscriber</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">();</span>
-</code></pre></div>
+</code></pre></div><h3 id='typescript'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2618,11 +2644,52 @@ This examples should be used as code reference only. Be cautious running any unr
 <td></td>
 </tr>
 </tbody></table>
+<div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">driftpy.dlob.dlob_client</span> <span class="kn">import</span> <span class="n">DLOBClient</span>
+<span class="kn">from</span> <span class="nn">driftpy.dlob.client_types</span> <span class="kn">import</span> <span class="n">DLOBClientConfig</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">DLOBClientConfig</span><span class="p">(</span><span class="n">drift_client</span><span class="p">,</span> <span class="n">user_map</span><span class="p">,</span> <span class="n">slot_subscriber</span><span class="p">,</span> <span class="mi">1_000</span><span class="p">)</span>
+<span class="n">dlob_client</span> <span class="o">=</span> <span class="n">DLOBClient</span><span class="p">(</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="p">)</span>
+
+<span class="k">await</span> <span class="n">dlob_client</span><span class="p">.</span><span class="n">subscribe</span><span class="p">()</span>
+</code></pre></div><h3 id='python'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>drift_client</td>
+<td>DriftClient object</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>dlob_source</td>
+<td>Where to build the orderbook from. Can subscribe to user accounts on-chain using UserMap.</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>slot_source</td>
+<td>Where to get slot from</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>update_frequency</td>
+<td>How often to rebuild the orderbook from the dlob_source in milliseconds</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
 <h2 id='get-l2-orderbook'>Get L2 Orderbook</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">l2</span> <span class="o">=</span> <span class="nx">dlobSubscriber</span><span class="p">.</span><span class="nx">getL2</span><span class="p">({</span>
   <span class="na">marketName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">SOL-PERP</span><span class="dl">'</span><span class="p">,</span>
   <span class="na">depth</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
 <span class="p">});</span>
-</code></pre></div>
+</code></pre></div><h3 id='typescript-2'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2668,12 +2735,65 @@ This examples should be used as code reference only. Be cautious running any unr
 <td></td>
 </tr>
 </tbody></table>
+<div class="highlight"><pre class="highlight python tab-python"><code><span class="n">l2</span> <span class="o">=</span> <span class="n">dlob_client</span><span class="p">.</span><span class="n">get_l2_orderbook_sync</span><span class="p">(</span><span class="s">"SOL-PERP"</span><span class="p">)</span>
+</code></pre></div><h3 id='python-2'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>market_name</td>
+<td>The market name of the orderbook to get. If not set, market_index and market_type must be set</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>market_index</td>
+<td>The market index of the orderbook to get. If not set, market_name must be set</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>market_type</td>
+<td>The market type of the orderbook to get. If not set, market_name must be set</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>depth</td>
+<td>The depth of the orderbook to get</td>
+<td>Yes</td>
+<td>10</td>
+</tr>
+<tr>
+<td>include_vamm</td>
+<td>Whether to include vAMM</td>
+<td>Yes</td>
+<td>false</td>
+</tr>
+<tr>
+<td>num_vamm_orders</td>
+<td>Number of orders to include from the vAMM.  If not provided, depth is used.</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>fallback_l2_generators</td>
+<td>L2OrderbookGenerators for fallback liquidity e.g. vAmm, openbook, phoenix. Unnecessary if includeVamm is true</td>
+<td>Yes</td>
+<td></td>
+</tr>
+</tbody></table>
 
 <p>The L2 orderbook is an aggregate of drift dlob orders and, optionally, fallback liquidity.</p>
 <h2 id='get-l3-orderbook'>Get L3 Orderbook</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">l3</span> <span class="o">=</span> <span class="nx">dlobSubscriber</span><span class="p">.</span><span class="nx">getL3</span><span class="p">({</span>
   <span class="na">marketName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">SOL-PERP</span><span class="dl">'</span><span class="p">,</span>
 <span class="p">});</span>
-</code></pre></div>
+</code></pre></div><h3 id='typescript-3'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2697,6 +2817,35 @@ This examples should be used as code reference only. Be cautious running any unr
 <tr>
 <td>marketType</td>
 <td>The market type of the orderbook to get. If not set, marketName must be set</td>
+<td>Yes</td>
+<td></td>
+</tr>
+</tbody></table>
+<div class="highlight"><pre class="highlight python tab-python"><code><span class="n">l3</span> <span class="o">=</span> <span class="n">dlob_client</span><span class="p">.</span><span class="n">get_l3_orderbook_sync</span><span class="p">(</span><span class="s">"SOL-PERP"</span><span class="p">)</span>
+</code></pre></div><h3 id='python-3'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>market_name</td>
+<td>The market name of the orderbook to get. If not set, market_index and market_type must be set</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>market_index</td>
+<td>The market index of the orderbook to get. If not set, market_name must be set</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>market_type</td>
+<td>The market type of the orderbook to get. If not set, market_name must be set</td>
 <td>Yes</td>
 <td></td>
 </tr>
