@@ -71,14 +71,29 @@ Each market currently requires its own subscribe message. The two examples below
 `
 
 #### Response
-| Field       | Description                                                                                                                            |
-|-------------|----------------------------------------------------------------------------------------------------------------------------------------|
-| channel     | Identifies the type of data being streamed. `orderbook_perp_0` indicates data for perp market 0 order book (SOL-PERP).                 |
-| data        | Contains the actual order book data in JSON format. This field is a JSON string that needs to be parsed.                               |
-| bids        | A list of bid orders in the order book, each representing an offer to buy.                                                             |
-| price       | The price at which the bid is made, indicating the maximum price the buyer is willing to pay.                                          |
-| size        | The size of the bid, indicating the quantity of the asset the buyer wishes to purchase.                                                |
-| sources     | Indicates the origin or source of the bid, such as `vamm` (Virtual Automated Market Maker) or `dlob` (Decentralized Limit Order Book). |
+#### Response
+| Field                                 | Description                                                                                                                                         |
+|---------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| channel                               | Identifies the type of data being streamed. `orderbook_perp_0` indicates data for perpetual market 0 order book (SOL-PERP).                          |
+| data                                  | Contains the actual order book data in JSON format. This field is a JSON string that needs to be parsed.                                            |
+| bids                                  | A list of bid orders in the order book, each representing an offer to buy.                                                                          |
+| asks                                  | A list of ask orders in the order book, each representing an offer to sell.                                                                         |
+| price                                 | The price at which the bid or ask is made.                                                                                                          |
+| size                                  | The size of the bid or ask, indicating the quantity of the asset the buyer or seller wishes to transact.                                            |
+| sources                               | Indicates the origin or source of the bid or ask, such as `vamm` (Virtual Automated Market Maker) or `dlob` (Decentralized Limit Order Book).       |
+| marketName                            | Name of the market, e.g., `SOL-PERP`.                                                                                                               |
+| marketType                            | Type of the market, e.g., `perp` for perpetual.                                                                                                     |
+| marketIndex                           | Index of the market, used to identify specific markets within a market type.                                                                        |
+| slot                                  | A unique identifier for the state of the blockchain at the time the order book snapshot was taken.                                                  |
+| oracle                                | The reported price from the oracle for this market.                                                                                                |
+| oracleData                            | Contains detailed information from the oracle, including price, slot, confidence, etc.                                                              |
+| oracleData.price                      | The price reported by the oracle.                                                                                                                   |
+| oracleData.slot                       | The slot number associated with the oracle data.                                                                                                    |
+| oracleData.confidence                 | The confidence interval for the oracle price.                                                                                                       |
+| oracleData.hasSufficientNumberOfDataPoints | Indicates whether the oracle has sufficient data points for reliability.                                                         |
+| oracleData.twap                       | The time-weighted average price as reported by the oracle.                                                                                          |
+| oracleData.twapConfidence             | The confidence interval for the time-weighted average price.                                                                                        |
+| marketSlot                            | Slot number associated with the market data.                                                                                                        |
 
 
 #### Spot markets
@@ -92,15 +107,28 @@ Each market currently requires its own subscribe message. The two examples below
 `
 
 #### Response
-| Field       | Description                                                                                                                         |
-|-------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| channel     | Identifies the type of data being streamed. i.e `orderbook_spot_1` indicates data for spot market 0 order book (SOL/USDC).          |
-| data        | Contains the actual order book data in JSON format. This field is a JSON string that needs to be parsed.                            |
-| bids        | A list of bid orders in the order book, each representing an offer to buy.                                                          |
-| price       | The price at which the bid is made, indicating the maximum price the buyer is willing to pay.                                       |
-| size        | The size of the bid, indicating the quantity of the asset the buyer wishes to purchase.                                             |
-| sources     | Indicates the origin or source of the bid, such as `phoenix` or `serum`, representing different liquidity providers.                |
-
+#### Response
+| Field        | Description                                                                                                                       |
+|--------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| channel      | Identifies the type of data being streamed. i.e `orderbook_spot_1` indicates data for the spot market order book (SOL/USDC).       |
+| data         | Contains the actual order book data in JSON format. This field is a JSON string that needs to be parsed.                          |
+| bids         | A list of bid orders in the order book, each representing an offer to buy.                                                        |
+| asks         | A list of ask orders in the order book, each representing an offer to sell.                                                       |
+| price        | The price at which the bid or ask is made.                                                                                        |
+| size         | The size of the bid or ask, indicating the quantity of the asset the buyer or seller wishes to transact.                          |
+| sources      | Indicates the origin or source of the bid or ask, such as `phoenix` or `serum`, representing different liquidity providers.       |
+| slot         | A unique identifier for the state of the blockchain at the time the order book snapshot was taken.                                 |
+| marketName   | Name of the market, e.g., `SOL`.                                                                                                  |
+| marketType   | Type of the market, e.g., `spot`.                                                                                                 |
+| marketIndex  | Index of the market, used to identify specific markets within a market type.                                                      |
+| oracle       | The reported price from the oracle for this market.                                                                               |
+| oracleData   | Contains detailed information from the oracle, including price, slot, confidence, etc.                                            |
+| oracleData.price                      | The price reported by the oracle.                                                                                                                   |
+| oracleData.slot                       | The slot number associated with the oracle data.                                                                                                    |
+| oracleData.confidence                 | The confidence interval for the oracle price.                                                                                                       |
+| oracleData.hasSufficientNumberOfDataPoints | Indicates whether the oracle has sufficient data points for reliability.                                                         |
+| oracleData.twap                       | The time-weighted average price as reported by the oracle.                                                                                          |
+| oracleData.twapConfidence             | The confidence interval for the time-weighted average price.                                                                                        |
 
 ```typescript
 
