@@ -382,7 +382,7 @@ MARKET, LIMIT, ORACLE orders all support auction parameters.
 | price | The limit price for order | Yes | 0 |
 | userOrderId | Unique order id specified by user| Yes | 0 |
 | reduceOnly | If the order can only reduce positions| Yes | false |
-| postOnly | If the order can only be a maker | Yes | false |
+| postOnly | If the order can only be a maker | PostOnlyParam | None |
 | triggerPrice | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders | Yes | |
 | triggerCondition | whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders | Yes | |
 | oraclePriceOffset | priceOffset for oracle derived limit price. only applicable for limit and oracle orders  | Yes | |
@@ -390,6 +390,21 @@ MARKET, LIMIT, ORACLE orders all support auction parameters.
 | auctionStartPrice | the price the auction starts at | Yes | |
 | auctionEndPrice | the price the auction ends at | Yes | |
 | maxTs | the max timestamp (on-chain unix timestamp) before the order expires | Yes | |
+
+## Post Only Params
+
+Drift orderbook is not a strict clob that enforces price-time priority. This is to maximize the parallelization of placing orders to
+take advantage of the solana runtime. To force an order to always be a maker, users most set the post only params. If a user order is set to post only,
+drift will check that an order does not cross the vamm spread, similar to how a traditional clob would check that an order doesn't cross the book's best bid/ask.
+If the post only is not used, a limit order can end up being a taker or maker.
+
+
+| Parameter   | Description |
+| ----------- | ----------- |
+| None | Does not enforce being maker |
+| MustPostOnly | Tx fails if order crosses the vamm |
+| TryPostOnly | Order is skipped (not placed) and tx succeeds if order crosses the vamm |
+| Slide | Order price is modified to be one tick below/above the vamm ask/bid |
 
 ## Placing Perp Order
 
