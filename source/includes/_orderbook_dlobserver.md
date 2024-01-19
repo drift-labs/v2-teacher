@@ -83,7 +83,7 @@ Each market currently requires its own subscribe message. The two examples below
 | marketName                            | Name of the market, e.g., `SOL-PERP`.                                                                                                               |
 | marketType                            | Type of the market, e.g., `perp` for perpetual.                                                                                                     |
 | marketIndex                           | Index of the market, used to identify specific markets within a market type.                                                                        |
-| slot                                  | A unique identifier for the state of the blockchain at the time the order book snapshot was taken.                                                  |
+| slot                                  | Solana slot.                                        |
 | oracle                                | The reported price from the oracle for this market.                                                                                                |
 | oracleData                            | Contains detailed information from the oracle, including price, slot, confidence, etc.                                                              |
 | oracleData.price                      | The price reported by the oracle.                                                                                                                   |
@@ -115,7 +115,7 @@ Each market currently requires its own subscribe message. The two examples below
 | price        | The price at which the bid or ask is made.                                                                                        |
 | size         | The size of the bid or ask, indicating the quantity of the asset the buyer or seller wishes to transact.                          |
 | sources      | Indicates the origin or source of the bid or ask, such as `phoenix` or `serum`, representing different liquidity providers.       |
-| slot         | A unique identifier for the state of the blockchain at the time the order book snapshot was taken.                                 |
+| slot         | Solana slot.                               |
 | marketName   | Name of the market, e.g., `SOL`.                                                                                                  |
 | marketType   | Type of the market, e.g., `spot`.                                                                                                 |
 | marketIndex  | Index of the market, used to identify specific markets within a market type.                                                      |
@@ -241,7 +241,7 @@ Trades feed subscribe messages take a similar form to orderbook data, just chang
 | oraclePrice                                | The oracle price at the time of the trade.                                                                          |
 | txSig                                      | Transaction signature.                                                                                              |
 | slot                                       | Slot number in which the trade occurred.                                                                            |
-| action                                     | Type of action that occurred (e.g., 'fill').                                                                        |
+| action                                     | fill.                                                                                                               |
 | actionExplanation                          | Explanation of the action (e.g., 'orderFilledWithAmm' indicating order filled with Automated Market Maker).         |
 | referrerReward                             | Reward amount for the referrer, if applicable.                                                                      |
 
