@@ -377,6 +377,9 @@
                     <a href="#order-params" class="toc-h2 toc-link" data-title="Order Params">Order Params</a>
                   </li>
                   <li>
+                    <a href="#post-only-params" class="toc-h2 toc-link" data-title="Post Only Params">Post Only Params</a>
+                  </li>
+                  <li>
                     <a href="#placing-perp-order" class="toc-h2 toc-link" data-title="Placing Perp Order">Placing Perp Order</a>
                   </li>
                   <li>
@@ -1146,8 +1149,8 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <tr>
 <td>postOnly</td>
 <td>If the order can only be a maker</td>
-<td>Yes</td>
-<td>false</td>
+<td>PostOnlyParam</td>
+<td>None</td>
 </tr>
 <tr>
 <td>triggerPrice</td>
@@ -1190,6 +1193,35 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td>the max timestamp (on-chain unix timestamp) before the order expires</td>
 <td>Yes</td>
 <td></td>
+</tr>
+</tbody></table>
+<h2 id='post-only-params'>Post Only Params</h2>
+<p>Drift orderbook is not a strict clob that enforces price-time priority. This is to maximize the parallelization of placing orders to
+take advantage of the solana runtime. To force an order to always be a maker, users most set the post only params. If a user order is set to post only,
+drift will check that an order does not cross the vamm spread, similar to how a traditional clob would check that an order doesn&#39;t cross the book&#39;s best bid/ask.
+If the post only is not used, a limit order can end up being a taker or maker.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>None</td>
+<td>Does not enforce being maker</td>
+</tr>
+<tr>
+<td>MustPostOnly</td>
+<td>Tx fails if order crosses the vamm</td>
+</tr>
+<tr>
+<td>TryPostOnly</td>
+<td>Order is skipped (not placed) and tx succeeds if order crosses the vamm</td>
+</tr>
+<tr>
+<td>Slide</td>
+<td>Order price is modified to be one tick below/above the vamm ask/bid</td>
 </tr>
 </tbody></table>
 <h2 id='placing-perp-order'>Placing Perp Order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
