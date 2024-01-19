@@ -225,7 +225,7 @@ const l3 = dlobSubscriber.getL3({
 | marketType | The market type of the orderbook to get. If not set, marketName must be set | Yes | |
 
 ```python
-l3 = dlob_client.get_l3_orderbook_sync("SOL-PERP")
+l3 = dlob_subscriber.get_l3_orderbook_sync("SOL-PERP")
 ```
 
 ### Python
