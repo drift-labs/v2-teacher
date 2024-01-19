@@ -70,6 +70,17 @@ Each market currently requires its own subscribe message. The two examples below
 }
 `
 
+#### Response
+| Field       | Description                                                                                                                            |
+|-------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| channel     | Identifies the type of data being streamed. `orderbook_perp_0` indicates data for perp market 0 order book (SOL-PERP).                 |
+| data        | Contains the actual order book data in JSON format. This field is a JSON string that needs to be parsed.                               |
+| bids        | A list of bid orders in the order book, each representing an offer to buy.                                                             |
+| price       | The price at which the bid is made, indicating the maximum price the buyer is willing to pay.                                          |
+| size        | The size of the bid, indicating the quantity of the asset the buyer wishes to purchase.                                                |
+| sources     | Indicates the origin or source of the bid, such as `vamm` (Virtual Automated Market Maker) or `dlob` (Decentralized Limit Order Book). |
+
+
 #### Spot markets
 `
 {
@@ -79,6 +90,17 @@ Each market currently requires its own subscribe message. The two examples below
   "market": "SOL"
 }
 `
+
+#### Response
+| Field       | Description                                                                                                                         |
+|-------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| channel     | Identifies the type of data being streamed. i.e `orderbook_spot_1` indicates data for spot market 0 order book (SOL/USDC).          |
+| data        | Contains the actual order book data in JSON format. This field is a JSON string that needs to be parsed.                            |
+| bids        | A list of bid orders in the order book, each representing an offer to buy.                                                          |
+| price       | The price at which the bid is made, indicating the maximum price the buyer is willing to pay.                                       |
+| size        | The size of the bid, indicating the quantity of the asset the buyer wishes to purchase.                                             |
+| sources     | Indicates the origin or source of the bid, such as `phoenix` or `serum`, representing different liquidity providers.                |
+
 
 ```typescript
 
@@ -167,6 +189,37 @@ Trades feed subscribe messages take a similar form to orderbook data, just chang
 }
 `
 
+#### Response
+| Field                                      | Description                                                                                                         |
+|--------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| channel                                    | Identifies the type of data being streamed. `trades_perp_0` indicates data for trades in perp market 0. (SOL-PERP)  |
+| ts                                         | Timestamp of the trade.                                                                                             |
+| marketIndex                                | Index of the market where the trade occurred.                                                                       |
+| marketType                                 | Type of the market, here it's `perp` for perpetual.                                                                 |
+| filler                                     | The address or identifier of the filler (taker) in the trade.                                                       |
+| takerFee                                   | Fee paid by the taker in the trade.                                                                                 |
+| makerFee                                   | Fee paid or received by the maker in the trade.                                                                     |
+| quoteAssetAmountSurplus                    | Surplus amount in quote asset.                                                                                      |
+| baseAssetAmountFilled                      | The amount of the base asset that was filled in this trade.                                                         |
+| quoteAssetAmountFilled                     | The amount of the quote asset that was filled in this trade.                                                        |
+| takerOrderId                               | Order ID of the taker's order, if available.                                                                        |
+| takerOrderBaseAssetAmount                  | Base asset amount specified in the taker's order.                                                                   |
+| takerOrderCumulativeBaseAssetAmountFilled  | Cumulative base asset amount filled in the taker's order.                                                           |
+| takerOrderCumulativeQuoteAssetAmountFilled | Cumulative quote asset amount filled in the taker's order.                                                          |
+| maker                                      | The address or identifier of the maker in the trade.                                                                |
+| makerOrderId                               | Order ID of the maker's order.                                                                                      |
+| makerOrderDirection                        | Direction of the maker's order (e.g., 'short' or 'long').                                                           |
+| makerOrderBaseAssetAmount                  | Base asset amount specified in the maker's order.                                                                   |
+| makerOrderCumulativeBaseAssetAmountFilled  | Cumulative base asset amount filled in the maker's order.                                                           |
+| makerOrderCumulativeQuoteAssetAmountFilled | Cumulative quote asset amount filled in the maker's order.                                                          |
+| oraclePrice                                | The oracle price at the time of the trade.                                                                          |
+| txSig                                      | Transaction signature.                                                                                              |
+| slot                                       | Slot number in which the trade occurred.                                                                            |
+| action                                     | Type of action that occurred (e.g., 'fill').                                                                        |
+| actionExplanation                          | Explanation of the action (e.g., 'orderFilledWithAmm' indicating order filled with Automated Market Maker).         |
+| referrerReward                             | Reward amount for the referrer, if applicable.                                                                      |
+
+
 #### Spot markets
 `
 {
@@ -176,6 +229,39 @@ Trades feed subscribe messages take a similar form to orderbook data, just chang
   "market": "SOL"
 }
 `
+
+#### Response
+| Field                                      | Description                                                                                                              |
+|--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
+| channel                                    | Identifies the type of data being streamed. `trades_spot_1` indicates data for trades in spot market 0 (SOL/USDC).       |
+| ts                                         | Timestamp of the trade.                                                                                                  |
+| marketIndex                                | Index of the market where the trade occurred.                                                                            |
+| marketType                                 | Type of the market, here it's `spot`.                                                                                    |
+| filler                                     | The address or identifier of the filler (taker) in the trade.                                                            |
+| takerFee                                   | Fee paid by the taker in the trade.                                                                                      |
+| makerFee                                   | Fee paid or received by the maker in the trade.                                                                          |
+| quoteAssetAmountSurplus                    | Surplus amount in quote asset.                                                                                           |
+| baseAssetAmountFilled                      | The amount of the base asset that was filled in this trade.                                                              |
+| quoteAssetAmountFilled                     | The amount of the quote asset that was filled in this trade.                                                             |
+| taker                                      | The address or identifier of the taker in the trade.                                                                     |
+| takerOrderId                               | Order ID of the taker's order, if available.                                                                             |
+| takerOrderDirection                        | Direction of the taker's order (e.g., 'long').                                                                           |
+| takerOrderBaseAssetAmount                  | Base asset amount specified in the taker's order.                                                                        |
+| takerOrderCumulativeBaseAssetAmountFilled  | Cumulative base asset amount filled in the taker's order.                                                                |
+| takerOrderCumulativeQuoteAssetAmountFilled | Cumulative quote asset amount filled in the taker's order.                                                               |
+| maker                                      | The address or identifier of the maker in the trade.                                                                     |
+| makerOrderId                               | Order ID of the maker's order.                                                                                           |
+| makerOrderDirection                        | Direction of the maker's order (e.g., 'short').                                                                          |
+| makerOrderBaseAssetAmount                  | Base asset amount specified in the maker's order.                                                                        |
+| makerOrderCumulativeBaseAssetAmountFilled  | Cumulative base asset amount filled in the maker's order.                                                                |
+| makerOrderCumulativeQuoteAssetAmountFilled | Cumulative quote asset amount filled in the maker's order.                                                               |
+| oraclePrice                                | The oracle price at the time of the trade.                                                                               |
+| txSig                                      | Transaction signature.                                                                                                   |
+| slot                                       | Slot number in which the trade occurred.                                                                                 |
+| action                                     | Type of action that occurred (e.g., 'fill').                                                                             |
+| actionExplanation                          | Explanation of the action (e.g., 'orderFilledWithMatch' indicating order filled with a matching order).                  |
+| referrerReward                             | Reward amount for the referrer, if applicable.                                                                           |
+
 
 ## Websocket - Unsubscribing
 
