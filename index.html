@@ -2978,6 +2978,94 @@ devnet: <a href="https://master.dlob.drift.trade/">https://master.dlob.drift.tra
   &quot;market&quot;: &quot;SOL-PERP&quot;
 }
 </code></p>
+<h4 id='response'>Response</h4>
+<table><thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>channel</td>
+<td>Identifies the type of data being streamed. <code>orderbook_perp_0</code> indicates data for perpetual market 0 order book (SOL-PERP).</td>
+</tr>
+<tr>
+<td>data</td>
+<td>Contains the actual order book data in JSON format. This field is a JSON string that needs to be parsed.</td>
+</tr>
+<tr>
+<td>bids</td>
+<td>A list of bid orders in the order book, each representing an offer to buy.</td>
+</tr>
+<tr>
+<td>asks</td>
+<td>A list of ask orders in the order book, each representing an offer to sell.</td>
+</tr>
+<tr>
+<td>price</td>
+<td>The price at which the bid or ask is made.</td>
+</tr>
+<tr>
+<td>size</td>
+<td>The size of the bid or ask, indicating the quantity of the asset the buyer or seller wishes to transact.</td>
+</tr>
+<tr>
+<td>sources</td>
+<td>Indicates the origin or source of the bid or ask, such as <code>vamm</code> (Virtual Automated Market Maker) or <code>dlob</code> (Decentralized Limit Order Book).</td>
+</tr>
+<tr>
+<td>marketName</td>
+<td>Name of the market, e.g., <code>SOL-PERP</code>.</td>
+</tr>
+<tr>
+<td>marketType</td>
+<td>Type of the market, e.g., <code>perp</code> for perpetual.</td>
+</tr>
+<tr>
+<td>marketIndex</td>
+<td>Index of the market, used to identify specific markets within a market type.</td>
+</tr>
+<tr>
+<td>slot</td>
+<td>Solana slot.</td>
+</tr>
+<tr>
+<td>oracle</td>
+<td>The reported price from the oracle for this market.</td>
+</tr>
+<tr>
+<td>oracleData</td>
+<td>Contains detailed information from the oracle, including price, slot, confidence, etc.</td>
+</tr>
+<tr>
+<td>oracleData.price</td>
+<td>The price reported by the oracle.</td>
+</tr>
+<tr>
+<td>oracleData.slot</td>
+<td>The slot number associated with the oracle data.</td>
+</tr>
+<tr>
+<td>oracleData.confidence</td>
+<td>The confidence interval for the oracle price.</td>
+</tr>
+<tr>
+<td>oracleData.hasSufficientNumberOfDataPoints</td>
+<td>Indicates whether the oracle has sufficient data points for reliability.</td>
+</tr>
+<tr>
+<td>oracleData.twap</td>
+<td>The time-weighted average price as reported by the oracle.</td>
+</tr>
+<tr>
+<td>oracleData.twapConfidence</td>
+<td>The confidence interval for the time-weighted average price.</td>
+</tr>
+<tr>
+<td>marketSlot</td>
+<td>Slot number associated with the market data.</td>
+</tr>
+</tbody></table>
 <h4 id='spot-markets'>Spot markets</h4>
 <p><code>
 {
@@ -2987,6 +3075,90 @@ devnet: <a href="https://master.dlob.drift.trade/">https://master.dlob.drift.tra
   &quot;market&quot;: &quot;SOL&quot;
 }
 </code></p>
+<h4 id='response-2'>Response</h4>
+<table><thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>channel</td>
+<td>Identifies the type of data being streamed. i.e <code>orderbook_spot_1</code> indicates data for the spot market order book (SOL/USDC).</td>
+</tr>
+<tr>
+<td>data</td>
+<td>Contains the actual order book data in JSON format. This field is a JSON string that needs to be parsed.</td>
+</tr>
+<tr>
+<td>bids</td>
+<td>A list of bid orders in the order book, each representing an offer to buy.</td>
+</tr>
+<tr>
+<td>asks</td>
+<td>A list of ask orders in the order book, each representing an offer to sell.</td>
+</tr>
+<tr>
+<td>price</td>
+<td>The price at which the bid or ask is made.</td>
+</tr>
+<tr>
+<td>size</td>
+<td>The size of the bid or ask, indicating the quantity of the asset the buyer or seller wishes to transact.</td>
+</tr>
+<tr>
+<td>sources</td>
+<td>Indicates the origin or source of the bid or ask, such as <code>phoenix</code> or <code>serum</code>, representing different liquidity providers.</td>
+</tr>
+<tr>
+<td>slot</td>
+<td>Solana slot.</td>
+</tr>
+<tr>
+<td>marketName</td>
+<td>Name of the market, e.g., <code>SOL</code>.</td>
+</tr>
+<tr>
+<td>marketType</td>
+<td>Type of the market, e.g., <code>spot</code>.</td>
+</tr>
+<tr>
+<td>marketIndex</td>
+<td>Index of the market, used to identify specific markets within a market type.</td>
+</tr>
+<tr>
+<td>oracle</td>
+<td>The reported price from the oracle for this market.</td>
+</tr>
+<tr>
+<td>oracleData</td>
+<td>Contains detailed information from the oracle, including price, slot, confidence, etc.</td>
+</tr>
+<tr>
+<td>oracleData.price</td>
+<td>The price reported by the oracle.</td>
+</tr>
+<tr>
+<td>oracleData.slot</td>
+<td>The slot number associated with the oracle data.</td>
+</tr>
+<tr>
+<td>oracleData.confidence</td>
+<td>The confidence interval for the oracle price.</td>
+</tr>
+<tr>
+<td>oracleData.hasSufficientNumberOfDataPoints</td>
+<td>Indicates whether the oracle has sufficient data points for reliability.</td>
+</tr>
+<tr>
+<td>oracleData.twap</td>
+<td>The time-weighted average price as reported by the oracle.</td>
+</tr>
+<tr>
+<td>oracleData.twapConfidence</td>
+<td>The confidence interval for the time-weighted average price.</td>
+</tr>
+</tbody></table>
 <div class="highlight"><pre class="highlight typescript tab-typescript"><code>
 <span class="k">import</span> <span class="nx">WebSocket</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">ws</span><span class="dl">'</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">ws</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebSocket</span><span class="p">(</span><span class="dl">'</span><span class="s1">wss://dlob.drift.trade/ws</span><span class="dl">'</span><span class="p">);</span>
@@ -3063,6 +3235,118 @@ devnet: <a href="https://master.dlob.drift.trade/">https://master.dlob.drift.tra
   &quot;market&quot;: &quot;SOL-PERP&quot;
 }
 </code></p>
+<h4 id='response-3'>Response</h4>
+<table><thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>channel</td>
+<td>Identifies the type of data being streamed. <code>trades_perp_0</code> indicates data for trades in perp market 0. (SOL-PERP)</td>
+</tr>
+<tr>
+<td>ts</td>
+<td>Timestamp of the trade.</td>
+</tr>
+<tr>
+<td>marketIndex</td>
+<td>Index of the market where the trade occurred.</td>
+</tr>
+<tr>
+<td>marketType</td>
+<td>Type of the market, here it&#39;s <code>perp</code> for perpetual.</td>
+</tr>
+<tr>
+<td>filler</td>
+<td>The address or identifier of the filler (taker) in the trade.</td>
+</tr>
+<tr>
+<td>takerFee</td>
+<td>Fee paid by the taker in the trade.</td>
+</tr>
+<tr>
+<td>makerFee</td>
+<td>Fee paid or received by the maker in the trade.</td>
+</tr>
+<tr>
+<td>quoteAssetAmountSurplus</td>
+<td>Surplus amount in quote asset.</td>
+</tr>
+<tr>
+<td>baseAssetAmountFilled</td>
+<td>The amount of the base asset that was filled in this trade.</td>
+</tr>
+<tr>
+<td>quoteAssetAmountFilled</td>
+<td>The amount of the quote asset that was filled in this trade.</td>
+</tr>
+<tr>
+<td>takerOrderId</td>
+<td>Order ID of the taker&#39;s order, if available.</td>
+</tr>
+<tr>
+<td>takerOrderBaseAssetAmount</td>
+<td>Base asset amount specified in the taker&#39;s order.</td>
+</tr>
+<tr>
+<td>takerOrderCumulativeBaseAssetAmountFilled</td>
+<td>Cumulative base asset amount filled in the taker&#39;s order.</td>
+</tr>
+<tr>
+<td>takerOrderCumulativeQuoteAssetAmountFilled</td>
+<td>Cumulative quote asset amount filled in the taker&#39;s order.</td>
+</tr>
+<tr>
+<td>maker</td>
+<td>The address or identifier of the maker in the trade.</td>
+</tr>
+<tr>
+<td>makerOrderId</td>
+<td>Order ID of the maker&#39;s order.</td>
+</tr>
+<tr>
+<td>makerOrderDirection</td>
+<td>Direction of the maker&#39;s order (e.g., &#39;short&#39; or &#39;long&#39;).</td>
+</tr>
+<tr>
+<td>makerOrderBaseAssetAmount</td>
+<td>Base asset amount specified in the maker&#39;s order.</td>
+</tr>
+<tr>
+<td>makerOrderCumulativeBaseAssetAmountFilled</td>
+<td>Cumulative base asset amount filled in the maker&#39;s order.</td>
+</tr>
+<tr>
+<td>makerOrderCumulativeQuoteAssetAmountFilled</td>
+<td>Cumulative quote asset amount filled in the maker&#39;s order.</td>
+</tr>
+<tr>
+<td>oraclePrice</td>
+<td>The oracle price at the time of the trade.</td>
+</tr>
+<tr>
+<td>txSig</td>
+<td>Transaction signature.</td>
+</tr>
+<tr>
+<td>slot</td>
+<td>Slot number in which the trade occurred.</td>
+</tr>
+<tr>
+<td>action</td>
+<td>fill.</td>
+</tr>
+<tr>
+<td>actionExplanation</td>
+<td>Explanation of the action (e.g., &#39;orderFilledWithAmm&#39; indicating order filled with Automated Market Maker).</td>
+</tr>
+<tr>
+<td>referrerReward</td>
+<td>Reward amount for the referrer, if applicable.</td>
+</tr>
+</tbody></table>
 <h4 id='spot-markets-2'>Spot markets</h4>
 <p><code>
 {
@@ -3072,6 +3356,126 @@ devnet: <a href="https://master.dlob.drift.trade/">https://master.dlob.drift.tra
   &quot;market&quot;: &quot;SOL&quot;
 }
 </code></p>
+<h4 id='response-4'>Response</h4>
+<table><thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>channel</td>
+<td>Identifies the type of data being streamed. <code>trades_spot_1</code> indicates data for trades in spot market 1 (SOL/USDC).</td>
+</tr>
+<tr>
+<td>ts</td>
+<td>Timestamp of the trade.</td>
+</tr>
+<tr>
+<td>marketIndex</td>
+<td>Index of the market where the trade occurred.</td>
+</tr>
+<tr>
+<td>marketType</td>
+<td>Type of the market, here it&#39;s <code>spot</code>.</td>
+</tr>
+<tr>
+<td>filler</td>
+<td>The address or identifier of the filler (taker) in the trade.</td>
+</tr>
+<tr>
+<td>takerFee</td>
+<td>Fee paid by the taker in the trade.</td>
+</tr>
+<tr>
+<td>makerFee</td>
+<td>Fee paid or received by the maker in the trade.</td>
+</tr>
+<tr>
+<td>quoteAssetAmountSurplus</td>
+<td>Surplus amount in quote asset.</td>
+</tr>
+<tr>
+<td>baseAssetAmountFilled</td>
+<td>The amount of the base asset that was filled in this trade.</td>
+</tr>
+<tr>
+<td>quoteAssetAmountFilled</td>
+<td>The amount of the quote asset that was filled in this trade.</td>
+</tr>
+<tr>
+<td>taker</td>
+<td>The address or identifier of the taker in the trade.</td>
+</tr>
+<tr>
+<td>takerOrderId</td>
+<td>Order ID of the taker&#39;s order, if available.</td>
+</tr>
+<tr>
+<td>takerOrderDirection</td>
+<td>Direction of the taker&#39;s order (e.g., &#39;long&#39;).</td>
+</tr>
+<tr>
+<td>takerOrderBaseAssetAmount</td>
+<td>Base asset amount specified in the taker&#39;s order.</td>
+</tr>
+<tr>
+<td>takerOrderCumulativeBaseAssetAmountFilled</td>
+<td>Cumulative base asset amount filled in the taker&#39;s order.</td>
+</tr>
+<tr>
+<td>takerOrderCumulativeQuoteAssetAmountFilled</td>
+<td>Cumulative quote asset amount filled in the taker&#39;s order.</td>
+</tr>
+<tr>
+<td>maker</td>
+<td>The address or identifier of the maker in the trade.</td>
+</tr>
+<tr>
+<td>makerOrderId</td>
+<td>Order ID of the maker&#39;s order.</td>
+</tr>
+<tr>
+<td>makerOrderDirection</td>
+<td>Direction of the maker&#39;s order (e.g., &#39;short&#39;).</td>
+</tr>
+<tr>
+<td>makerOrderBaseAssetAmount</td>
+<td>Base asset amount specified in the maker&#39;s order.</td>
+</tr>
+<tr>
+<td>makerOrderCumulativeBaseAssetAmountFilled</td>
+<td>Cumulative base asset amount filled in the maker&#39;s order.</td>
+</tr>
+<tr>
+<td>makerOrderCumulativeQuoteAssetAmountFilled</td>
+<td>Cumulative quote asset amount filled in the maker&#39;s order.</td>
+</tr>
+<tr>
+<td>oraclePrice</td>
+<td>The oracle price at the time of the trade.</td>
+</tr>
+<tr>
+<td>txSig</td>
+<td>Transaction signature.</td>
+</tr>
+<tr>
+<td>slot</td>
+<td>Slot number in which the trade occurred.</td>
+</tr>
+<tr>
+<td>action</td>
+<td>Type of action that occurred (e.g., &#39;fill&#39;).</td>
+</tr>
+<tr>
+<td>actionExplanation</td>
+<td>Explanation of the action (e.g., &#39;orderFilledWithMatch&#39; indicating order filled with a matching order).</td>
+</tr>
+<tr>
+<td>referrerReward</td>
+<td>Reward amount for the referrer, if applicable.</td>
+</tr>
+</tbody></table>
 <h2 id='websocket-unsubscribing'>Websocket - Unsubscribing</h2>
 <p>To unsubscribe to a channel, send a subscribe-like message, with the message type set to <code>unsubscribe</code>. Unsubscribe requests to channels not previously subscribed to will have no impact.
 <code>
