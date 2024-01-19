@@ -71,7 +71,6 @@ Each market currently requires its own subscribe message. The two examples below
 `
 
 #### Response
-#### Response
 | Field                                 | Description                                                                                                                                         |
 |---------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
 | channel                               | Identifies the type of data being streamed. `orderbook_perp_0` indicates data for perpetual market 0 order book (SOL-PERP).                          |
