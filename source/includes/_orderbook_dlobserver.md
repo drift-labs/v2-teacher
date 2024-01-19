@@ -106,7 +106,6 @@ Each market currently requires its own subscribe message. The two examples below
 `
 
 #### Response
-#### Response
 | Field        | Description                                                                                                                       |
 |--------------|-----------------------------------------------------------------------------------------------------------------------------------|
 | channel      | Identifies the type of data being streamed. i.e `orderbook_spot_1` indicates data for the spot market order book (SOL/USDC).       |
