@@ -155,13 +155,13 @@ await dlobSubscriber.subscribe();
 
 
 ```python
-from driftpy.dlob.dlob_client import DLOBClient
+from driftpy.dlob.dlob_subscriber import DLOBSubscriber
 from driftpy.dlob.client_types import DLOBClientConfig
 
 config = DLOBClientConfig(drift_client, user_map, slot_subscriber, 1_000)
-dlob_client = DLOBClient(config = config)
+dlob_subscriber = DLOBSubscriber(config = config)
 
-await dlob_client.subscribe()
+await dlob_subscriber.subscribe()
 ```
 
 ### Python
@@ -193,7 +193,7 @@ const l2 = dlobSubscriber.getL2({
 | fallbackL2Generators | L2OrderbookGenerators for fallback liquidity e.g. vAmm, openbook, phoenix. Unnecessary if includeVamm is true | Yes | |
 
 ```python
-l2 = dlob_client.get_l2_orderbook_sync("SOL-PERP")
+l2 = dlob_subscriber.get_l2_orderbook_sync("SOL-PERP")
 ```
 
 ### Python
@@ -225,7 +225,7 @@ const l3 = dlobSubscriber.getL3({
 | marketType | The market type of the orderbook to get. If not set, marketName must be set | Yes | |
 
 ```python
-l3 = dlob_client.get_l3_orderbook_sync("SOL-PERP")
+l3 = dlob_subscriber.get_l3_orderbook_sync("SOL-PERP")
 ```
 
 ### Python
