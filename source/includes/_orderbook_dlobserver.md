@@ -261,7 +261,7 @@ Trades feed subscribe messages take a similar form to orderbook data, just chang
 #### Response
 | Field                                      | Description                                                                                                              |
 |--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
-| channel                                    | Identifies the type of data being streamed. `trades_spot_1` indicates data for trades in spot market 0 (SOL/USDC).       |
+| channel                                    | Identifies the type of data being streamed. `trades_spot_1` indicates data for trades in spot market 1 (SOL/USDC).       |
 | ts                                         | Timestamp of the trade.                                                                                                  |
 | marketIndex                                | Index of the market where the trade occurred.                                                                            |
 | marketType                                 | Type of the market, here it's `spot`.                                                                                    |
