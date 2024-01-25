@@ -64,14 +64,14 @@ from driftpy.keypair import load_keypair
 from driftpy.user_map.user_map import UserMap
 from driftpy.user_map.user_map_config import UserMapConfig, WebsocketConfig
 
-connection = AsyncClient("https://api.mainnet-beta.solana/com")
+connection = AsyncClient("https://api.mainnet-beta.solana.com")  # switch for your own rpc
 
-keypair_file = "~/.config/solana/my-keypair.json"
+keypair_file = ""  # path to keypair file
 
 wallet = Wallet(load_keypair(keypair_file))
 
 drift_client = DriftClient(
-  connnection,
+  connection,
   wallet,
   "mainnet"
 )
@@ -157,8 +157,11 @@ await dlobSubscriber.subscribe();
 ```python
 from driftpy.dlob.dlob_subscriber import DLOBSubscriber
 from driftpy.dlob.client_types import DLOBClientConfig
+from driftpy.slot.slot_subscriber import SlotSubscriber
 
-config = DLOBClientConfig(drift_client, user_map, slot_subscriber, 1_000)
+slot_subscriber = SlotSubscriber(drift_client)
+
+config = DLOBClientConfig(drift_client, user_map, slot_subscriber, 1)
 dlob_subscriber = DLOBSubscriber(config = config)
 
 await dlob_subscriber.subscribe()
