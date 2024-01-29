@@ -40,10 +40,10 @@ mainnet-beta:  `https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/prog
 
 Get historical trades on `SOL-PERP` for August 5, 2023:
 ```
-https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/market/SOL-PERP/trades/2023/8/5
+https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/market/SOL-PERP/tradeRecords/2024/20240101
 ```
 
-## Records Columns
+<!-- ## Records Columns
 
 Below are definitions of the columns in each record type.
 
@@ -65,7 +65,7 @@ Below are definitions of the columns in each record type.
 
 ### candles
 
-### settle-pnl-records
+### settle-pnl-records -->
 
 
 ```python
