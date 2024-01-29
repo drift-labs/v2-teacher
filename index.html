@@ -3531,13 +3531,13 @@ devnet: <a href="https://master.dlob.drift.trade/">https://master.dlob.drift.tra
 <h3 id='ping-pong'>Ping/pong</h3>
 <p>No ping messages are sent from the websocket server. Unsolicited ping messages are allowed and will receive pongs back.</p>
 <h1 id='historical-data'>Historical Data</h1>
-<p>Snapshots are collected by parsing on-chain transaction logs. For convience the below are parsed logs collected, stored as a CSV, and stored off-chain (~99% of records).</p>
+<p>Snapshots are collected by parsing on-chain transaction logs. For convience the below are parsed logs collected, stored as a CSV, and stored off-chain (~99% of records). Records are updated once per day.</p>
 
 <p>Please share any transaction signatures or time ranges you believe might be missing in Drift Protocol Discord.</p>
 <h2 id='url-prefix'>URL Prefix</h2>
-<p>mainnet-beta:  <code>https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/</code></p>
+<p>mainnet-beta:  <code>https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/</code></p>
 
-<p>devnet: <code>https://drift-historical-data.s3.us-east-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/</code></p>
+<!-- devnet: `https://drift-historical-data.s3.us-east-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/` -->
 <h2 id='url-suffix'>URL Suffix</h2><h3 id='schema'>Schema</h3>
 <table><thead>
 <tr>
@@ -3547,35 +3547,39 @@ devnet: <a href="https://master.dlob.drift.trade/">https://master.dlob.drift.tra
 </thead><tbody>
 <tr>
 <td>trades</td>
-<td><code>user/${accountKey}/trades/${year}/${month}</code></td>
+<td><code>user/${accountKey}/tradeRecords/${year}/${year}${month}${day}</code></td>
 </tr>
 <tr>
 <td>market-trades</td>
-<td><code>market/${marketSymbol}/trades/${year}/${month}/${day}</code></td>
+<td><code>market/${marketSymbol}/tradeRecords/${year}/${year}${month}${day}</code></td>
 </tr>
 <tr>
 <td>funding-rates</td>
-<td><code>market/${marketSymbol}/funding-rates/${year}/${month}</code></td>
+<td><code>market/${marketSymbol}/fundingRateRecords/${year}/${year}${month}${day}</code></td>
 </tr>
 <tr>
 <td>funding-payments</td>
-<td><code>user/${accountKey}/funding-payments/${year}/${month}</code></td>
+<td><code>user/${accountKey}/fundingPaymentRecords/${year}/${year}${month}${day}</code></td>
 </tr>
 <tr>
 <td>deposits</td>
-<td><code>user/${accountKey}/deposits/${year}/${month}</code></td>
+<td><code>user/${accountKey}/depositRecords/${year}/${year}${month}${day}</code></td>
 </tr>
 <tr>
 <td>liquidations</td>
-<td><code>user/${accountKey}/liquidations/${year}/${month}</code></td>
+<td><code>user/${accountKey}/liquidationRecords/${year}/${year}${month}${day}</code></td>
 </tr>
 <tr>
-<td>candles</td>
-<td><code>market/${marketSymbol}/candles/${year}/${month}/resolution/${candleResolution}</code></td>
+<td>settle-pnl</td>
+<td><code>user/${accountKey}/settlePnlRecords/${year}/${year}${month}${day}</code></td>
 </tr>
 <tr>
-<td>settle-pnl-records</td>
-<td><code>user/${accountKey}/settlePnls/${year}/${month}</code></td>
+<td>lp</td>
+<td><code>user/${accountKey}/lpRecord/${year}/${year}${month}${day}</code></td>
+</tr>
+<tr>
+<td>insurance-fund-stake</td>
+<td><code>authority/${authorityAccountKey}/insuranceFundStakeRecords/${year}/${year}${month}${day}</code></td>
 </tr>
 </tbody></table>
 <h3 id='variables'>Variables</h3>
@@ -3640,8 +3644,8 @@ https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3
 </tbody></table>
 <h3 id='market-trades'>market-trades</h3><h3 id='funding-rates'>funding-rates</h3><h3 id='funding-payments'>funding-payments</h3><h3 id='deposits'>deposits</h3><h3 id='liquidations'>liquidations</h3><h3 id='candles'>candles</h3><h3 id='settle-pnl-records'>settle-pnl-records</h3><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
 
-<span class="n">outcsv</span> <span class="o">=</span> <span class="n">requets</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/user/2dy78vpWpquDgAoLB8w8Ewfns9WXYzQx4CGt3HSgZLEe/trades/2023/4'</span><span class="p">)</span><span class="s">'
-</span></code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl https://drift-historical-data.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/user/2dy78vpWpquDgAoLB8w8Ewfns9WXYzQx4CGt3HSgZLEe/trades/2023/4 <span class="nt">--output</span> out.csv.gz
+<span class="n">outcsv</span> <span class="o">=</span> <span class="n">requets</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/user/FrEFAwxdrzHxgc7S4cuFfsfLmcg8pfbxnkCQW83euyCS/tradeRecords/2023/20230201'</span><span class="p">)</span><span class="s">'
+</span></code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/user/FrEFAwxdrzHxgc7S4cuFfsfLmcg8pfbxnkCQW83euyCS/tradeRecords/2023/20230201 <span class="nt">--output</span> out.csv.gz
 </code></pre></div><h1 id='errors'>Errors</h1>
 <aside class="notice">
 This is a table of program errors as described in the programs IDL.
