@@ -11,6 +11,8 @@ toc_footers:
   - <a href='https://docs.drift.trade/'> Documentation </a>
 includes:
   - examples
+  - orderbook_blockchain
+  - orderbook_dlobserver
   - historicaldata
   - errors
 
@@ -115,18 +117,16 @@ The connection object is used to send transactions to the Solana blockchain. It 
   ```typescript
 import {Wallet, loadKeypair} from "@drift-labs/sdk";
 
-const keyPairFile = '~/.config/solana/my-keypair.json';
-const wallet = new Wallet(loadKeypair(privateKeyFile));
+const keyPairFile = `${process.env.HOME}/.config/solana/my-keypair.json`;
+const wallet = new Wallet(loadKeypair(keyPairFile));
 ```
 ```python
-from solana.keypair import Keypair
-from anchorpy import Wallet
 import os
-import json
+from anchorpy import Wallet
+from driftpy.keypair import load_keypair
 
-key_pair_file = '~/.config/solana/my-keypair.json'
-with open(os.path.expanduser(key_pair_file), 'r') as f: secret = json.load(f)
-kp = Keypair.from_secret_key(bytes(secret))
+keypair_file = os.path.expanduser('~/.config/solana/my-keypair.json')
+keypair = load_keypair(keypair_file)
 wallet = Wallet(kp)
 ```
 
@@ -143,7 +143,7 @@ import {Wallet, loadKeypair, DriftClient} from "@drift-labs/sdk";
 const connection = new Connection('https://api.mainnet-beta.solana.com');
 
 const keyPairFile = '~/.config/solana/my-keypair.json';
-const wallet = new Wallet(loadKeypair(privateKeyFile))
+const wallet = new Wallet(loadKeypair(keyPairFile))
 
 const driftClient = new DriftClient({
   connection,
@@ -154,16 +154,13 @@ const driftClient = new DriftClient({
 driftClient.subscribe();
 ```
 ```python
-  import driftpy
-  from anchorpy import Wallet, Provider
-  from driftpy.constants.config import configs
-  from driftpy.clearing_house import ClearingHouse
+  from anchorpy import Wallet
+  from driftpy.drift_client import DriftClient
+  from solana.rpc.async_api import AsyncClient
 
   # set connection and wallet
   # ...
-  provider = Provider(connection, wallet)
-  config = configs['mainnet'] # or devnet
-  drift_client = ClearingHouse.from_config(config, provider)
+  drift_client = DriftClient(connection, wallet, "mainnet")
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -201,8 +198,7 @@ const [txSig, userPublickKey] = await driftClient.initializeUser(
 ```
 
 ```python
-# todo: cannot init with name
-tx_sig = await drift_client.intialize_user(0)
+tx_sig = await drift_client.initialize_user(sub_account_id=0, name="toly")
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -246,6 +242,10 @@ driftClient.switchActiveUser(
 );
 ```
 
+```python
+drift_client.switch_active_user(sub_account_id=1)
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | subAccountId | The sub account to switch to  | No | 0 |
@@ -275,15 +275,11 @@ driftClient.deposit(
 ```
 
 ```python
-from driftpy.accounts import get_spot_market_account
-from spl.token.instructions import get_associated_token_address
 
 spot_market_index = 0 # USDC
-spot_market = await get_spot_market_account(drift_client.program, spot_market_index)
-user_token_account = get_associated_token_address(drift_client.authority, spot_market.mint)
-amount = 100 * QUOTE_PRECISION # $100
+amount = drift_client.convert_to_spot_precision(spot_market_index, 100) # $100
 
-tx_sig = await drift_client.deposit(amount, spot_market_index, user_token_account)
+tx_sig = await drift_client.deposit(amount, spot_market_index)
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -306,6 +302,14 @@ driftClient.withdraw(
   marketIndex,
   associatedTokenAccount,
 );
+```
+
+```python
+
+market_index = 0 # USDC
+amount = drift_client.convert_to_spot_precision(market_index, 100) # $100
+
+tx_sig = await drift_client.withdraw(amount, spot_market_index)
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -333,6 +337,20 @@ driftClient.transferDeposit(
 );
 ```
 
+```python
+market_index = 0
+amount = drift_client.convert_to_spot_precision(market_ndex, 100)
+from_sub_account_id = 0
+to_sub_account_id = 0
+
+await drift_client.transfer_deposit(
+  amount,
+  market_index,
+  from_sub_account_id,
+  to_sub_account_id,
+)
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | amount | The amount to transfer in spot market's token mint precision  | No | |
@@ -351,6 +369,42 @@ MARKET, LIMIT, ORACLE orders all support auction parameters.
 | TRIGGER_MARKET |	Stop / Take-profit market order. |
 | TRIGGER_LIMIT |	 Stop / Take-profit limit order. |
 | ORACLE	| Market order using oracle offset for auction parameters. |
+
+## Order Params
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| orderType | The type of order e.g. market, limit  | No | |
+| marketIndex | The market to place order in  | No | |
+| direction | The direction of order e.g. long (bid) or short (ask)  | No | |
+| baseAssetAmount | The amount of base asset to buy or sell  | No | |
+| marketType | The type of market order is for e.g. PERP or SPOT  | Yes | Depends on method |
+| price | The limit price for order | Yes | 0 |
+| userOrderId | Unique order id specified by user| Yes | 0 |
+| reduceOnly | If the order can only reduce positions| Yes | false |
+| postOnly | If the order can only be a maker | PostOnlyParam | None |
+| triggerPrice | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders | Yes | |
+| triggerCondition | whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders | Yes | |
+| oraclePriceOffset | priceOffset for oracle derived limit price. only applicable for limit and oracle orders  | Yes | |
+| auctionDuration | how many slots the auction lasts. only applicable for market and oracle orders | Yes | |
+| auctionStartPrice | the price the auction starts at | Yes | |
+| auctionEndPrice | the price the auction ends at | Yes | |
+| maxTs | the max timestamp (on-chain unix timestamp) before the order expires | Yes | |
+
+## Post Only Params
+
+Drift orderbook is not a strict clob that enforces price-time priority. This is to maximize the parallelization of placing orders to
+take advantage of the solana runtime. To force an order to always be a maker, users most set the post only params. If a user order is set to post only,
+drift will check that an order does not cross the vamm spread, similar to how a traditional clob would check that an order doesn't cross the book's best bid/ask.
+If the post only is not used, a limit order can end up being a taker or maker.
+
+
+| Parameter   | Description |
+| ----------- | ----------- |
+| None | Does not enforce being maker |
+| MustPostOnly | Tx fails if order crosses the vamm |
+| TryPostOnly | Order is skipped (not placed) and tx succeeds if order crosses the vamm |
+| Slide | Order price is modified to be one tick below/above the vamm ask/bid |
 
 ## Placing Perp Order
 
@@ -396,50 +450,25 @@ await driftClient.placePerpOrder(orderParams);
 from driftpy.types import *
 from driftpy.constants.numeric_constants import BASE_PRECISION, PRICE_PRECISION
 
-subaccount_id = 0
 market_index = 0
 
 # place order to long 1 SOL-PERP @ $21.88 (post only)
-bid_params = OrderParams(
+order_params = OrderParams(
             order_type=OrderType.LIMIT(),
-            market_type=MarketType.PERP(),
             direction=PositionDirection.LONG(),
-            user_order_id=0,
-            base_asset_amount=int(1 * BASE_PRECISION),
-            price=21.88 * PRICE_PRECISION,
+            base_asset_amount=drift_client.convert_to_perp_precision(1),
+            price=drift_client.convert_to_price_precision(21.88),
             market_index=market_index,
-            reduce_only=False,
             post_only=PostOnlyParams.TRY_POST_ONLY(),
-            immediate_or_cancel=False,
-            trigger_price=0,
-            trigger_condition=OrderTriggerCondition.ABOVE(),
-            oracle_price_offset=0,
-            auction_duration=None,
-            max_ts=None,
-            auction_start_price=None,
-            auction_end_price=None,
         )
-await drift_client.get_place_perp_order(bid_order_params, subaccount_id)
+await drift_client.get_place_perp_order(order_params)
 ```
 
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
-| orderType | The type of order e.g. market, limit  | No | |
-| marketIndex | The market to place order in  | No | |
-| direction | The direction of order e.g. long (bid) or short (ask)  | No | |
-| baseAssetAmount | The amount of base asset to buy or sell  | No | |
-| marketType | The type of market order is for e.g. PERP or SPOT  | Yes | PERP |
-| price | The limit price for order | Yes | 0 |
-| userOrderId | Unique order id specified by user| Yes | 0 |
-| reduceOnly | If the order can only reduce positions| Yes | false |
-| postOnly | If the order can only be a maker | Yes | false |
-| triggerPrice | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders | Yes | |
-| triggerCondition | whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders | Yes | |
-| oraclePriceOffset | priceOffset for oracle derived limit price. only applicable for limit and oracle orders  | Yes | |
-| auctionDuration | how many slots the auction lasts. only applicable for market and oracle orders | Yes | |
-| auctionStartPrice | the price the auction starts at | Yes | |
-| auctionEndPrice | the price the auction ends at | Yes | |
-| maxTs | the max timestamp (on-chain unix timestamp) before the order expires | Yes | |
+| orderParams | The order params  | No | |
+
+The order type is set to PERP by default.
 
 ## Placing Spot Order
 
@@ -456,32 +485,35 @@ const orderParams = {
 await driftClient.placeSpotOrder(orderParams);
 ```
 
+```python
+
+market_index = 1
+
+order_params = OrderParams(
+            order_type=OrderType.LIMIT(),
+            direction=PositionDirection.LONG(),
+            base_asset_amount=drift_client.convert_to_spot_precision(market_index, 100),
+            price=drift_client.convert_to_price_precision(100),
+            market_index=market_index,
+        )
+
+await driftClient.place_spot_order(order_params);
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
-| orderType | The type of order e.g. market, limit  | No | |
-| marketIndex | The market to place order in  | No | |
-| direction | The direction of order e.g. long (bid) or short (ask)  | No | |
-| baseAssetAmount | The amount of base asset to buy or sell  | No | |
-| marketType | The type of market order is for e.g. PERP or SPOT  | Yes | SPOT |
-| price | The limit price for order | Yes | 0 |
-| userOrderId | Unique order id specified by user| Yes | 0 |
-| reduceOnly | If the order can only reduce positions| Yes | false |
-| postOnly | If the order can only be a maker | Yes | false |
-| triggerPrice | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders | Yes | |
-| triggerCondition | whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders | Yes | |
-| oraclePriceOffset | priceOffset for oracle derived limit price. only applicable for limit and oracle orders  | Yes | |
-| auctionDuration | how many slots the auction lasts. only applicable for market and oracle orders | Yes | |
-| auctionStartPrice | the price the auction starts at | Yes | |
-| auctionEndPrice | the price the auction ends at | Yes | |
-| maxTs | the max timestamp before the order expires | Yes | |
+| orderParams | The order params  | No | |
 
-## Place Orders
+The order type is set to SPOT by default.
+
+## Placing Multiple Orders
 
 ```typescript
 
 const placeOrderParams = [
 	{
      orderType: OrderType.LIMIT,
+     marketType: MarketType.PERP,
      marketIndex: 0,
      direction: PositionDirection.LONG,
      baseAssetAmount: driftClient.convertToPerpPrecision(100),
@@ -489,6 +521,7 @@ const placeOrderParams = [
    },
    {
      orderType: OrderType.LIMIT,
+     marketType: MarketType.PERP,
      marketIndex: 0,
      direction: PositionDirection.SHORT,
      baseAssetAmount: driftClient.convertToPerpPrecision(100),
@@ -499,11 +532,77 @@ const placeOrderParams = [
 await driftClient.placeOrders(placeOrderParams);
 ```
 
+```python
+
+place_order_params = [
+	OrderParams(
+     order_type=OrderType.LIMIT(),
+     market_type=MarketType.PERP(),
+     market_index=0,
+     direction=PositionDirection.LONG(),
+     base_asset_amount=drift_client.convert_to_perp_precision(100),
+     price=drift_client.convert_to_price_precision(21.23),
+   ),
+   OrderParams(
+     order_type=OrderType.LIMIT(),
+     market_type=MarketType.PERP(),
+     market_index=0,
+     direction=PositionDirection.SHORT(),
+     base_asset_amount=drift_client.convert_to_perp_precision(100),
+     oracle_price_offset=drift_client.convert_to_price_precision(.05),
+   )
+]
+
+await drift_client.place_orders(place_order_params);
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | placeOrderParams | Parameters for place order instructions | | |
 
 Placing multiple orders in one tx can be cheaper than placing them in separate tx.
+
+## Placing Oracle Market Orders
+
+```typescript
+const oraclePrice = driftClient.getOracleDataForPerpMarket(18).price;
+const auctionStartPrice = oraclePrice.neg().divn(1000); // start auction 10bps below oracle
+const auctionEndPrice = oraclePrice.divn(1000); // end auction 10bps above oracle
+const oraclePriceOffset = oraclePrice.divn(500); // limit price after auction 20bps above oracle
+const auctionDuration = 30; // 30 slots
+const orderParams = {
+  orderType: OrderType.ORACLE,
+  baseAssetAmount: driftClient.convertToPerpPrecision(10),
+  direction: PositionDirection.LONG,
+  marketIndex: 18,
+  auctionStartPrice: auctionStartPrice,
+  auctionEndPrice: auctionEndPrice,
+  oraclePriceOffset: oraclePriceOffset,
+  auctionDuration: auctionDuration,
+};
+await driftClient.placePerpOrder(orderParams)
+```
+
+```python
+oracle_price = drift_client.get_oracle_price_data_for_perp_market(18).price
+auction_start_price = -oracle_price // 1000 # start auction 10bps below oracle
+auction_end_price = oracle_price // 1000 # end auction 10bps above oracle
+oracle_price_offset = oracle_price // 500 # limit price after auction 20bps above oracle
+auction_duration = 30 # 30 slots
+order_params = OrderParams(
+  OrderType.ORACLE(),
+  drift_client.convert_to_perp_precision(10),
+  18,
+  PositionDirection.LONG(),
+  auction_start_price=auction_start_price,
+  auction_end_price=auction_end_price,
+  oracle_price_offset=oracle_price_offset,
+  auction_duration=auction_duration
+)
+await drift_client.place_perp_order(order_params)
+```
+
+Oracle market orders enable a user to define their auction params as an offset (or relative to) the oracle price.
 
 ## Canceling Order
 
@@ -511,6 +610,12 @@ Placing multiple orders in one tx can be cheaper than placing them in separate t
 
 const orderId = 1;
 await driftClient.cancelOrder(orderId);
+```
+
+```python
+
+order_dd = 1;
+await drift_client.cancel_order(order_id);
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -523,6 +628,12 @@ await driftClient.cancelOrder(orderId);
 
 const userOrderId = 1;
 await driftClient.cancelOrderByUserOrderId(userOrderId);
+```
+
+```python
+
+const user_order_id = 1;
+await drift_client.cancel_order_by_user_order_id(user_order_id);
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -540,8 +651,12 @@ await driftClient.cancelOrders(marketType, marketIndex, direction);
 ```
 
 ``` python
-subaccount_id = 0
-await drift_client.cancel_orders(subaccount_id) # cancels all orders
+market_type = MarketType.PERP
+market_index = 0
+direction = PositionDirection.LONG
+await drift_client.cancel_orders(market_type, market_index, direction) # cancel bids in perp market 0
+
+await drift_client.cancel_orders() # cancels all orders
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -581,12 +696,55 @@ const placeOrderParams = [
 await driftClient.cancelAndPlaceOrders(cancelOrderParams, placeOrderParams);
 ```
 
+```python
+
+canel_order_params = (MarketType.PERP(), 0, None) # cancel all orders in perp market 0
+place_order_params = [
+	OrderParams(
+     order_type=OrderType.LIMIT(),
+     market_type=MarketType.PERP(),
+     market_index=0,
+     direction=PositionDirection.LONG(),
+     base_asset_amount=drift_client.convert_to_perp_precision(100),
+     price=drift_client.convert_to_price_precision(21.23),
+   ),
+   OrderParams(
+     order_type=OrderType.LIMIT(),
+     market_type=MarketType.PERP(),
+     market_index=0,
+     direction=PositionDirection.SHORT(),
+     base_asset_amount=drift_client.convert_to_perp_precision(100),
+     oracle_price_offset=drift_client.convert_to_price_precision(.05),
+   )
+]
+
+await drift_client.cancel_and_place_orders(canel_order_params, place_order_params);
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | cancelOrderParams | Parameters for cancel orders instruction | | |
 | placeOrderParams | Parameters for place order instructions | | |
 
 To cancel all orders, do not set any parameters.
+
+## Modify Order Params
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| orderId | The order id of order to modify  | No | |
+| baseAssetAmount | The amount of base asset to buy or sell  | Yes | |
+| direction | The direction of order e.g. long (bid) or short (ask)  | Yes | |
+| limitPrice | The limit price for order | Yes | |
+| reduceOnly | If the order can only reduce positions| Yes | |
+| postOnly | If the order can only be a maker | Yes | |
+| triggerPrice | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders | Yes | |
+| triggerCondition | whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders | Yes | |
+| oraclePriceOffset | priceOffset for oracle derived limit price. only applicable for limit and oracle orders  | Yes | |
+| auctionDuration | how many slots the auction lasts. only applicable for market and oracle orders | Yes | |
+| auctionStartPrice | the price the auction starts at | Yes | |
+| auctionEndPrice | the price the auction ends at | Yes | |
+| maxTs | the max timestamp before the order expires | Yes | |
 
 ## Modifying Order
 
@@ -600,23 +758,26 @@ const updateParams = {
 await driftClient.modifyOrder(orderParams);
 ```
 
+```python
+
+order_id = 1
+
+modfiy_order_params = ModifyOrderParams(
+  base_asset_amount=drift_client.convert_to_perp_precision(1),
+  price=drift_client.convert_to_price_precision(20),
+)
+
+await drift_client.modify_order(order_id, modify_order_params);
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | orderId | The order id of order to modify  | No | |
-| newBaseAssetAmount | The amount of base asset to buy or sell  | Yes | |
-| newDirection | The direction of order e.g. long (bid) or short (ask)  | Yes | |
-| newLimitPrice | The limit price for order | Yes | |
-| reduceOnly | If the order can only reduce positions| Yes | |
-| postOnly | If the order can only be a maker | Yes | |
-| newTriggerPrice | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders | Yes | |
-| newTriggerCondition | whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders | Yes | |
-| newOraclePriceOffset | priceOffset for oracle derived limit price. only applicable for limit and oracle orders  | Yes | |
-| auctionDuration | how many slots the auction lasts. only applicable for market and oracle orders | Yes | |
-| auctionStartPrice | the price the auction starts at | Yes | |
-| auctionEndPrice | the price the auction ends at | Yes | |
-| maxTs | the max timestampe before the order expires | Yes | |
+| modifyOrderParams | The modify order params  | Yes | |
 
-Modify order cancels and places a new order.
+Modify cancels and places a new order
+
+For typescript, the orderId and modifyOrderParams are merged into a single object and some properties are prefixed with `new` e.g. `newBaseAssetAmount`
 
 ## Modifying Order By User Order Id
 
@@ -627,26 +788,29 @@ const updateParams = {
   newBaseAssetAmount: driftClient.convertToPerpPrecision(200),
 }
 
-await driftClient.modifyOrder(orderParams);
+await driftClient.modifyOrderByUserOrderId(orderParams);
+```
+
+```python
+
+user_order_id = 1
+
+modfiy_order_params = ModifyOrderParams(
+  base_asset_amount=drift_client.convert_to_perp_precision(1),
+  price=drift_client.convert_to_price_precision(20),
+)
+
+await drift_client.modify_order_by_user_id(user_order_id, modify_order_params);
 ```
 
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | userOrderId | The user order id of order to modify  | No | |
-| newBaseAssetAmount | The amount of base asset to buy or sell  | Yes | |
-| newDirection | The direction of order e.g. long (bid) or short (ask)  | Yes | |
-| newLimitPrice | The limit price for order | Yes | |
-| reduceOnly | If the order can only reduce positions| Yes | |
-| postOnly | If the order can only be a maker | Yes | |
-| newTriggerPrice | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders | Yes | |
-| newTriggerCondition | whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders | Yes | |
-| newOraclePriceOffset | priceOffset for oracle derived limit price. only applicable for limit and oracle orders  | Yes | |
-| auctionDuration | how many slots the auction lasts. only applicable for market and oracle orders | Yes | |
-| auctionStartPrice | the price the auction starts at | Yes | |
-| auctionEndPrice | the price the auction ends at | Yes | |
-| maxTs | the max timestampe before the order expires | Yes | |
+| modifyOrderParams | The modify order params  | Yes | |
 
-Modify order cancels and places a new order.
+Modify cancels and places a new order
+
+For typescript, the userOrderId and modifyOrderParams are merged into a single object and some properties are prefixed with `new` e.g. `newBaseAssetAmount`
 
 ## Settle Perp PNL
 
@@ -658,6 +822,16 @@ await driftClient.settlePNL(
    user.getUserAccount(),
    marketIndex
 );
+```
+
+```python
+market_index = 0
+user =  drift_client.get_user()
+await drift_client.settle_pnl(
+   user.user_public_key,
+   user.get_user_account(),
+   market_index
+)
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -673,6 +847,12 @@ const marketIndex = 1;
 const spotMarketAccount = driftClient.getSpotMarketAccount(marketIndex);
 ```
 
+```python
+market_index = 0;
+
+spot_market_account = drift_client.get_spot_market_account(market_index);
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marketIndex | The market index for the spot market | No | |
@@ -684,6 +864,12 @@ const marketIndex = 0;
 const perpMarketAccount = driftClient.getPerpMarketAccount(marketIndex);
 ```
 
+```python
+market_index = 0;
+
+perp_market_account = drift_client.get_perp_market_account(market_index);
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marketIndex | The market index for the perp market | No | |
@@ -693,7 +879,11 @@ const perpMarketAccount = driftClient.getPerpMarketAccount(marketIndex);
 ## Get User
 
 ```typescript
-   const user = await driftClient.getUser();
+   const user = driftClient.getUser();
+```
+
+```python
+  user = drift_client.get_user();
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -714,6 +904,15 @@ const isDeposit = tokenAmount.gte(new BN(0));
 const isBorrow = tokenAmount.lt(new BN(0));
 ```
 
+```python
+market_index = 0
+
+token_amount = user.get_token_amount(marketIndex)
+
+is_deposit = token_amount > 0
+is_borrow = token_amount < 0
+```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marketIndex | Market index for the spot market  | No | |
@@ -732,6 +931,17 @@ const isLong = baseAssetAmount.gte(new BN(0));
 const isShort = baseAssetAmount.lt(new BN(0));
 ```
 
+```python
+market_index = 0
+
+perp_position = user.get_perp_position(market_index)
+
+base_asset_amount = perp_position.base_asset_amount if perp_position is not None else 0
+
+is_long = base_asset_amount > 0
+is_short = base_asset_amount < 0
+```
+
 
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
@@ -748,6 +958,12 @@ const order = user.getOrder(
 );
 ```
 
+```python
+order_id = 1
+
+order = user.get_order(order_id)
+```
+
 
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
@@ -762,6 +978,11 @@ const order = user.getOrderByUserOrderId(
 );
 ```
 
+```python
+user_order_id = 1
+
+order = user.get_order_by_user_order_id(user_order_id)
+```
 
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
@@ -769,13 +990,21 @@ const order = user.getOrderByUserOrderId(
 
 ## Get Open Orders
 ```typescript
-const order = user.getOpenOrders();
+const orders = user.getOpenOrders();
+```
+
+```python
+orders = user.get_open_orders()
 ```
 
 ## Get Unrealized Perp Pnl
 
   ```typescript
-  const pnl = await user.getUnrealizedPNL();
+  const pnl = user.getUnrealizedPNL();
+  ```
+
+  ```python
+  pnl = user.get_unrealized_pnl()
   ```
 
 | Parameter   | Description | Optional | Default |
@@ -790,6 +1019,10 @@ const order = user.getOpenOrders();
   const pnl = await user.getUnrealizedFundingPNL();
   ```
 
+  ```python
+  pnl = user.get_unrealized_funding_pnl()
+  ```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marketIndex | Whether to only return pnl for specific market  | Yes | |
@@ -798,6 +1031,10 @@ const order = user.getOpenOrders();
 
   ```typescript
   const totalCollateral = await user.getTotalCollateral();
+  ```
+
+  ```python
+  total_collateral = await user.get_total_collateral()
   ```
 
 | Parameter   | Description | Optional | Default |
@@ -812,6 +1049,10 @@ Asset weights vary based on whether you're checking the initial or maintenance m
   const marginRequirement = await user.getMarginRequirement();
   ```
 
+  ```python
+  margin_requirement = await user.get_margin_requirement()
+  ```
+
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marginCategory | Initial or Maintenance  | Yes | Initial |
@@ -821,177 +1062,42 @@ Liability weights (for borrows) and margin ratios (for perp positions) vary base
 ## Get Free Collateral
 
   ```typescript
-  const freeCollateral = await user.getFreeCollateral();
+  const freeCollateral = user.getFreeCollateral();
   ```
 
-Free collateral is the difference between your total collateral and your initial margin requirement.
+  ```python
+  free_collateral = user.get_free_collateral()
+  ```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| marginCategory | Initial or Maintenance  | Yes | Initial |
+
+Free collateral is the difference between your total collateral and your margin requirement.
 
 ## Get Leverage
 
   ```typescript
-  const leverage = await user.getLeverage();
+  const leverage = user.getLeverage();
   ```
+
+  ```python
+  leverage = user.get_leverage()
+  ```
+
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| includeOpenOrders | Whether to factor in open orders in position size  | Yes | true |
 
 Leverage is the total liability value (borrows plus total perp position) divided by net asset value (total assets plus total liabilities)
 
-
-
-# Orderbook
-
-## Slot Subscription
-
-```typescript
-   import {Connection} from "@solana/web3.js";
-   import {SlotSubscriber} from "@drift-labs/sdk";
-
-   const connection = new Connection("https://api.mainnet-beta.solana.com");
-   const slotSubscriber = new SlotSubscriber(connection);
-
-   await slotSubscriber.subscribe();
-   const slot = slotSubscriber.getSlot();
-
-   slotSubscriber.eventEmitter.on('newSlot', async (slot) => {
-      console.log('new slot', slot);
-   });
-```
-
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| connection | Connection object specifying solana rpc url   | No | |
-
-The slot subscriber subscribes to the latest slot and updates the slot value every time a new slot is received. The state of the orderbook is dependent on the slot value, so to build the orderbook you must keep track of the slot value.
-
-## User Subscription
-
-```typescript
-   import {Connection} from "@solana/web3.js";
-   import {DriftClient, UserMap, Wallet, loadKeypair} from "@drift-labs/sdk";
-
-   const connection = new Connection("https://api.mainnet-beta.solana.com");
-
-   const keyPairFile = '~/.config/solana/my-keypair.json';
-   const wallet = new Wallet(loadKeypair(privateKeyFile))
-
-   const driftClient = new DriftClient({
-     connection,
-     wallet,
-     env: 'mainnet-beta',
-   });
-
-   await driftClient.subscribe();
-
-   const includeIdleUsers = false;
-   const userMap = new UserMap(driftClient, {type: 'websocket'}, false);
-   await userMap.subscribe();
-```
-
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| driftClient | DriftClient object | No | |
-| accountSubscription | Whether to use websocket or polling to subscribe to users | No | |
-| includeIdle | Whether to include idle users. An idle user has had no orders, perp position or borrow for 7 days  | Yes | |
-
-Orders are stored on user accounts. To reconstruct the orderbook, you must keep track of the user accounts that have orders.
-The user map subscribes to user account updates.
-
-## Orderbook Subscription
-
-```typescript
-import {DLOBSubscriber} from "@drift-labs/sdk";
-
-// on-chain subscription to users
-const userMap = new UserMap(driftClient, {type: 'websocket'}, false);
-await userMap.subscribe();
-
- const dlobSubscriber = new DLOBSubscriber({
-    driftClient,
-    dlobSource: userMap,
-    slotSource: slotSubscriber,
-    updateFrequency: 1000,
- });
-
-await dlobSubscriber.subscribe();
-```
-
-```typescript
-import {DLOBApiClient, DLOBSubscriber} from "@drift-labs/sdk";
-
- // Polling from api
- const dlobApiClient = new DLOBApiClient({
-   url: 'https://dlob.drift.trade/orders/idlWithSlot',
- });
-
- const dlobSubscriber = new DLOBSubscriber({
-    driftClient,
-    dlobSource: dlobApiClient,
-    slotSource: slotSubscriber,
-    updateFrequency: 1000,
- });
-
- await dlobSubscriber.subscribe();
-```
-
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| driftClient | DriftClient object | No | |
-| dlobSource | Where to build the orderbook from. Can subscribe to user accounts on-chain using UserMap or request DLOB from api using DLOBApiClient | No | |
-| slotSource | Where to get slot from | No | |
-| updateFrequency | How often to rebuild the orderbook from the dlobSource in milliseconds | No | |
-
-## Get L2 Orderbook
-
-```typescript
-const l2 = dlobSubscriber.getL2({
-  marketName: 'SOL-PERP',
-  depth: 50,
-});
-```
-
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| marketName | The market name of the orderbook to get. If not set, marketIndex and marketType must be set | Yes | |
-| marketIndex | The market index of the orderbook to get. If not set, marketName must be set | Yes | |
-| marketType | The market type of the orderbook to get. If not set, marketName must be set | Yes | |
-| depth | The depth of the orderbook to get | Yes | 10 |
-| includeVamm | Whether to include vAMM | Yes | false |
-| fallbackL2Generators | L2OrderbookGenerators for fallback liquidity e.g. vAmm, openbook, phoenix. Unnecessary if includeVamm is true | Yes | |
-
-The L2 orderbook is an aggregate of drift dlob orders and, optionally, fallback liquidity.
-
-## Get L3 Orderbook
-
-```typescript
-const l3 = dlobSubscriber.getL3({
-  marketName: 'SOL-PERP',
-});
-```
-
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| marketName | The market name of the orderbook to get. If not set, marketIndex and marketType must be set | Yes | |
-| marketIndex | The market index of the orderbook to get. If not set, marketName must be set | Yes | |
-| marketType | The market type of the orderbook to get. If not set, marketName must be set | Yes | |
-
-The L3 orderbook contains every maker order on drift dlob, including the address for the user that placed the order.
 
 # Events
 
 ## Event Subscription
 
 ```typescript
-import {Connection} from "@solana/web3.js";
-import {Wallet, loadKeypair, DriftClient, EventSubscriber} from "@drift-labs/sdk";
-
-const connection = new Connection('https://api.mainnet-beta.solana.com');
-
-const keyPairFile = '~/.config/solana/my-keypair.json';
-const wallet = new Wallet(loadKeypair(privateKeyFile))
-
-const driftClient = new DriftClient({
-  connection,
-  wallet,
-  env: 'mainnet-beta',
-});
+import {EventSubscriber} from "@drift-labs/sdk";
 
 const options = {
   eventTypes: [
@@ -1025,6 +1131,40 @@ await eventSubscriber.subscribe();
 eventSubscriber.eventEmitter.on('newEvent', (event) => {
   console.log(event);
 });
+```
+
+```python
+from driftpy.events.event_subscriber import EventSubscriber
+from driftpy.events.types import WrappedEvent, EventSubscriptionOptions, WebsocketLogProviderConfig
+
+options = EventSubscriptionOptions(
+    event_types = (
+        'DepositRecord',
+        'FundingPaymentRecord',
+        'LiquidationRecord',
+        'OrderRecord',
+        'OrderActionRecord',
+        'FundingRateRecord',
+        'NewUserRecord',
+        'SettlePnlRecord',
+        'LPRecord',
+        'InsuranceFundRecord',
+        'SpotInterestRecord',
+        'InsuranceFundStakeRecord',
+        'CurveRecord',
+    ),
+    max_tx= 4096,
+    max_events_per_type=4096,
+    order_by="blockchain",
+    order_dir="asc",
+    commitment="processed",
+    log_provider_config=WebsocketLogProviderConfig()
+)
+
+event_subscriber = EventSubscriber(connection, drift_client.program, options)
+event_subscriber.subscribe()
+
+event_subscriber.event_emitter.new_event += lambda event: print(event)
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -1097,6 +1237,56 @@ eventSubscriber.eventEmitter.on('newEvent', (event) => {
 
 ```
 
+```python
+market_index = 0
+
+def fill_callback(event: WrappedEvent):
+    if event.event_type != "OrderActionRecord":
+        return
+
+    if event.data.market_index != market_index:
+        return
+
+    if not is_variant(event.data.market_type, "Perp"):
+        return
+
+    if not is_variant(event.data.action, "Fill"):
+        return
+
+    print(event)
+
+
+event_subscriber.event_emitter.new_event += fill_callback
+```
+
+## Listening to User Fills
+
+```python
+options = EventSubscriptionOptions(
+    address=drift_client.get_user_account_public_key(),
+)
+
+event_subscriber = EventSubscriber(connection, drift_client.program, options)
+event_subscriber.subscribe()
+
+def fill_callback(event: WrappedEvent):
+    if event.event_type != "OrderActionRecord":
+        return
+
+    if not is_variant(event.data.action, "Fill"):
+        return
+
+    is_taker = event.data.taker == drift_client.get_user_account_public_key()
+    is_maker = event.data.taker == drift_client.get_user_account_public_key()
+    if not is_taker and not is_maker:
+        return
+
+    print(event)
+
+
+event_subscriber.event_emitter.new_event += fill_callback
+```
+
 ## Getting Events Received By Type
 
 ```typescript
@@ -1105,14 +1295,20 @@ const eventType = 'OrderActionRecord';
 const events = eventSubscriber.getEventsReceived(eventType);
 ```
 
+```python
+
+event_type = 'OrderActionRecord'
+events = event_subscriber.get_events_array(event_type)
+```
+
 This returns all the events that the event subscriber currently has stored in memory.
 
 ## Getting Events By Transaction
 
 ```typescript
 
-const txSig = '3dq5PtQ3VnNTkQRrHhQ1nRACWZaFVvSBKs1RLXM8WvCqLHTzTuVGc7XER5awoLFLTdJ4kqZiNmo7e8b3pXaEGaoo';
-const events = eventSubscriber.getEventsByTx(txSig);
+tx_sig = '3dq5PtQ3VnNTkQRrHhQ1nRACWZaFVvSBKs1RLXM8WvCqLHTzTuVGc7XER5awoLFLTdJ4kqZiNmo7e8b3pXaEGaoo'
+events = event_subscriber.get_events_by_tx(tx_sig)
 ```
 
 This returns the events that the event subscriber currently has stored in memory for a given transaction.

@@ -25,6 +25,7 @@ Make sure latest ruby version is installed:
 brew update
 brew install ruby
 ```
+(mac users will need to make sure their [`PATH` is set properly](https://mac.install.guide/ruby/13.html) to not use the default system ruby)
 
 Update gem (no `sudo`, if it fails running it again seems to work...):
 ```
@@ -51,9 +52,7 @@ bundle config set force_ruby_platform true
 Build the docs
 ```
 bundle install
-```
-
-# Build and run docs locally
+``
 
 After doing the above, you can work on docs locally via:
 ```
