@@ -191,7 +191,7 @@ driftClient.subscribe();
 </aside>
 
 ```typescript
-const [txSig, userPublickKey] = await driftClient.initializeUser(
+const [txSig, userPublickKey] = await driftClient.initializeUserAccount(
   0,
   "toly"
 );
@@ -217,19 +217,21 @@ Users accounts can update names, set custom max intial margin ratio, enable marg
 const subaccountId = 0;
 
 // set max 1x intiial leverage
-await this.driftClient.updateUserCustomMarginRatio(
-  MARGIN_PRECISION,
-  subaccountId
-);
+await driftClient.updateUserCustomMarginRatio([
+    { 
+        'marginRatio': MARGIN_PRECISION, 
+        'subAccountId': subaccountId 
+    }
+]);
 
 // enable spot margin trading
-await this.driftClient.updateUserMarginTradingEnabled(
+await driftClient.updateUserMarginTradingEnabled(
   true,
   subaccountId
 );
 
 // add a delegate this user account
-await this.driftClient.updateUserDelegate(
+await driftClient.updateUserDelegate(
   new PublicKey('satoshi'),
   subaccountId
 );
@@ -267,7 +269,7 @@ const marketIndex = 0; // USDC
 const amount = driftClient.convertToSpotPrecision(marketIndex, 100); // $100
 const associatedTokenAccount = await driftClient.getAssociatedTokenAccount(marketIndex);
 
-driftClient.deposit(
+await driftClient.deposit(
   amount,
   marketIndex,
   associatedTokenAccount,
@@ -277,7 +279,7 @@ driftClient.deposit(
 ```python
 
 spot_market_index = 0 # USDC
-amount = drift_client.convert_to_spot_precision(spot_market_index, 100) # $100
+amount = drift_client.convert_to_spot_precision(100, spot_market_index) # $100
 
 tx_sig = await drift_client.deposit(amount, spot_market_index)
 ```
@@ -297,7 +299,7 @@ const marketIndex = 0;
 const amount = driftClient.convertToSpotPrecision(marketIndex, 100);
 const associatedTokenAccount = await driftClient.getAssociatedTokenAccount(marketIndex);
 
-driftClient.withdraw(
+await driftClient.withdraw(
   amount,
   marketIndex,
   associatedTokenAccount,
@@ -307,9 +309,12 @@ driftClient.withdraw(
 ```python
 
 market_index = 0 # USDC
-amount = drift_client.convert_to_spot_precision(market_index, 100) # $100
+amount = drift_client.convert_to_spot_precision(100, market_index) # $100
 
-tx_sig = await drift_client.withdraw(amount, spot_market_index)
+# derive user ata to withdraw to
+# ...
+
+tx_sig = await drift_client.withdraw(amount, spot_market_index, ata_to_withdraw_to)
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -329,7 +334,7 @@ const amount = driftClient.convertToSpotPrecision(marketIndex, 100);
 const fromSubAccountId = 0;
 const toSubAccountId = 1;
 
-driftClient.transferDeposit(
+await driftClient.transferDeposit(
   amount,
   marketIndex,
   fromSubAccountId,
@@ -339,7 +344,7 @@ driftClient.transferDeposit(
 
 ```python
 market_index = 0
-amount = drift_client.convert_to_spot_precision(market_ndex, 100)
+amount = drift_client.convert_to_spot_precision(100, market_index)
 from_sub_account_id = 0
 to_sub_account_id = 0
 
@@ -454,14 +459,14 @@ market_index = 0
 
 # place order to long 1 SOL-PERP @ $21.88 (post only)
 order_params = OrderParams(
-            order_type=OrderType.LIMIT(),
-            direction=PositionDirection.LONG(),
+            order_type=OrderType.Limit(),
             base_asset_amount=drift_client.convert_to_perp_precision(1),
-            price=drift_client.convert_to_price_precision(21.88),
             market_index=market_index,
-            post_only=PostOnlyParams.TRY_POST_ONLY(),
+            direction=PositionDirection.Long(),
+            price=drift_client.convert_to_price_precision(21.88),
+            post_only=PostOnlyParams.TryPostOnly(),
         )
-await drift_client.get_place_perp_order(order_params)
+await drift_client.place_perp_order(order_params)
 ```
 
 | Parameter   | Description | Optional | Default |
@@ -490,11 +495,11 @@ await driftClient.placeSpotOrder(orderParams);
 market_index = 1
 
 order_params = OrderParams(
-            order_type=OrderType.LIMIT(),
-            direction=PositionDirection.LONG(),
-            base_asset_amount=drift_client.convert_to_spot_precision(market_index, 100),
-            price=drift_client.convert_to_price_precision(100),
+            order_type=OrderType.Limit(),
+            base_asset_amount=drift_client.convert_to_spot_precision(100, market_index),
             market_index=market_index,
+            direction=PositionDirection.Long(),
+            price=drift_client.convert_to_price_precision(100),
         )
 
 await driftClient.place_spot_order(order_params);
@@ -512,21 +517,21 @@ The order type is set to SPOT by default.
 
 const placeOrderParams = [
 	{
-     orderType: OrderType.LIMIT,
-     marketType: MarketType.PERP,
-     marketIndex: 0,
-     direction: PositionDirection.LONG,
-     baseAssetAmount: driftClient.convertToPerpPrecision(100),
-     price: driftClient.convertToPricePrecision(21.23),
-   },
-   {
-     orderType: OrderType.LIMIT,
-     marketType: MarketType.PERP,
-     marketIndex: 0,
-     direction: PositionDirection.SHORT,
-     baseAssetAmount: driftClient.convertToPerpPrecision(100),
-     oraclePriceOffset: driftClient.convertToPricePrecision(.05).toNumber(),
-   }
+    orderType: OrderType.LIMIT,
+    marketType: MarketType.PERP,
+    marketIndex: 0,
+    direction: PositionDirection.LONG,
+    baseAssetAmount: driftClient.convertToPerpPrecision(100),
+    price: driftClient.convertToPricePrecision(21.23),
+  },
+  {
+    orderType: OrderType.LIMIT,
+    marketType: MarketType.PERP,
+    marketIndex: 0,
+    direction: PositionDirection.SHORT,
+    baseAssetAmount: driftClient.convertToPerpPrecision(100),
+    oraclePriceOffset: driftClient.convertToPricePrecision(.05).toNumber(),
+  }
 ];
 
 await driftClient.placeOrders(placeOrderParams);
@@ -536,21 +541,21 @@ await driftClient.placeOrders(placeOrderParams);
 
 place_order_params = [
 	OrderParams(
-     order_type=OrderType.LIMIT(),
-     market_type=MarketType.PERP(),
-     market_index=0,
-     direction=PositionDirection.LONG(),
-     base_asset_amount=drift_client.convert_to_perp_precision(100),
-     price=drift_client.convert_to_price_precision(21.23),
-   ),
+    order_type=OrderType.Limit(),
+    base_asset_amount=drift_client.convert_to_perp_precision(100),
+    market_index=0,
+    direction=PositionDirection.Long(),
+    market_type=MarketType.Perp(),
+    price=drift_client.convert_to_price_precision(21.23),
+  ),
    OrderParams(
-     order_type=OrderType.LIMIT(),
-     market_type=MarketType.PERP(),
-     market_index=0,
-     direction=PositionDirection.SHORT(),
-     base_asset_amount=drift_client.convert_to_perp_precision(100),
-     oracle_price_offset=drift_client.convert_to_price_precision(.05),
-   )
+    order_type=OrderType.Limit(),
+    base_asset_amount=drift_client.convert_to_perp_precision(100),
+    market_index=0,
+    direction=PositionDirection.Short(),
+    market_type=MarketType.Perp(),
+    oracle_price_offset=drift_client.convert_to_price_precision(.05),
+  )
 ]
 
 await drift_client.place_orders(place_order_params);
@@ -590,10 +595,10 @@ auction_end_price = oracle_price // 1000 # end auction 10bps above oracle
 oracle_price_offset = oracle_price // 500 # limit price after auction 20bps above oracle
 auction_duration = 30 # 30 slots
 order_params = OrderParams(
-  OrderType.ORACLE(),
-  drift_client.convert_to_perp_precision(10),
-  18,
-  PositionDirection.LONG(),
+  order_type=OrderType.Oracle(),
+  base_asset_amount=drift_client.convert_to_perp_precision(10),
+  market_index=18,
+  direction=PositionDirection.Long(),
   auction_start_price=auction_start_price,
   auction_end_price=auction_end_price,
   oracle_price_offset=oracle_price_offset,
@@ -651,9 +656,9 @@ await driftClient.cancelOrders(marketType, marketIndex, direction);
 ```
 
 ``` python
-market_type = MarketType.PERP
+market_type = MarketType.Perp()
 market_index = 0
-direction = PositionDirection.LONG
+direction = PositionDirection.Long()
 await drift_client.cancel_orders(market_type, market_index, direction) # cancel bids in perp market 0
 
 await drift_client.cancel_orders() # cancels all orders
@@ -678,19 +683,19 @@ const cancelOrderParams = {
 
 const placeOrderParams = [
 	{
-     orderType: OrderType.LIMIT,
-     marketIndex: 0,
-     direction: PositionDirection.LONG,
-     baseAssetAmount: driftClient.convertToPerpPrecision(100),
-     price: driftClient.convertToPricePrecision(21.23),
-   },
-   {
-     orderType: OrderType.LIMIT,
-     marketIndex: 0,
-     direction: PositionDirection.SHORT,
-     baseAssetAmount: driftClient.convertToPerpPrecision(100),
-     oraclePriceOffset: driftClient.convertToPricePrecision(.05).toNumber(),
-   }
+    orderType: OrderType.LIMIT,
+    marketIndex: 0,
+    direction: PositionDirection.LONG,
+    baseAssetAmount: driftClient.convertToPerpPrecision(100),
+    price: driftClient.convertToPricePrecision(21.23),
+  },
+  {
+    orderType: OrderType.LIMIT,
+    marketIndex: 0,
+    direction: PositionDirection.SHORT,
+    baseAssetAmount: driftClient.convertToPerpPrecision(100),
+    oraclePriceOffset: driftClient.convertToPricePrecision(.05).toNumber(),
+  }
 ];
 
 await driftClient.cancelAndPlaceOrders(cancelOrderParams, placeOrderParams);
@@ -698,24 +703,24 @@ await driftClient.cancelAndPlaceOrders(cancelOrderParams, placeOrderParams);
 
 ```python
 
-canel_order_params = (MarketType.PERP(), 0, None) # cancel all orders in perp market 0
+canel_order_params = (MarketType.Perp(), 0, None) # cancel all orders in perp market 0
 place_order_params = [
 	OrderParams(
-     order_type=OrderType.LIMIT(),
-     market_type=MarketType.PERP(),
-     market_index=0,
-     direction=PositionDirection.LONG(),
-     base_asset_amount=drift_client.convert_to_perp_precision(100),
-     price=drift_client.convert_to_price_precision(21.23),
-   ),
+    order_type=OrderType.Limit(),
+    base_asset_amount=drift_client.convert_to_perp_precision(100),
+    market_index=0,
+    direction=PositionDirection.Long(),
+    market_type=MarketType.Perp(),
+    price=drift_client.convert_to_price_precision(21.23),
+  ),
    OrderParams(
-     order_type=OrderType.LIMIT(),
-     market_type=MarketType.PERP(),
-     market_index=0,
-     direction=PositionDirection.SHORT(),
-     base_asset_amount=drift_client.convert_to_perp_precision(100),
-     oracle_price_offset=drift_client.convert_to_price_precision(.05),
-   )
+    order_type=OrderType.Limit(),
+    base_asset_amount=drift_client.convert_to_perp_precision(100),
+    market_index=0,
+    direction=PositionDirection.Short(),
+    market_type=MarketType.Perp(),
+    oracle_price_offset=drift_client.convert_to_price_precision(.05),
+  )
 ]
 
 await drift_client.cancel_and_place_orders(canel_order_params, place_order_params);
@@ -923,7 +928,7 @@ If token amount is greater than 0, it is a deposit. If less than zero, it is a b
 ```typescript
 const marketIndex = 0;
 
-const baseAssetAmount = user.getPerpPosiiton(
+const baseAssetAmount = user.getPerpPosition(
   marketIndex,
 )?.baseAssetAmount;
 
@@ -1016,7 +1021,7 @@ orders = user.get_open_orders()
 ## Get Unrealized Funding Pnl
 
   ```typescript
-  const pnl = await user.getUnrealizedFundingPNL();
+  const pnl = user.getUnrealizedFundingPNL();
   ```
 
   ```python
@@ -1030,11 +1035,11 @@ orders = user.get_open_orders()
 ## Get Total Collateral
 
   ```typescript
-  const totalCollateral = await user.getTotalCollateral();
+  const totalCollateral = user.getTotalCollateral();
   ```
 
   ```python
-  total_collateral = await user.get_total_collateral()
+  total_collateral = user.get_total_collateral()
   ```
 
 | Parameter   | Description | Optional | Default |
@@ -1046,11 +1051,11 @@ Asset weights vary based on whether you're checking the initial or maintenance m
 ## Get Margin Requirement
 
   ```typescript
-  const marginRequirement = await user.getMarginRequirement();
+  const marginRequirement = user.getMarginRequirement();
   ```
 
   ```python
-  margin_requirement = await user.get_margin_requirement()
+  margin_requirement = user.get_margin_requirement()
   ```
 
 | Parameter   | Description | Optional | Default |
@@ -1306,6 +1311,11 @@ This returns all the events that the event subscriber currently has stored in me
 ## Getting Events By Transaction
 
 ```typescript
+const txSig = '3dq5PtQ3VnNTkQRrHhQ1nRACWZaFVvSBKs1RLXM8WvCqLHTzTuVGc7XER5awoLFLTdJ4kqZiNmo7e8b3pXaEGaoo';
+const events = eventSubscriber.getEventsByTx(txSig);
+```
+
+```python
 
 tx_sig = '3dq5PtQ3VnNTkQRrHhQ1nRACWZaFVvSBKs1RLXM8WvCqLHTzTuVGc7XER5awoLFLTdJ4kqZiNmo7e8b3pXaEGaoo'
 events = event_subscriber.get_events_by_tx(tx_sig)
@@ -1371,6 +1381,12 @@ const perpPosition = driftClient.getPerpPosition(perpMarketIndex);
 console.log(convertToNumber(perpPosition.baseAssetAmount, BASE_PRECISION));
 ```
 
+```python
+perp_market_index = 0 # SOL-PERP
+perp_position = drift_client.get_perp_position(market_index)
+print(convert_to_number(perp_position.base_asset_amount, BASE_PRECISION))
+```
+
 This prints the size of the current perp position in perp market index 0 (SOL-PERP)
 
 ## Getting a Current Spot Position
@@ -1381,8 +1397,16 @@ const spotMarketIndex = 0; // USDC
 const spotConfig = SpotMarkets['mainnet-beta'][spotMarketIndex];
 const spotMarket = driftClient.getSpotMarketAccount(spotMarketIndex);
 const spotPosition = driftClient.getSpotPosition(spotMarketIndex);
-const tokenAmount = getTokenAmount(spotPosition.scaledBalance, spotMarket, .spotPosition.balanceType);
+const tokenAmount = getTokenAmount(spotPosition.scaledBalance, spotMarket, spotPosition.balanceType);
 console.log(convertToNumber(tokenAmount, spotConfig.precision));
+```
+
+```python
+spot_market_index = 0 # USDC
+spot_market = drift_client.get_spot_market_account(spot_market_index)
+spot_position = drift_client.get_spot_position(spot_market_index)
+token_amount = get_token_amount(spot_psoition.scaled_balance, spot_market, spot_position.balance_type)
+print(convert_to_number(token_amount, (10 ** spot_market.decimals)))
 ```
 
 This prints the current spot position in spot market index 0 (USDC). This value is the same as the value shown on the UI,
