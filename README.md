@@ -18,43 +18,48 @@ This repository contains the API docs for interacting with the Drift v2.
 
 Native setup for MacOS (you may also want to refer to the [original Slate wiki](https://github.com/slatedocs/slate/wiki/Using-Slate-Natively) for the original instructions and for other OSes)
 
-
-
 Make sure latest ruby version is installed:
+
 ```
 brew update
 brew install ruby
 ```
+
 (mac users will need to make sure their [`PATH` is set properly](https://mac.install.guide/ruby/13.html) to not use the default system ruby)
 
 Update gem (no `sudo`, if it fails running it again seems to work...):
+
 ```
 gem update --system
 ```
 
 Install bundler:
+
 ```
 export GEM_HOME="$HOME/.gem"
 gem install bundler
 ```
 
 Install Nokigiri dependencies:
+
 ```
 brew install libxml2 libxslt
 ```
 
-
 If using m1 mac:
+
 ```
 bundle config set force_ruby_platform true
 ```
 
 Build the docs
+
 ```
 bundle install
-``
+```
 
 After doing the above, you can work on docs locally via:
+
 ```
 bundle exec middleman server
 ```
