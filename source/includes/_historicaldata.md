@@ -22,13 +22,16 @@ mainnet-beta:  `https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/prog
 | liquidations | `user/${accountKey}/liquidationRecords/${year}/${year}${month}${day}` |
 | settle-pnl | `user/${accountKey}/settlePnlRecords/${year}/${year}${month}${day}` |
 | lp | `user/${accountKey}/lpRecord/${year}/${year}${month}${day}` |
+| insurance-fund | `market/${marketSymbol}/insuranceFundRecords/${year}/${year}${month}${day}` |
 | insurance-fund-stake | `authority/${authorityAccountKey}/insuranceFundStakeRecords/${year}/${year}${month}${day}` |
+
 
 
 ### Variables
 | variable | description | example |
 | --- | --- | --- |
 | accountKey | user sub account public key (not authority) | |
+| authority | authority public key | |
 | marketSymbol | market name | SOL-PERP |
 | year |  | 2023 |
 | month |  | 4 |
