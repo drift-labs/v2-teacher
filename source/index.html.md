@@ -204,7 +204,7 @@ driftClient.subscribe();
 </aside>
 
 ```typescript
-const [txSig, userPublickKey] = await driftClient.initializeUser(
+const [txSig, userPublickKey] = await driftClient.initializeUserAccount(
   0,
   "toly"
 );
@@ -1071,7 +1071,7 @@ If token amount is greater than 0, it is a deposit. If less than zero, it is a b
 ```typescript
 const marketIndex = 0;
 
-const baseAssetAmount = user.getPerpPosiiton(
+const baseAssetAmount = user.getPerpPosition(
   marketIndex,
 )?.baseAssetAmount;
 
