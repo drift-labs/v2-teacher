@@ -27,7 +27,7 @@ meta:
 
 
 # Terms of Use
-By using any API provided by Drift Labs, you agree to the <a href="https://docs.drift.trade/terms-of-use">Terms of Use</a>. If you do not agree to the foregoing, then do not use any such API.
+By using any API provided by Drift Labs, you agree to the <a href="https://docs.drift.trade/legal-and-regulations/terms-of-use">Terms of Use</a>. If you do not agree to the foregoing, then do not use any such API.
 
 # Introduction
 
@@ -50,7 +50,7 @@ mainnet-beta | [dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH](https://solscan.io/
 devnet | [dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH](https://solscan.io/account/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH?cluster=devnet) | [app](https://beta.drift.trade) |
 
 <aside class="warning">
-  It is strictly against the <a href="https://docs.drift.trade/terms-of-use">Terms of Use</a> to use these interfaces from a Restricted Territory.
+  It is strictly against the <a href="https://docs.drift.trade/legal-and-regulations/terms-of-use">Terms of Use</a> to use these interfaces from a Restricted Territory.
 </aside>
 
 
