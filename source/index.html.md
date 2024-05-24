@@ -155,7 +155,7 @@ import {Wallet, loadKeypair, DriftClient} from "@drift-labs/sdk";
 
 const connection = new Connection('https://api.mainnet-beta.solana.com');
 
-const keyPairFile = '~/.config/solana/my-keypair.json';
+const keyPairFile = `${process.env.HOME}/.config/solana/my-keypair.json`;
 const wallet = new Wallet(loadKeypair(keyPairFile))
 
 const driftClient = new DriftClient({
