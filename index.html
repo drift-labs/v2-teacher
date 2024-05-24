@@ -817,7 +817,7 @@
 <aside class="notice">
   Alternatively you can export the private key of an existing user that has been initialized via the UI. This will allow you to use the same user account programatically.
 </aside>
-<div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="p">[</span><span class="nx">txSig</span><span class="p">,</span> <span class="nx">userPublickKey</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">initializeUser</span><span class="p">(</span>
+<div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="p">[</span><span class="nx">txSig</span><span class="p">,</span> <span class="nx">userPublickKey</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">initializeUserAccount</span><span class="p">(</span>
   <span class="mi">0</span><span class="p">,</span>
   <span class="dl">"</span><span class="s2">toly</span><span class="dl">"</span>
 <span class="p">);</span>
@@ -2002,7 +2002,7 @@ localhost:8080/v2/positions
 <p>If token amount is greater than 0, it is a deposit. If less than zero, it is a borrow.</p>
 <h2 id='get-perp-position'>Get Perp Position</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
-<span class="kd">const</span> <span class="nx">baseAssetAmount</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getPerpPosiiton</span><span class="p">(</span>
+<span class="kd">const</span> <span class="nx">baseAssetAmount</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getPerpPosition</span><span class="p">(</span>
   <span class="nx">marketIndex</span><span class="p">,</span>
 <span class="p">)?.</span><span class="nx">baseAssetAmount</span><span class="p">;</span>
 
