@@ -692,7 +692,7 @@
 
 <span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.mainnet-beta.solana.com</span><span class="dl">'</span><span class="p">);</span>
 
-<span class="kd">const</span> <span class="nx">keyPairFile</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">~/.config/solana/my-keypair.json</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">keyPairFile</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">HOME</span><span class="p">}</span><span class="s2">/.config/solana/my-keypair.json`</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">wallet</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Wallet</span><span class="p">(</span><span class="nx">loadKeypair</span><span class="p">(</span><span class="nx">keyPairFile</span><span class="p">))</span>
 
 <span class="kd">const</span> <span class="nx">driftClient</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DriftClient</span><span class="p">({</span>
@@ -2641,8 +2641,8 @@ This examples should be used as code reference only. Be cautious running any unr
 
 <span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">"</span><span class="s2">https://api.mainnet-beta.solana.com</span><span class="dl">"</span><span class="p">);</span>
 
-<span class="kd">const</span> <span class="nx">keyPairFile</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">~/.config/solana/my-keypair.json</span><span class="dl">'</span><span class="p">;</span>
-<span class="kd">const</span> <span class="nx">wallet</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Wallet</span><span class="p">(</span><span class="nx">loadKeypair</span><span class="p">(</span><span class="nx">privateKeyFile</span><span class="p">))</span>
+<span class="kd">const</span> <span class="nx">keyPairFile</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">HOME</span><span class="p">}</span><span class="s2">/.config/solana/my-keypair.json`</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">wallet</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Wallet</span><span class="p">(</span><span class="nx">loadKeypair</span><span class="p">(</span><span class="nx">keyPairFile</span><span class="p">))</span>
 
 <span class="kd">const</span> <span class="nx">driftClient</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DriftClient</span><span class="p">({</span>
   <span class="nx">connection</span><span class="p">,</span>
@@ -2710,8 +2710,8 @@ This examples should be used as code reference only. Be cautious running any unr
 
 <span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">"</span><span class="s2">https://api.mainnet-beta.solana.com</span><span class="dl">"</span><span class="p">);</span>
 
-<span class="kd">const</span> <span class="nx">keyPairFile</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">~/.config/solana/my-keypair.json</span><span class="dl">'</span><span class="p">;</span>
-<span class="kd">const</span> <span class="nx">wallet</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Wallet</span><span class="p">(</span><span class="nx">loadKeypair</span><span class="p">(</span><span class="nx">privateKeyFile</span><span class="p">))</span>
+<span class="kd">const</span> <span class="nx">keyPairFile</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">HOME</span><span class="p">}</span><span class="s2">/.config/solana/my-keypair.json`</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">wallet</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Wallet</span><span class="p">(</span><span class="nx">loadKeypair</span><span class="p">(</span><span class="nx">keyPairFile</span><span class="p">))</span>
 
 <span class="kd">const</span> <span class="nx">driftClient</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DriftClient</span><span class="p">({</span>
   <span class="nx">connection</span><span class="p">,</span>
