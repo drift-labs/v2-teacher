@@ -46,7 +46,7 @@ Get historical trades on `SOL-PERP` for August 5, 2023:
 https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/market/SOL-PERP/tradeRecords/2024/20240101
 ```
 
-<!-- ## Records Columns
+## Records Columns
 
 Below are definitions of the columns in each record type.
 
@@ -56,9 +56,15 @@ Below are definitions of the columns in each record type.
 | --- | --- | --- |
 | accountKey | user sub account public key (not authority) | |
 
-### market-trades
-
 ### funding-rates
+
+note: 'rate' is in quote per base, to allow for async settlement
+
+| variable | description | example |
+| --- | --- | --- |
+| fundingRate | the quote asset amount (precision=1e6) per base asset amount (precision=1e9) | |
+
+<!-- ### market-trades
 
 ### funding-payments
 
@@ -74,7 +80,7 @@ Below are definitions of the columns in each record type.
 ```python
 import requests
 
-outcsv = requets.get('https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/user/FrEFAwxdrzHxgc7S4cuFfsfLmcg8pfbxnkCQW83euyCS/tradeRecords/2023/20230201')'
+outcsv = requests.get('https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/user/FrEFAwxdrzHxgc7S4cuFfsfLmcg8pfbxnkCQW83euyCS/tradeRecords/2023/20230201')'
 ```
 
 ```shell
