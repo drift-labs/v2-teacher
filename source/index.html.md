@@ -4,7 +4,7 @@ title: protocol-v2 API
 language_tabs: # must be one of https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers
   - typescript
   - python
-  - shell
+  - shell: http
 
 toc_footers:
   - <a href='https://github.com/drift-labs/protocol-v2/releases/'> Release History </a>
@@ -27,7 +27,7 @@ meta:
 
 
 # Terms of Use
-By using any API provided by Drift Labs, you agree to the <a href="https://docs.drift.trade/terms-of-use">Terms of Use</a>. If you do not agree to the foregoing, then do not use any such API.
+By using any API provided by Drift Labs, you agree to the <a href="https://docs.drift.trade/legal-and-regulations/terms-of-use">Terms of Use</a>. If you do not agree to the foregoing, then do not use any such API.
 
 # Introduction
 
@@ -50,7 +50,7 @@ mainnet-beta | [dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH](https://solscan.io/
 devnet | [dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH](https://solscan.io/account/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH?cluster=devnet) | [app](https://beta.drift.trade) |
 
 <aside class="warning">
-  It is strictly against the <a href="https://docs.drift.trade/terms-of-use">Terms of Use</a> to use these interfaces from a Restricted Territory.
+  It is strictly against the <a href="https://docs.drift.trade/legal-and-regulations/terms-of-use">Terms of Use</a> to use these interfaces from a Restricted Territory.
 </aside>
 
 
@@ -94,6 +94,9 @@ Install driftpy from PyPI using pip:
 
 auto-generated documentation here: [https://drift-labs.github.io/driftpy/]
 
+## HTTP
+Use the self-hosted HTTP [gateway](https://github.com/drift-labs/gateway)
+
 ## Connection
 
   ```typescript
@@ -110,7 +113,12 @@ url = 'https://api.mainnet-beta.solana.com' # replace w/ any rpc
 connection = AsyncClient(url)
 ```
 
+```shell
+drift-gateway https://api.mainnet-beta.solana.com --port 8080
+```
+
 The connection object is used to send transactions to the Solana blockchain. It is used by the DriftClient to send transactions to the blockchain.
+
 
 ## Wallet
 
@@ -129,6 +137,11 @@ keypair_file = os.path.expanduser('~/.config/solana/my-keypair.json')
 keypair = load_keypair(keypair_file)
 wallet = Wallet(kp)
 ```
+```shell
+# use `DRIFT_GATEWAY_KEY` environment variable to configure the gateway wallet
+# either path to .json keypair or base58 seed string
+export DRIFT_GATEWAY_KEY="</path/to/my-keypair.json|<KEYPAIR_BASE58_SEED>"
+```
 
 The wallet used to sign solana transactions. The wallet can be created from a private key or from a keypair file.
 
@@ -142,7 +155,7 @@ import {Wallet, loadKeypair, DriftClient} from "@drift-labs/sdk";
 
 const connection = new Connection('https://api.mainnet-beta.solana.com');
 
-const keyPairFile = '~/.config/solana/my-keypair.json';
+const keyPairFile = `${process.env.HOME}/.config/solana/my-keypair.json`;
 const wallet = new Wallet(loadKeypair(keyPairFile))
 
 const driftClient = new DriftClient({
@@ -281,7 +294,14 @@ driftClient.switchActiveUser(
 drift_client.switch_active_user(sub_account_id=1)
 ```
 
+<<<<<<< HEAD
 ### TypeScript
+=======
+```shell
+curl http://localhost:8080/v2/resource?subAccountId=1
+```
+
+>>>>>>> upstream/main
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | subAccountId | The sub account to switch to  | No | 0 |
@@ -408,7 +428,11 @@ await driftClient.transferDeposit(
 
 ```python
 market_index = 0
+<<<<<<< HEAD
 amount = drift_client.convert_to_spot_precision(100, market_index)
+=======
+amount = drift_client.convert_to_spot_precision(market_index, 100)
+>>>>>>> upstream/main
 from_sub_account_id = 0
 to_sub_account_id = 0
 
@@ -577,6 +601,23 @@ order_params = OrderParams(
 await drift_client.place_perp_order(order_params)
 ```
 
+```shell
+curl -X POST -H 'content-type: application/json' \
+  -d '{
+    "orders": [{
+        "marketIndex": 0,
+        "marketType": "perp",
+        "amount": 1.23,
+        "price": 80.0,
+        "postOnly": true,
+        "orderType": "limit",
+        "immediateOrCancel": false,
+        "reduceOnly": false
+    }]
+   }' \
+localhost:8080/v2/orders
+```
+
 ### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
@@ -618,6 +659,23 @@ order_params = OrderParams(
         )
 
 await driftClient.place_spot_order(order_params);
+```
+
+```shell
+curl -X POST -H 'content-type: application/json' \
+  -d '{
+    "orders": [{
+        "marketIndex": 0,
+        "marketType": "spot",
+        "amount": -1.23,
+        "price": 80.0,
+        "postOnly": true,
+        "orderType": "limit",
+        "immediateOrCancel": false,
+        "reduceOnly": false
+    }]
+   }' \
+localhost:8080/v2/orders
 ```
 
 ### TypeScript
@@ -680,6 +738,30 @@ place_order_params = [
 ]
 
 await drift_client.place_orders(place_order_params);
+```
+
+```shell
+curl -X POST -H 'content-type: application/json' \
+  -d '{
+      "orders": [{
+          "marketIndex": 0,
+          "marketType": "spot",
+          "amount": 1.23,
+          "price": 80.0,
+          "postOnly": true,
+          "orderType": "limit",
+          "immediateOrCancel": false,
+          "reduceOnly": false
+      },
+      {
+          "marketIndex": 2,
+          "marketType": "perp",
+          "amount": 0.1,
+          "price": 10000.0,
+          "orderType": "market",
+      }]
+    }' \
+localhost:8080/v2/orders
 ```
 
 ### TypeScript
@@ -761,6 +843,12 @@ await drift_client.cancel_order(order_id);
 | order_id | The order being canceled  | No | |
 | sub_account_id | Sub account to cancel order under  | Yes | None |
 
+```shell
+curl -X DELETE -H 'content-type: application/json' \
+  -d '{ "ids": [1] }' \
+  localhost:8080/v2/orders
+```
+
 ## Canceling Order By User Order Id
 
 ```typescript
@@ -773,6 +861,12 @@ await driftClient.cancelOrderByUserOrderId(userOrderId);
 
 const user_order_id = 1;
 await drift_client.cancel_order_by_user_order_id(user_order_id);
+```
+
+```shell
+curl -X DELETE -H 'content-type: application/json' \
+  -d '{ "userIds": [1] }' \
+  localhost:8080/v2/orders
 ```
 
 ### TypeScript
@@ -803,6 +897,12 @@ direction = PositionDirection.Long()
 await drift_client.cancel_orders(market_type, market_index, direction) # cancel bids in perp market 0
 
 await drift_client.cancel_orders() # cancels all orders
+```
+
+```shell
+curl -X DELETE -H 'content-type: application/json' \
+  -d '{ "marketIndex": 1, "marketType": "spot" }' \
+  localhost:8080/v2/orders
 ```
 
 ### TypeScript
@@ -877,6 +977,29 @@ place_order_params = [
 await drift_client.cancel_and_place_orders(canel_order_params, place_order_params);
 ```
 
+```shell
+curl -X POST -H 'content-type: application/json' \
+-d '{
+      "cancel": {
+        "marketIndex": 0,
+        "marketType": "perp"
+      },
+      "place": {
+        "orders": [{
+            "marketIndex": 0,
+            "marketType": "perp",
+            "amount": -1.23,
+            "price": 80.0,
+            "postOnly": true,
+            "orderType": "limit",
+            "immediateOrCancel": false,
+            "reduceOnly": false
+        }]
+      }
+   }' \
+localhost:8080/v2/orders/cancelAndPlace
+```
+
 ### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
@@ -947,12 +1070,24 @@ await driftClient.modifyOrder(orderParams);
 
 order_id = 1
 
-modfiy_order_params = ModifyOrderParams(
+modify_order_params = ModifyOrderParams(
   base_asset_amount=drift_client.convert_to_perp_precision(1),
   price=drift_client.convert_to_price_precision(20),
 )
 
 await drift_client.modify_order(order_id, modify_order_params);
+```
+
+```shell
+curl -X PATCH -H 'content-type: application/json' \
+  -d '{
+    "orders": [{
+        "orderId": 32,
+        "amount": 1.05,
+        "price": 61.0
+    }]
+   }' \
+localhost:8080/v2/orders
 ```
 
 ### TypeScript
@@ -989,12 +1124,24 @@ await driftClient.modifyOrderByUserOrderId(orderParams);
 
 user_order_id = 1
 
-modfiy_order_params = ModifyOrderParams(
+modify_order_params = ModifyOrderParams(
   base_asset_amount=drift_client.convert_to_perp_precision(1),
   price=drift_client.convert_to_price_precision(20),
 )
 
 await drift_client.modify_order_by_user_id(user_order_id, modify_order_params);
+```
+
+```shell
+curl -X PATCH -H 'content-type: application/json' \
+  -d '{
+    "orders": [{
+        "userOrderId": 69,
+        "amount": 1.05,
+        "price": 61.0
+    }]
+   }' \
+localhost:8080/v2/orders
 ```
 
 ### TypeScript
@@ -1143,6 +1290,13 @@ is_deposit = token_amount > 0
 is_borrow = token_amount < 0
 ```
 
+```shell
+ curl -X GET \
+  -H 'content-type: application/json' \
+  -d '{"marketIndex":0,"marketType":"spot"}' \
+localhost:8080/v2/positions
+```
+
 ### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
@@ -1176,6 +1330,13 @@ base_asset_amount = perp_position.base_asset_amount if perp_position is not None
 
 is_long = base_asset_amount > 0
 is_short = base_asset_amount < 0
+```
+
+```shell
+curl -X GET \
+  -H 'content-type: application/json' \
+  -d '{"marketIndex":0,"marketType":"perp"}' \
+localhost:8080/v2/positions
 ```
 
 ### TypeScript
@@ -1248,6 +1409,10 @@ const orders = user.getOpenOrders();
 
 ```python
 orders = user.get_open_orders()
+```
+
+```shell
+curl localhost:8080/v2/orders
 ```
 
 ## Get Unrealized Perp Pnl
