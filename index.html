@@ -712,7 +712,7 @@
   <span class="c1"># set connection and wallet
 </span>  <span class="c1"># ...
 </span>  <span class="n">drift_client</span> <span class="o">=</span> <span class="n">DriftClient</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">wallet</span><span class="p">,</span> <span class="s">"mainnet"</span><span class="p">)</span>
-</code></pre></div>
+</code></pre></div><h3 id='typescript-2'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -812,6 +812,112 @@
 <td>false</td>
 </tr>
 </tbody></table>
+<h3 id='python-2'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>connection</td>
+<td>AsyncClient connection to the Solana cluster</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>wallet</td>
+<td>Wallet object, can be Keypair or Wallet type</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>env</td>
+<td>Drift environment, &#39;devnet&#39; or &#39;mainnet&#39;</td>
+<td>Yes</td>
+<td>&quot;mainnet&quot;</td>
+</tr>
+<tr>
+<td>program_id</td>
+<td>Drift program identifier</td>
+<td>Yes</td>
+<td>DRIFT_PROGRAM_ID</td>
+</tr>
+<tr>
+<td>opts</td>
+<td>Options for transaction confirmation status</td>
+<td>Yes</td>
+<td>DEFAULT_TX_OPTIONS</td>
+</tr>
+<tr>
+<td>authority</td>
+<td>Public key of the user account authority</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>account_subscription</td>
+<td>Configuration for account subscriptions (websockets/polling)</td>
+<td>Yes</td>
+<td>AccountSubscriptionConfig.default()</td>
+</tr>
+<tr>
+<td>perp_market_indexes</td>
+<td>List of perpetual market indexes to interact with</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>spot_market_indexes</td>
+<td>List of spot market indexes to interact with</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>oracle_infos</td>
+<td>List of OracleInfo objects for market data</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>tx_params</td>
+<td>Additional parameters for transactions</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>tx_version</td>
+<td>Version of the transaction</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>tx_sender</td>
+<td>Object handling the sending of transactions</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>active_sub_account_id</td>
+<td>ID of the initially active sub-account</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>sub_account_ids</td>
+<td>List of sub-account IDs to subscribe to</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>market_lookup_table</td>
+<td>Public key for the market lookup table</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+</tbody></table>
 <h2 id='user-initialization'>User Initialization</h2>
 <aside class="notice">
   initializing a new drift user account requires some rent (~.035 SOL). this can be reclaimed upon deletion.
@@ -825,7 +931,7 @@
   <span class="dl">"</span><span class="s2">toly</span><span class="dl">"</span>
 <span class="p">);</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">tx_sig</span> <span class="o">=</span> <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">initialize_user</span><span class="p">(</span><span class="n">sub_account_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">"toly"</span><span class="p">)</span>
-</code></pre></div>
+</code></pre></div><h3 id='typescript-3'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -853,36 +959,7 @@
 <td></td>
 </tr>
 </tbody></table>
-
-<p>Sub account ids are monotonic. The first user account created will have sub account id 0, the second will have sub account id 1, etc.
-The next sub account id can be found by calling <code>driftClient.getNextSubAccountId()</code>.</p>
-<h2 id='updating-user'>Updating User</h2>
-<p>Users accounts can update names, set custom max intial margin ratio, enable margin trading, and add a delegate account.</p>
-<div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">subaccountId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-
-<span class="c1">// set max 1x intiial leverage</span>
-<span class="k">await</span> <span class="k">this</span><span class="p">.</span><span class="nx">driftClient</span><span class="p">.</span><span class="nx">updateUserCustomMarginRatio</span><span class="p">(</span>
-  <span class="nx">MARGIN_PRECISION</span><span class="p">,</span>
-  <span class="nx">subaccountId</span>
-<span class="p">);</span>
-
-<span class="c1">// enable spot margin trading</span>
-<span class="k">await</span> <span class="k">this</span><span class="p">.</span><span class="nx">driftClient</span><span class="p">.</span><span class="nx">updateUserMarginTradingEnabled</span><span class="p">(</span>
-  <span class="kc">true</span><span class="p">,</span>
-  <span class="nx">subaccountId</span>
-<span class="p">);</span>
-
-<span class="c1">// add a delegate this user account</span>
-<span class="k">await</span> <span class="k">this</span><span class="p">.</span><span class="nx">driftClient</span><span class="p">.</span><span class="nx">updateUserDelegate</span><span class="p">(</span>
-  <span class="k">new</span> <span class="nx">PublicKey</span><span class="p">(</span><span class="dl">'</span><span class="s1">satoshi</span><span class="dl">'</span><span class="p">),</span>
-  <span class="nx">subaccountId</span>
-<span class="p">);</span>
-</code></pre></div><h2 id='switching-sub-accounts'>Switching Sub Accounts</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="nx">driftClient</span><span class="p">.</span><span class="nx">switchActiveUser</span><span class="p">(</span>
-  <span class="mi">1</span><span class="p">,</span>
-<span class="p">);</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">drift_client</span><span class="p">.</span><span class="n">switch_active_user</span><span class="p">(</span><span class="n">sub_account_id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl http://localhost:8080/v2/resource?subAccountId<span class="o">=</span>1
-</code></pre></div>
+<h3 id='python-3'>Python</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -892,16 +969,95 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tr>
 </thead><tbody>
 <tr>
-<td>subAccountId</td>
-<td>The sub account to switch to</td>
-<td>No</td>
+<td>sub_account_id</td>
+<td>The sub account id for the new user account.</td>
+<td>Yes</td>
 <td>0</td>
 </tr>
 <tr>
-<td>authority</td>
-<td>The authority of the sub account you&#39;re signing for. Only needed for delegate accounts</td>
+<td>name</td>
+<td>Display name for the user account</td>
 <td>Yes</td>
-<td>Current authority</td>
+<td>None</td>
+</tr>
+<tr>
+<td>referrer_info</td>
+<td>The address of the referrer and referrer stats accounts</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+</tbody></table>
+
+<p>Sub account ids are monotonic. The first user account created will have sub account id 0, the second will have sub account id 1, etc.
+The next sub account id can be found by calling <code>driftClient.getNextSubAccountId()</code> in TypeScript.</p>
+<h2 id='updating-user'>Updating User</h2>
+<p>Users accounts can update names, set custom max intial margin ratio, enable margin trading, and add a delegate account.</p>
+<div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">subaccountId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="c1">// set max 1x intiial leverage</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">updateUserCustomMarginRatio</span><span class="p">([</span>
+    <span class="p">{</span> 
+        <span class="dl">'</span><span class="s1">marginRatio</span><span class="dl">'</span><span class="p">:</span> <span class="nx">MARGIN_PRECISION</span><span class="p">,</span> 
+        <span class="dl">'</span><span class="s1">subAccountId</span><span class="dl">'</span><span class="p">:</span> <span class="nx">subaccountId</span> 
+    <span class="p">}</span>
+<span class="p">]);</span>
+
+<span class="c1">// enable spot margin trading</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">updateUserMarginTradingEnabled</span><span class="p">(</span>
+  <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">subaccountId</span>
+<span class="p">);</span>
+
+<span class="c1">// add a delegate this user account</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">updateUserDelegate</span><span class="p">(</span>
+  <span class="k">new</span> <span class="nx">PublicKey</span><span class="p">(</span><span class="dl">'</span><span class="s1">satoshi</span><span class="dl">'</span><span class="p">),</span>
+  <span class="nx">subaccountId</span>
+<span class="p">);</span>
+</code></pre></div><h2 id='switching-sub-accounts'>Switching Sub Accounts</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="nx">driftClient</span><span class="p">.</span><span class="nx">switchActiveUser</span><span class="p">(</span>
+  <span class="mi">1</span><span class="p">,</span>
+<span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">drift_client</span><span class="p">.</span><span class="n">switch_active_user</span><span class="p">(</span><span class="n">sub_account_id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
+<h3 id='typescript-4'>TypeScript</h3>
+<p>=======
+<code>shell
+curl http://localhost:8080/v2/resource?subAccountId=1
+</code></p>
+
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>upstream/main
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| subAccountId | The sub account to switch to  | No | 0 |
+| authority   | The authority of the sub account you&#39;re signing for. Only needed for delegate accounts | Yes | Current authority |</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h3 id='python-4'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>sub_account_id</td>
+<td>Identifier for the sub-account to be activated</td>
+<td>No</td>
+<td></td>
 </tr>
 </tbody></table>
 <h2 id='deleting-user-account'>Deleting User Account</h2>
@@ -913,17 +1069,17 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <span class="kd">const</span> <span class="nx">amount</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToSpotPrecision</span><span class="p">(</span><span class="nx">marketIndex</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span> <span class="c1">// $100</span>
 <span class="kd">const</span> <span class="nx">associatedTokenAccount</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getAssociatedTokenAccount</span><span class="p">(</span><span class="nx">marketIndex</span><span class="p">);</span>
 
-<span class="nx">driftClient</span><span class="p">.</span><span class="nx">deposit</span><span class="p">(</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">deposit</span><span class="p">(</span>
   <span class="nx">amount</span><span class="p">,</span>
   <span class="nx">marketIndex</span><span class="p">,</span>
   <span class="nx">associatedTokenAccount</span><span class="p">,</span>
 <span class="p">);</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>
 <span class="n">spot_market_index</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># USDC
-</span><span class="n">amount</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_spot_precision</span><span class="p">(</span><span class="n">spot_market_index</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span> <span class="c1"># $100
+</span><span class="n">amount</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_spot_precision</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">spot_market_index</span><span class="p">)</span> <span class="c1"># $100
 </span>
 <span class="n">tx_sig</span> <span class="o">=</span> <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">deposit</span><span class="p">(</span><span class="n">amount</span><span class="p">,</span> <span class="n">spot_market_index</span><span class="p">)</span>
-</code></pre></div>
+</code></pre></div><h3 id='typescript-5'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -952,7 +1108,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tr>
 <tr>
 <td>subAccountId</td>
-<td>The sub account you&#39;re depositing too</td>
+<td>The sub account you&#39;re depositing to</td>
 <td>Yes</td>
 <td>active sub account</td>
 </tr>
@@ -963,21 +1119,70 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td>false</td>
 </tr>
 </tbody></table>
+<h3 id='python-5'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>amount</td>
+<td>The amount to deposit in the spot market&#39;s token mint precision</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>spot_market_index</td>
+<td>The index of the spot market where the deposit is made</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>user_token_account</td>
+<td>The public key of the token account from which you are depositing</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>sub_account_id</td>
+<td>The sub account to which the deposit is being made</td>
+<td>Yes</td>
+<td>Active sub-account</td>
+</tr>
+<tr>
+<td>reduce_only</td>
+<td>Whether the deposit should only reduce borrow</td>
+<td>Yes</td>
+<td>false</td>
+</tr>
+<tr>
+<td>user_initialized</td>
+<td>Indicates if the user is already initialized (used internally, typically)</td>
+<td>Yes</td>
+<td>true</td>
+</tr>
+</tbody></table>
 <h2 id='withdrawing'>Withdrawing</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">amount</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToSpotPrecision</span><span class="p">(</span><span class="nx">marketIndex</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
 <span class="kd">const</span> <span class="nx">associatedTokenAccount</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getAssociatedTokenAccount</span><span class="p">(</span><span class="nx">marketIndex</span><span class="p">);</span>
 
-<span class="nx">driftClient</span><span class="p">.</span><span class="nx">withdraw</span><span class="p">(</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">withdraw</span><span class="p">(</span>
   <span class="nx">amount</span><span class="p">,</span>
   <span class="nx">marketIndex</span><span class="p">,</span>
   <span class="nx">associatedTokenAccount</span><span class="p">,</span>
 <span class="p">);</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>
 <span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># USDC
-</span><span class="n">amount</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_spot_precision</span><span class="p">(</span><span class="n">market_index</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span> <span class="c1"># $100
+</span><span class="n">amount</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_spot_precision</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">market_index</span><span class="p">)</span> <span class="c1"># $100
 </span>
-<span class="n">tx_sig</span> <span class="o">=</span> <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">withdraw</span><span class="p">(</span><span class="n">amount</span><span class="p">,</span> <span class="n">spot_market_index</span><span class="p">)</span>
-</code></pre></div>
+<span class="c1"># derive user ata to withdraw to
+# ...
+</span>
+<span class="n">tx_sig</span> <span class="o">=</span> <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">withdraw</span><span class="p">(</span><span class="n">amount</span><span class="p">,</span> <span class="n">spot_market_index</span><span class="p">,</span> <span class="n">ata_to_withdraw_to</span><span class="p">)</span>
+</code></pre></div><h3 id='typescript-6'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1011,6 +1216,46 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td>false</td>
 </tr>
 </tbody></table>
+<h3 id='python-6'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>amount</td>
+<td>The amount to withdraw in the spot market&#39;s token mint precision</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>market_index</td>
+<td>The index of the spot market from which the withdrawal is made</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>user_token_account</td>
+<td>The public key of the token account to which you are withdrawing</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>reduce_only</td>
+<td>Whether the withdrawal should only decrease a deposit, blocking new borrows</td>
+<td>Yes</td>
+<td>false</td>
+</tr>
+<tr>
+<td>sub_account_id</td>
+<td>The sub account from which the withdrawal is made</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+</tbody></table>
 
 <p>Withdrawing can lead to a borrow if the user has no deposits in the market and the user has enough margin to cover it.</p>
 <h2 id='transferring-deposits'>Transferring Deposits</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
@@ -1018,14 +1263,18 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <span class="kd">const</span> <span class="nx">fromSubAccountId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">toSubAccountId</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 
-<span class="nx">driftClient</span><span class="p">.</span><span class="nx">transferDeposit</span><span class="p">(</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">transferDeposit</span><span class="p">(</span>
   <span class="nx">amount</span><span class="p">,</span>
   <span class="nx">marketIndex</span><span class="p">,</span>
   <span class="nx">fromSubAccountId</span><span class="p">,</span>
   <span class="nx">toSubAccountId</span><span class="p">,</span>
 <span class="p">);</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="o">&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span> <span class="n">HEAD</span>
+<span class="n">amount</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_spot_precision</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">market_index</span><span class="p">)</span>
+<span class="o">=======</span>
 <span class="n">amount</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_spot_precision</span><span class="p">(</span><span class="n">market_index</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> <span class="n">upstream</span><span class="o">/</span><span class="n">main</span>
 <span class="n">from_sub_account_id</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">to_sub_account_id</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -1035,7 +1284,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
   <span class="n">from_sub_account_id</span><span class="p">,</span>
   <span class="n">to_sub_account_id</span><span class="p">,</span>
 <span class="p">)</span>
-</code></pre></div>
+</code></pre></div><h3 id='typescript-7'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1069,7 +1318,41 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td></td>
 </tr>
 </tbody></table>
-<h2 id='order-types'>Order Types</h2>
+<h3 id='python-7'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>amount</td>
+<td>The amount to transfer in the spot market&#39;s token mint precision</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>market_index</td>
+<td>The spot market index you&#39;re transferring deposits in</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>from_sub_account_id</td>
+<td>The sub account from which the funds are withdrawn</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>to_sub_account_id</td>
+<td>The sub account to which the funds are deposited</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id='order-types'>Order Types</h2><h3 id='typescript-8'>TypeScript</h3>
 <p>MARKET, LIMIT, ORACLE orders all support auction parameters.</p>
 
 <table><thead>
@@ -1099,7 +1382,37 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td>Market order using oracle offset for auction parameters.</td>
 </tr>
 </tbody></table>
-<h2 id='order-params'>Order Params</h2>
+<h3 id='python-8'>Python</h3>
+<p>Market(), Limit(), Oracle() orders all support auction parameters.</p>
+
+<table><thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Market()</td>
+<td>Market order.</td>
+</tr>
+<tr>
+<td>Limit()</td>
+<td>Limit order.</td>
+</tr>
+<tr>
+<td>TriggerMarket()</td>
+<td>Stop / Take-profit market order.</td>
+</tr>
+<tr>
+<td>TriggerLimit()</td>
+<td>Stop / Take-profit limit order.</td>
+</tr>
+<tr>
+<td>Oracle()</td>
+<td>Market order using oracle offset for auction parameters.</td>
+</tr>
+</tbody></table>
+<h2 id='order-params'>Order Params</h2><h3 id='typescript-9'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1205,6 +1518,118 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td></td>
 </tr>
 </tbody></table>
+<h3 id='python-9'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>order_type</td>
+<td>Type of order</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>market_index</td>
+<td>Index of the market to place order in</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>direction</td>
+<td>Direction of the order</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>base_asset_amount</td>
+<td>Amount of base asset to buy or sell</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>market_type</td>
+<td>Type of market</td>
+<td>Yes</td>
+<td>Depends on method</td>
+</tr>
+<tr>
+<td>price</td>
+<td>Limit price for the order</td>
+<td>Yes</td>
+<td>0</td>
+</tr>
+<tr>
+<td>user_order_id</td>
+<td>Unique order ID specified by user</td>
+<td>Yes</td>
+<td>0</td>
+</tr>
+<tr>
+<td>reduce_only</td>
+<td>Whether the order is only to reduce positions</td>
+<td>Yes</td>
+<td>false</td>
+</tr>
+<tr>
+<td>post_only</td>
+<td>If the order should only be a maker</td>
+<td>Yes</td>
+<td>PostOnlyParams.NONE()</td>
+</tr>
+<tr>
+<td>immediate_or_cancel</td>
+<td>Whether the order is immediate or cancel</td>
+<td>Yes</td>
+<td>false</td>
+</tr>
+<tr>
+<td>max_ts</td>
+<td>Max timestamp for the order expiry</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>trigger_price</td>
+<td>Trigger price for trigger orders</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>trigger_condition</td>
+<td>Condition for triggering the order</td>
+<td>Yes</td>
+<td>OrderTriggerCondition.Above()</td>
+</tr>
+<tr>
+<td>oracle_price_offset</td>
+<td>Offset for oracle-derived limit price</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>auction_duration</td>
+<td>Duration of the auction in slots</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>auction_start_price</td>
+<td>Starting price of the auction</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>auction_end_price</td>
+<td>Ending price of the auction</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+</tbody></table>
 <h2 id='post-only-params'>Post Only Params</h2>
 <p>Drift orderbook is not a strict clob that enforces price-time priority. This is to maximize the parallelization of placing orders to
 take advantage of the solana runtime. To force an order to always be a maker, users most set the post only params. If a user order is set to post only,
@@ -1276,14 +1701,14 @@ If the post only is not used, a limit order can end up being a taker or maker.</
 
 <span class="c1"># place order to long 1 SOL-PERP @ $21.88 (post only)
 </span><span class="n">order_params</span> <span class="o">=</span> <span class="n">OrderParams</span><span class="p">(</span>
-            <span class="n">order_type</span><span class="o">=</span><span class="n">OrderType</span><span class="p">.</span><span class="n">LIMIT</span><span class="p">(),</span>
-            <span class="n">direction</span><span class="o">=</span><span class="n">PositionDirection</span><span class="p">.</span><span class="n">LONG</span><span class="p">(),</span>
+            <span class="n">order_type</span><span class="o">=</span><span class="n">OrderType</span><span class="p">.</span><span class="n">Limit</span><span class="p">(),</span>
             <span class="n">base_asset_amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-            <span class="n">price</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(</span><span class="mf">21.88</span><span class="p">),</span>
             <span class="n">market_index</span><span class="o">=</span><span class="n">market_index</span><span class="p">,</span>
-            <span class="n">post_only</span><span class="o">=</span><span class="n">PostOnlyParams</span><span class="p">.</span><span class="n">TRY_POST_ONLY</span><span class="p">(),</span>
+            <span class="n">direction</span><span class="o">=</span><span class="n">PositionDirection</span><span class="p">.</span><span class="n">Long</span><span class="p">(),</span>
+            <span class="n">price</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(</span><span class="mf">21.88</span><span class="p">),</span>
+            <span class="n">post_only</span><span class="o">=</span><span class="n">PostOnlyParams</span><span class="p">.</span><span class="n">TryPostOnly</span><span class="p">(),</span>
         <span class="p">)</span>
-<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_place_perp_order</span><span class="p">(</span><span class="n">order_params</span><span class="p">)</span>
+<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">place_perp_order</span><span class="p">(</span><span class="n">order_params</span><span class="p">)</span>
 </code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> POST <span class="nt">-H</span> <span class="s1">'content-type: application/json'</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{
     "orders": [{
@@ -1298,7 +1723,7 @@ If the post only is not used, a limit order can end up being a taker or maker.</
     }]
    }'</span> <span class="se">\</span>
 localhost:8080/v2/orders
-</code></pre></div>
+</code></pre></div><h3 id='typescript-10'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1314,8 +1739,24 @@ localhost:8080/v2/orders
 <td></td>
 </tr>
 </tbody></table>
+<h3 id='python-10'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>order_params</td>
+<td>The order params</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
 
-<p>The order type is set to PERP by default.</p>
+<p>The order type is set to PERP / Perp() by default.</p>
 <h2 id='placing-spot-order'>Placing Spot Order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
 <span class="kd">const</span> <span class="nx">orderParams</span> <span class="o">=</span> <span class="p">{</span>
   <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
@@ -1330,11 +1771,11 @@ localhost:8080/v2/orders
 <span class="n">market_index</span> <span class="o">=</span> <span class="mi">1</span>
 
 <span class="n">order_params</span> <span class="o">=</span> <span class="n">OrderParams</span><span class="p">(</span>
-            <span class="n">order_type</span><span class="o">=</span><span class="n">OrderType</span><span class="p">.</span><span class="n">LIMIT</span><span class="p">(),</span>
-            <span class="n">direction</span><span class="o">=</span><span class="n">PositionDirection</span><span class="p">.</span><span class="n">LONG</span><span class="p">(),</span>
-            <span class="n">base_asset_amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_spot_precision</span><span class="p">(</span><span class="n">market_index</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-            <span class="n">price</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+            <span class="n">order_type</span><span class="o">=</span><span class="n">OrderType</span><span class="p">.</span><span class="n">Limit</span><span class="p">(),</span>
+            <span class="n">base_asset_amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_spot_precision</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">market_index</span><span class="p">),</span>
             <span class="n">market_index</span><span class="o">=</span><span class="n">market_index</span><span class="p">,</span>
+            <span class="n">direction</span><span class="o">=</span><span class="n">PositionDirection</span><span class="p">.</span><span class="n">Long</span><span class="p">(),</span>
+            <span class="n">price</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
         <span class="p">)</span>
 
 <span class="k">await</span> <span class="n">driftClient</span><span class="p">.</span><span class="n">place_spot_order</span><span class="p">(</span><span class="n">order_params</span><span class="p">);</span>
@@ -1352,7 +1793,7 @@ localhost:8080/v2/orders
     }]
    }'</span> <span class="se">\</span>
 localhost:8080/v2/orders
-</code></pre></div>
+</code></pre></div><h3 id='typescript-11'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1368,47 +1809,63 @@ localhost:8080/v2/orders
 <td></td>
 </tr>
 </tbody></table>
+<h3 id='python-11'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>order_params</td>
+<td>The order params</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
 
-<p>The order type is set to SPOT by default.</p>
+<p>The order type is set to SPOT / Spot() by default.</p>
 <h2 id='placing-multiple-orders'>Placing Multiple Orders</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
 <span class="kd">const</span> <span class="nx">placeOrderParams</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">{</span>
-     <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
-     <span class="na">marketType</span><span class="p">:</span> <span class="nx">MarketType</span><span class="p">.</span><span class="nx">PERP</span><span class="p">,</span>
-     <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-     <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
-     <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
-     <span class="na">price</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mf">21.23</span><span class="p">),</span>
-   <span class="p">},</span>
-   <span class="p">{</span>
-     <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
-     <span class="na">marketType</span><span class="p">:</span> <span class="nx">MarketType</span><span class="p">.</span><span class="nx">PERP</span><span class="p">,</span>
-     <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-     <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">SHORT</span><span class="p">,</span>
-     <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
-     <span class="na">oraclePriceOffset</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(.</span><span class="mi">05</span><span class="p">).</span><span class="nx">toNumber</span><span class="p">(),</span>
-   <span class="p">}</span>
+    <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
+    <span class="na">marketType</span><span class="p">:</span> <span class="nx">MarketType</span><span class="p">.</span><span class="nx">PERP</span><span class="p">,</span>
+    <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
+    <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+    <span class="na">price</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mf">21.23</span><span class="p">),</span>
+  <span class="p">},</span>
+  <span class="p">{</span>
+    <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
+    <span class="na">marketType</span><span class="p">:</span> <span class="nx">MarketType</span><span class="p">.</span><span class="nx">PERP</span><span class="p">,</span>
+    <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">SHORT</span><span class="p">,</span>
+    <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+    <span class="na">oraclePriceOffset</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(.</span><span class="mi">05</span><span class="p">).</span><span class="nx">toNumber</span><span class="p">(),</span>
+  <span class="p">}</span>
 <span class="p">];</span>
 
 <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">placeOrders</span><span class="p">(</span><span class="nx">placeOrderParams</span><span class="p">);</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>
 <span class="n">place_order_params</span> <span class="o">=</span> <span class="p">[</span>
     <span class="n">OrderParams</span><span class="p">(</span>
-     <span class="n">order_type</span><span class="o">=</span><span class="n">OrderType</span><span class="p">.</span><span class="n">LIMIT</span><span class="p">(),</span>
-     <span class="n">market_type</span><span class="o">=</span><span class="n">MarketType</span><span class="p">.</span><span class="n">PERP</span><span class="p">(),</span>
-     <span class="n">market_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-     <span class="n">direction</span><span class="o">=</span><span class="n">PositionDirection</span><span class="p">.</span><span class="n">LONG</span><span class="p">(),</span>
-     <span class="n">base_asset_amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
-     <span class="n">price</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(</span><span class="mf">21.23</span><span class="p">),</span>
-   <span class="p">),</span>
+    <span class="n">order_type</span><span class="o">=</span><span class="n">OrderType</span><span class="p">.</span><span class="n">Limit</span><span class="p">(),</span>
+    <span class="n">base_asset_amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+    <span class="n">market_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">direction</span><span class="o">=</span><span class="n">PositionDirection</span><span class="p">.</span><span class="n">Long</span><span class="p">(),</span>
+    <span class="n">market_type</span><span class="o">=</span><span class="n">MarketType</span><span class="p">.</span><span class="n">Perp</span><span class="p">(),</span>
+    <span class="n">price</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(</span><span class="mf">21.23</span><span class="p">),</span>
+  <span class="p">),</span>
    <span class="n">OrderParams</span><span class="p">(</span>
-     <span class="n">order_type</span><span class="o">=</span><span class="n">OrderType</span><span class="p">.</span><span class="n">LIMIT</span><span class="p">(),</span>
-     <span class="n">market_type</span><span class="o">=</span><span class="n">MarketType</span><span class="p">.</span><span class="n">PERP</span><span class="p">(),</span>
-     <span class="n">market_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-     <span class="n">direction</span><span class="o">=</span><span class="n">PositionDirection</span><span class="p">.</span><span class="n">SHORT</span><span class="p">(),</span>
-     <span class="n">base_asset_amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
-     <span class="n">oracle_price_offset</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(.</span><span class="mi">05</span><span class="p">),</span>
-   <span class="p">)</span>
+    <span class="n">order_type</span><span class="o">=</span><span class="n">OrderType</span><span class="p">.</span><span class="n">Limit</span><span class="p">(),</span>
+    <span class="n">base_asset_amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+    <span class="n">market_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">direction</span><span class="o">=</span><span class="n">PositionDirection</span><span class="p">.</span><span class="n">Short</span><span class="p">(),</span>
+    <span class="n">market_type</span><span class="o">=</span><span class="n">MarketType</span><span class="p">.</span><span class="n">Perp</span><span class="p">(),</span>
+    <span class="n">oracle_price_offset</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(.</span><span class="mi">05</span><span class="p">),</span>
+  <span class="p">)</span>
 <span class="p">]</span>
 
 <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">place_orders</span><span class="p">(</span><span class="n">place_order_params</span><span class="p">);</span>
@@ -1433,7 +1890,7 @@ localhost:8080/v2/orders
       }]
     }'</span> <span class="se">\</span>
 localhost:8080/v2/orders
-</code></pre></div>
+</code></pre></div><h3 id='typescript-12'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1444,6 +1901,22 @@ localhost:8080/v2/orders
 </thead><tbody>
 <tr>
 <td>placeOrderParams</td>
+<td>Parameters for place order instructions</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id='python-12'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>place_order_params</td>
 <td>Parameters for place order instructions</td>
 <td></td>
 <td></td>
@@ -1473,10 +1946,10 @@ localhost:8080/v2/orders
 </span><span class="n">oracle_price_offset</span> <span class="o">=</span> <span class="n">oracle_price</span> <span class="o">//</span> <span class="mi">500</span> <span class="c1"># limit price after auction 20bps above oracle
 </span><span class="n">auction_duration</span> <span class="o">=</span> <span class="mi">30</span> <span class="c1"># 30 slots
 </span><span class="n">order_params</span> <span class="o">=</span> <span class="n">OrderParams</span><span class="p">(</span>
-  <span class="n">OrderType</span><span class="p">.</span><span class="n">ORACLE</span><span class="p">(),</span>
-  <span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
-  <span class="mi">18</span><span class="p">,</span>
-  <span class="n">PositionDirection</span><span class="p">.</span><span class="n">LONG</span><span class="p">(),</span>
+  <span class="n">order_type</span><span class="o">=</span><span class="n">OrderType</span><span class="p">.</span><span class="n">Oracle</span><span class="p">(),</span>
+  <span class="n">base_asset_amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+  <span class="n">market_index</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span>
+  <span class="n">direction</span><span class="o">=</span><span class="n">PositionDirection</span><span class="p">.</span><span class="n">Long</span><span class="p">(),</span>
   <span class="n">auction_start_price</span><span class="o">=</span><span class="n">auction_start_price</span><span class="p">,</span>
   <span class="n">auction_end_price</span><span class="o">=</span><span class="n">auction_end_price</span><span class="p">,</span>
   <span class="n">oracle_price_offset</span><span class="o">=</span><span class="n">oracle_price_offset</span><span class="p">,</span>
@@ -1491,7 +1964,7 @@ localhost:8080/v2/orders
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>
 <span class="n">order_dd</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">cancel_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">);</span>
-</code></pre></div>
+</code></pre></div><h3 id='typescript-13'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1507,6 +1980,28 @@ localhost:8080/v2/orders
 <td></td>
 </tr>
 </tbody></table>
+<h3 id='python-13'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>order_id</td>
+<td>The order being canceled</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>sub_account_id</td>
+<td>Sub account to cancel order under</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+</tbody></table>
 <div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> DELETE <span class="nt">-H</span> <span class="s1">'content-type: application/json'</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{ "ids": [1] }'</span> <span class="se">\</span>
   localhost:8080/v2/orders
@@ -1519,7 +2014,7 @@ localhost:8080/v2/orders
 </code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> DELETE <span class="nt">-H</span> <span class="s1">'content-type: application/json'</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{ "userIds": [1] }'</span> <span class="se">\</span>
   localhost:8080/v2/orders
-</code></pre></div>
+</code></pre></div><h3 id='typescript-14'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1535,21 +2030,43 @@ localhost:8080/v2/orders
 <td></td>
 </tr>
 </tbody></table>
+<h3 id='python-14'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>user_order_id</td>
+<td>Unique order id specified by user when order was placed</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>sub_account_id</td>
+<td>Sub account to cancel orders under</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+</tbody></table>
 <h2 id='cancel-orders'>Cancel Orders</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
 <span class="kd">const</span> <span class="nx">marketType</span> <span class="o">=</span> <span class="nx">MarketType</span><span class="p">.</span><span class="nx">PERP</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">direction</span> <span class="o">=</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">;</span>
 <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">cancelOrders</span><span class="p">(</span><span class="nx">marketType</span><span class="p">,</span> <span class="nx">marketIndex</span><span class="p">,</span> <span class="nx">direction</span><span class="p">);</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">market_type</span> <span class="o">=</span> <span class="n">MarketType</span><span class="p">.</span><span class="n">PERP</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">market_type</span> <span class="o">=</span> <span class="n">MarketType</span><span class="p">.</span><span class="n">Perp</span><span class="p">()</span>
 <span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">direction</span> <span class="o">=</span> <span class="n">PositionDirection</span><span class="p">.</span><span class="n">LONG</span>
+<span class="n">direction</span> <span class="o">=</span> <span class="n">PositionDirection</span><span class="p">.</span><span class="n">Long</span><span class="p">()</span>
 <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">cancel_orders</span><span class="p">(</span><span class="n">market_type</span><span class="p">,</span> <span class="n">market_index</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span> <span class="c1"># cancel bids in perp market 0
 </span>
 <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">cancel_orders</span><span class="p">()</span> <span class="c1"># cancels all orders
 </span></code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> DELETE <span class="nt">-H</span> <span class="s1">'content-type: application/json'</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{ "marketIndex": 1, "marketType": "spot" }'</span> <span class="se">\</span>
   localhost:8080/v2/orders
-</code></pre></div>
+</code></pre></div><h3 id='typescript-15'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1577,6 +2094,40 @@ localhost:8080/v2/orders
 <td></td>
 </tr>
 </tbody></table>
+<h3 id='python-15'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>market_type</td>
+<td>The market type of orders to cancel</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>market_index</td>
+<td>The market index of orders to cancel</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>direction</td>
+<td>The direction  of orders to cancel</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>sub_account_id</td>
+<td>The sub account from which to cancel orders</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+</tbody></table>
 
 <p>To cancel all orders, do not set any parameters.</p>
 <h2 id='cancel-and-place-orders'>Cancel and Place Orders</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
@@ -1587,41 +2138,41 @@ localhost:8080/v2/orders
 
 <span class="kd">const</span> <span class="nx">placeOrderParams</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">{</span>
-     <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
-     <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-     <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
-     <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
-     <span class="na">price</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mf">21.23</span><span class="p">),</span>
-   <span class="p">},</span>
-   <span class="p">{</span>
-     <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
-     <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-     <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">SHORT</span><span class="p">,</span>
-     <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
-     <span class="na">oraclePriceOffset</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(.</span><span class="mi">05</span><span class="p">).</span><span class="nx">toNumber</span><span class="p">(),</span>
-   <span class="p">}</span>
+    <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
+    <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
+    <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+    <span class="na">price</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mf">21.23</span><span class="p">),</span>
+  <span class="p">},</span>
+  <span class="p">{</span>
+    <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">LIMIT</span><span class="p">,</span>
+    <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">SHORT</span><span class="p">,</span>
+    <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+    <span class="na">oraclePriceOffset</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(.</span><span class="mi">05</span><span class="p">).</span><span class="nx">toNumber</span><span class="p">(),</span>
+  <span class="p">}</span>
 <span class="p">];</span>
 
 <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">cancelAndPlaceOrders</span><span class="p">(</span><span class="nx">cancelOrderParams</span><span class="p">,</span> <span class="nx">placeOrderParams</span><span class="p">);</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>
-<span class="n">canel_order_params</span> <span class="o">=</span> <span class="p">(</span><span class="n">MarketType</span><span class="p">.</span><span class="n">PERP</span><span class="p">(),</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="c1"># cancel all orders in perp market 0
+<span class="n">canel_order_params</span> <span class="o">=</span> <span class="p">(</span><span class="n">MarketType</span><span class="p">.</span><span class="n">Perp</span><span class="p">(),</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="c1"># cancel all orders in perp market 0
 </span><span class="n">place_order_params</span> <span class="o">=</span> <span class="p">[</span>
     <span class="n">OrderParams</span><span class="p">(</span>
-     <span class="n">order_type</span><span class="o">=</span><span class="n">OrderType</span><span class="p">.</span><span class="n">LIMIT</span><span class="p">(),</span>
-     <span class="n">market_type</span><span class="o">=</span><span class="n">MarketType</span><span class="p">.</span><span class="n">PERP</span><span class="p">(),</span>
-     <span class="n">market_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-     <span class="n">direction</span><span class="o">=</span><span class="n">PositionDirection</span><span class="p">.</span><span class="n">LONG</span><span class="p">(),</span>
-     <span class="n">base_asset_amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
-     <span class="n">price</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(</span><span class="mf">21.23</span><span class="p">),</span>
-   <span class="p">),</span>
+    <span class="n">order_type</span><span class="o">=</span><span class="n">OrderType</span><span class="p">.</span><span class="n">Limit</span><span class="p">(),</span>
+    <span class="n">base_asset_amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+    <span class="n">market_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">direction</span><span class="o">=</span><span class="n">PositionDirection</span><span class="p">.</span><span class="n">Long</span><span class="p">(),</span>
+    <span class="n">market_type</span><span class="o">=</span><span class="n">MarketType</span><span class="p">.</span><span class="n">Perp</span><span class="p">(),</span>
+    <span class="n">price</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(</span><span class="mf">21.23</span><span class="p">),</span>
+  <span class="p">),</span>
    <span class="n">OrderParams</span><span class="p">(</span>
-     <span class="n">order_type</span><span class="o">=</span><span class="n">OrderType</span><span class="p">.</span><span class="n">LIMIT</span><span class="p">(),</span>
-     <span class="n">market_type</span><span class="o">=</span><span class="n">MarketType</span><span class="p">.</span><span class="n">PERP</span><span class="p">(),</span>
-     <span class="n">market_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-     <span class="n">direction</span><span class="o">=</span><span class="n">PositionDirection</span><span class="p">.</span><span class="n">SHORT</span><span class="p">(),</span>
-     <span class="n">base_asset_amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
-     <span class="n">oracle_price_offset</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(.</span><span class="mi">05</span><span class="p">),</span>
-   <span class="p">)</span>
+    <span class="n">order_type</span><span class="o">=</span><span class="n">OrderType</span><span class="p">.</span><span class="n">Limit</span><span class="p">(),</span>
+    <span class="n">base_asset_amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+    <span class="n">market_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">direction</span><span class="o">=</span><span class="n">PositionDirection</span><span class="p">.</span><span class="n">Short</span><span class="p">(),</span>
+    <span class="n">market_type</span><span class="o">=</span><span class="n">MarketType</span><span class="p">.</span><span class="n">Perp</span><span class="p">(),</span>
+    <span class="n">oracle_price_offset</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(.</span><span class="mi">05</span><span class="p">),</span>
+  <span class="p">)</span>
 <span class="p">]</span>
 
 <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">cancel_and_place_orders</span><span class="p">(</span><span class="n">canel_order_params</span><span class="p">,</span> <span class="n">place_order_params</span><span class="p">);</span>
@@ -1645,7 +2196,7 @@ localhost:8080/v2/orders
       }
    }'</span> <span class="se">\</span>
 localhost:8080/v2/orders/cancelAndPlace
-</code></pre></div>
+</code></pre></div><h3 id='typescript-16'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1667,9 +2218,37 @@ localhost:8080/v2/orders/cancelAndPlace
 <td></td>
 </tr>
 </tbody></table>
+<h3 id='python-16'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>cancel_params</td>
+<td>Tuple with optional MarketType, market index, and PositionDirection for canceling orders</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>place_order_params</td>
+<td>List of OrderParams for placing new orders</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>sub_account_id</td>
+<td>The sub account to use</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+</tbody></table>
 
 <p>To cancel all orders, do not set any parameters.</p>
-<h2 id='modify-order-params'>Modify Order Params</h2>
+<h2 id='modify-order-params'>Modify Order Params</h2><h3 id='typescript-17'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1757,6 +2336,100 @@ localhost:8080/v2/orders/cancelAndPlace
 <td></td>
 </tr>
 </tbody></table>
+<h3 id='python-17'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>direction</td>
+<td>The direction of the order</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>base_asset_amount</td>
+<td>Amount of base asset to buy or sell</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>price</td>
+<td>Limit price for the order</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>reduce_only</td>
+<td>If the order should only reduce positions</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>post_only</td>
+<td>If the order should only be a maker order</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>immediate_or_cancel</td>
+<td>Whether the order is immediate or cancel</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>max_ts</td>
+<td>Max timestamp for order expiry</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>trigger_price</td>
+<td>Trigger price for trigger orders</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>trigger_condition</td>
+<td>Condition for triggering the order</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>oracle_price_offset</td>
+<td>Offset for oracle-derived limit price</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>auction_duration</td>
+<td>Duration of the auction in slots</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>auction_start_price</td>
+<td>Starting price of the auction</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>auction_end_price</td>
+<td>Ending price of the auction</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td>policy</td>
+<td>Policy for modifying the order</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+</tbody></table>
 <h2 id='modifying-order'>Modifying Order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
 <span class="kd">const</span> <span class="nx">updateParams</span> <span class="o">=</span> <span class="p">{</span>
   <span class="na">orderId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
@@ -1782,7 +2455,7 @@ localhost:8080/v2/orders/cancelAndPlace
     }]
    }'</span> <span class="se">\</span>
 localhost:8080/v2/orders
-</code></pre></div>
+</code></pre></div><h3 id='typescript-18'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1802,6 +2475,34 @@ localhost:8080/v2/orders
 <td>The modify order params</td>
 <td>Yes</td>
 <td></td>
+</tr>
+</tbody></table>
+<h3 id='python-18'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>order_id</td>
+<td>The order ID of the order to modify</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>modify_order_params</td>
+<td>The parameters for modifying the order</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>sub_account_id</td>
+<td>The sub account to use</td>
+<td>Yes</td>
+<td>None</td>
 </tr>
 </tbody></table>
 
@@ -1833,7 +2534,7 @@ localhost:8080/v2/orders
     }]
    }'</span> <span class="se">\</span>
 localhost:8080/v2/orders
-</code></pre></div>
+</code></pre></div><h3 id='typescript-19'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1855,6 +2556,34 @@ localhost:8080/v2/orders
 <td></td>
 </tr>
 </tbody></table>
+<h3 id='python-19'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>user_order_id</td>
+<td>The user order ID of the order to modify</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>modify_order_params</td>
+<td>The parameters for modifying the order</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>sub_account_id</td>
+<td>The sub-account ID associated with the order</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+</tbody></table>
 
 <p>Modify cancels and places a new order</p>
 
@@ -1873,7 +2602,7 @@ localhost:8080/v2/orders
    <span class="n">user</span><span class="p">.</span><span class="n">get_user_account</span><span class="p">(),</span>
    <span class="n">market_index</span>
 <span class="p">)</span>
-</code></pre></div>
+</code></pre></div><h3 id='typescript-20'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1901,12 +2630,40 @@ localhost:8080/v2/orders
 <td></td>
 </tr>
 </tbody></table>
+<h3 id='python-20'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>settlee_user_account_public_key</td>
+<td>Public key of the user account to settle PNL for</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>settlee_user_account</td>
+<td>User account data for PNL settlement</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>market_index</td>
+<td>Index of the perpetual market for PNL settlement</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
 <h2 id='get-spot-market-account'>Get Spot Market Account</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">spotMarketAccount</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getSpotMarketAccount</span><span class="p">(</span><span class="nx">marketIndex</span><span class="p">);</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
 <span class="n">spot_market_account</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_spot_market_account</span><span class="p">(</span><span class="n">market_index</span><span class="p">);</span>
-</code></pre></div>
+</code></pre></div><h3 id='typescript-21'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1922,12 +2679,28 @@ localhost:8080/v2/orders
 <td></td>
 </tr>
 </tbody></table>
+<h3 id='python-21'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>market_index</td>
+<td>The market index for the spot market</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
 <h2 id='get-perp-market-account'>Get Perp Market Account</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">perpMarketAccount</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getPerpMarketAccount</span><span class="p">(</span><span class="nx">marketIndex</span><span class="p">);</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
 <span class="n">perp_market_account</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_perp_market_account</span><span class="p">(</span><span class="n">market_index</span><span class="p">);</span>
-</code></pre></div>
+</code></pre></div><h3 id='typescript-22'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1943,9 +2716,25 @@ localhost:8080/v2/orders
 <td></td>
 </tr>
 </tbody></table>
+<h3 id='python-22'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>market_index</td>
+<td>The market index for the perp market</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
 <h1 id='user'>User</h1><h2 id='get-user'>Get User</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>   <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getUser</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">user</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_user</span><span class="p">();</span>
-</code></pre></div>
+</code></pre></div><h3 id='typescript-23'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1967,6 +2756,22 @@ localhost:8080/v2/orders
 <td>current authority</td>
 </tr>
 </tbody></table>
+<h3 id='python-23'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>sub_account_id</td>
+<td>The sub account id of user to get</td>
+<td>Yes</td>
+<td>active sub account</td>
+</tr>
+</tbody></table>
 <h2 id='getting-deposit-borrow-amounts'>Getting Deposit/Borrow Amounts</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
 <span class="kd">const</span> <span class="nx">tokenAmount</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getTokenAmount</span><span class="p">(</span>
@@ -1985,7 +2790,7 @@ localhost:8080/v2/orders
   <span class="nt">-H</span> <span class="s1">'content-type: application/json'</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{"marketIndex":0,"marketType":"spot"}'</span> <span class="se">\</span>
 localhost:8080/v2/positions
-</code></pre></div>
+</code></pre></div><h3 id='typescript-24'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1996,6 +2801,22 @@ localhost:8080/v2/positions
 </thead><tbody>
 <tr>
 <td>marketIndex</td>
+<td>Market index for the spot market</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id='python-24'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>market_index</td>
 <td>Market index for the spot market</td>
 <td>No</td>
 <td></td>
@@ -2023,7 +2844,7 @@ localhost:8080/v2/positions
   <span class="nt">-H</span> <span class="s1">'content-type: application/json'</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{"marketIndex":0,"marketType":"perp"}'</span> <span class="se">\</span>
 localhost:8080/v2/positions
-</code></pre></div>
+</code></pre></div><h3 id='typescript-25'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2039,6 +2860,22 @@ localhost:8080/v2/positions
 <td></td>
 </tr>
 </tbody></table>
+<h3 id='python-25'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>market_index</td>
+<td>Market index for the perp market</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
 
 <p>If base amount is greater than 0, it is a long. If less than zero, it is a short.</p>
 <h2 id='get-order'>Get Order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">orderId</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
@@ -2049,7 +2886,7 @@ localhost:8080/v2/positions
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">order_id</span> <span class="o">=</span> <span class="mi">1</span>
 
 <span class="n">order</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">)</span>
-</code></pre></div>
+</code></pre></div><h3 id='typescript-26'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2065,6 +2902,22 @@ localhost:8080/v2/positions
 <td></td>
 </tr>
 </tbody></table>
+<h3 id='python-26'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>order_id</td>
+<td>Order id for the order you&#39;re getting</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
 <h2 id='get-order-by-user-order-id'>Get Order By User Order Id</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">userOrderId</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 
 <span class="kd">const</span> <span class="nx">order</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getOrderByUserOrderId</span><span class="p">(</span>
@@ -2073,7 +2926,7 @@ localhost:8080/v2/positions
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">user_order_id</span> <span class="o">=</span> <span class="mi">1</span>
 
 <span class="n">order</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_order_by_user_order_id</span><span class="p">(</span><span class="n">user_order_id</span><span class="p">)</span>
-</code></pre></div>
+</code></pre></div><h3 id='typescript-27'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2089,12 +2942,28 @@ localhost:8080/v2/positions
 <td></td>
 </tr>
 </tbody></table>
+<h3 id='python-27'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>user_order_id</td>
+<td>User order id for the order you&#39;re getting</td>
+<td>No</td>
+<td></td>
+</tr>
+</tbody></table>
 <h2 id='get-open-orders'>Get Open Orders</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">orders</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getOpenOrders</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">orders</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_open_orders</span><span class="p">()</span>
 </code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl localhost:8080/v2/orders
 </code></pre></div><h2 id='get-unrealized-perp-pnl'>Get Unrealized Perp Pnl</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">pnl</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getUnrealizedPNL</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">pnl</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_unrealized_pnl</span><span class="p">()</span>
-</code></pre></div>
+</code></pre></div><h3 id='typescript-28'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2105,20 +2974,66 @@ localhost:8080/v2/positions
 </thead><tbody>
 <tr>
 <td>withFunding</td>
-<td>Whether to included unsettled funding payments</td>
+<td>Whether to include unsettled funding payments</td>
 <td>Yes</td>
 <td>false</td>
 </tr>
 <tr>
 <td>marketIndex</td>
-<td>Whether to only return pnl for specific market</td>
+<td>Index of a specific market for PNL calculation</td>
 <td>Yes</td>
 <td></td>
 </tr>
+<tr>
+<td>withWeightMarginCategory</td>
+<td>To include margin category weighting in PNL calculation</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>strict</td>
+<td>Whether the calculation should be strict</td>
+<td>Yes</td>
+<td>false</td>
+</tr>
 </tbody></table>
-<h2 id='get-unrealized-funding-pnl'>Get Unrealized Funding Pnl</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">pnl</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getUnrealizedFundingPNL</span><span class="p">();</span>
+<h3 id='python-28'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>with_funding</td>
+<td>Whether to include unsettled funding payments</td>
+<td>Yes</td>
+<td>false</td>
+</tr>
+<tr>
+<td>market_index</td>
+<td>Index of a specific market for PNL calculation</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>with_weight_margin_category</td>
+<td>To include margin category weighting in PNL calculation</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>strict</td>
+<td>Whether the calculation should be strict</td>
+<td>Yes</td>
+<td>false</td>
+</tr>
+</tbody></table>
+<h2 id='get-unrealized-funding-pnl'>Get Unrealized Funding Pnl</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">pnl</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getUnrealizedFundingPNL</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">pnl</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_unrealized_funding_pnl</span><span class="p">()</span>
-</code></pre></div>
+</code></pre></div><h3 id='typescript-29'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2134,9 +3049,25 @@ localhost:8080/v2/positions
 <td></td>
 </tr>
 </tbody></table>
-<h2 id='get-total-collateral'>Get Total Collateral</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">totalCollateral</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getTotalCollateral</span><span class="p">();</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">total_collateral</span> <span class="o">=</span> <span class="k">await</span> <span class="n">user</span><span class="p">.</span><span class="n">get_total_collateral</span><span class="p">()</span>
-</code></pre></div>
+<h3 id='python-29'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>market_index</td>
+<td>Whether to only return pnl for specific market</td>
+<td>Yes</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id='get-total-collateral'>Get Total Collateral</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">totalCollateral</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getTotalCollateral</span><span class="p">();</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">total_collateral</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_total_collateral</span><span class="p">()</span>
+</code></pre></div><h3 id='typescript-30'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2150,13 +3081,41 @@ localhost:8080/v2/positions
 <td>Initial or Maintenance</td>
 <td>Yes</td>
 <td>Initial</td>
+</tr>
+<tr>
+<td>strict</td>
+<td>Whether the calculation should be strict</td>
+<td>Yes</td>
+<td>false</td>
+</tr>
+</tbody></table>
+<h3 id='python-30'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>margin_category</td>
+<td>Initial or Maintenance</td>
+<td>Yes</td>
+<td>Initial</td>
+</tr>
+<tr>
+<td>strict</td>
+<td>Whether the calculation should be strict</td>
+<td>Yes</td>
+<td>false</td>
 </tr>
 </tbody></table>
 
 <p>Asset weights vary based on whether you&#39;re checking the initial or maintenance margin requirement. Initial is used for initial leverage extension, maintenance for determining liquidations.</p>
-<h2 id='get-margin-requirement'>Get Margin Requirement</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">marginRequirement</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getMarginRequirement</span><span class="p">();</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">margin_requirement</span> <span class="o">=</span> <span class="k">await</span> <span class="n">user</span><span class="p">.</span><span class="n">get_margin_requirement</span><span class="p">()</span>
-</code></pre></div>
+<h2 id='get-margin-requirement'>Get Margin Requirement</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">marginRequirement</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getMarginRequirement</span><span class="p">();</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">margin_requirement</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_margin_requirement</span><span class="p">()</span>
+</code></pre></div><h3 id='typescript-31'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2167,16 +3126,56 @@ localhost:8080/v2/positions
 </thead><tbody>
 <tr>
 <td>marginCategory</td>
-<td>Initial or Maintenance</td>
+<td>The type of margin (Initial or Maintenance)</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>liquidationBuffer</td>
+<td>Buffer value for liquidation calculation</td>
 <td>Yes</td>
-<td>Initial</td>
+<td></td>
+</tr>
+<tr>
+<td>strict</td>
+<td>Whether the calculation should be strict</td>
+<td>Yes</td>
+<td>false</td>
+</tr>
+</tbody></table>
+<h3 id='python-31'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>margin_category</td>
+<td>Type of margin, either Initial or Maintenance</td>
+<td>Yes</td>
+<td>MarginCategory.INITIAL</td>
+</tr>
+<tr>
+<td>liquidation_buffer</td>
+<td>Additional buffer value for liquidation calculation</td>
+<td>Yes</td>
+<td>0</td>
+</tr>
+<tr>
+<td>strict</td>
+<td>Whether the calculation should be strict</td>
+<td>Yes</td>
+<td>False</td>
 </tr>
 </tbody></table>
 
 <p>Liability weights (for borrows) and margin ratios (for perp positions) vary based on whether you&#39;re checking the initial or maintenance margin requirement. Initial is used for initial leverage extension, maintenance for determining liquidations.</p>
 <h2 id='get-free-collateral'>Get Free Collateral</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">freeCollateral</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getFreeCollateral</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">free_collateral</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_free_collateral</span><span class="p">()</span>
-</code></pre></div>
+</code></pre></div><h3 id='typescript-32'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2192,11 +3191,27 @@ localhost:8080/v2/positions
 <td>Initial</td>
 </tr>
 </tbody></table>
+<h3 id='python-32'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>marginCategory</td>
+<td>Type of margin, either Initial or Maintenance</td>
+<td>Yes</td>
+<td>MarginCategory.INITIAL</td>
+</tr>
+</tbody></table>
 
 <p>Free collateral is the difference between your total collateral and your margin requirement.</p>
 <h2 id='get-leverage'>Get Leverage</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">leverage</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getLeverage</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">leverage</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_leverage</span><span class="p">()</span>
-</code></pre></div>
+</code></pre></div><h3 id='typescript-33'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2210,6 +3225,22 @@ localhost:8080/v2/positions
 <td>Whether to factor in open orders in position size</td>
 <td>Yes</td>
 <td>true</td>
+</tr>
+</tbody></table>
+<h3 id='python-33'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>include_open_orders</td>
+<td>Whether to factor in open orders in position size</td>
+<td>Yes</td>
+<td>True</td>
 </tr>
 </tbody></table>
 
@@ -2279,7 +3310,7 @@ localhost:8080/v2/positions
 <span class="n">event_subscriber</span><span class="p">.</span><span class="n">subscribe</span><span class="p">()</span>
 
 <span class="n">event_subscriber</span><span class="p">.</span><span class="n">event_emitter</span><span class="p">.</span><span class="n">new_event</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
-</code></pre></div>
+</code></pre></div><h3 id='typescript-34'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2347,6 +3378,88 @@ localhost:8080/v2/positions
 <td>Which address to listen to events for. Defaults to drift program.</td>
 <td>Yes</td>
 <td>dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH</td>
+</tr>
+</tbody></table>
+<h3 id='python-34'>Python</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>connection</td>
+<td>AsyncClient object specifying Solana RPC URL</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>program</td>
+<td>Anchor program object used to deserialize events from transaction logs</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td>options</td>
+<td>Configuration options for event subscription</td>
+<td>Yes</td>
+<td>EventSubscriptionOptions.default()</td>
+</tr>
+<tr>
+<td>- address</td>
+<td>Address to listen to events for, defaults to Drift program</td>
+<td>Yes</td>
+<td>DRIFT_PROGRAM_ID</td>
+</tr>
+<tr>
+<td>- event_types</td>
+<td>Types of events to trigger event callbacks for</td>
+<td>Yes</td>
+<td>DEFAULT_EVENT_TYPES</td>
+</tr>
+<tr>
+<td>- max_events_per_type</td>
+<td>Maximum number of events per event type to keep in memory</td>
+<td>Yes</td>
+<td>4096</td>
+</tr>
+<tr>
+<td>- order_by</td>
+<td>Sort order of transactions, by &#39;blockchain&#39; order or &#39;client&#39; received order</td>
+<td>Yes</td>
+<td>&quot;blockchain&quot;</td>
+</tr>
+<tr>
+<td>- order_dir</td>
+<td>Sorting direction, either most recent (&#39;desc&#39;) or oldest (&#39;asc&#39;)</td>
+<td>Yes</td>
+<td>&quot;asc&quot;</td>
+</tr>
+<tr>
+<td>- commitment</td>
+<td>Transaction commitment level to wait for</td>
+<td>Yes</td>
+<td>&quot;confirmed&quot;</td>
+</tr>
+<tr>
+<td>- max_tx</td>
+<td>Maximum number of transactions to keep in memory</td>
+<td>Yes</td>
+<td>4096</td>
+</tr>
+<tr>
+<td>- log_provider_config</td>
+<td>Configuration for log provider, either websocket or polling</td>
+<td>Yes</td>
+<td>WebsocketLogProviderConfig()</td>
+</tr>
+<tr>
+<td>- until_tx</td>
+<td>Signature to listen until, used for log provider</td>
+<td>Yes</td>
+<td>None</td>
 </tr>
 </tbody></table>
 
@@ -2493,9 +3606,11 @@ localhost:8080/v2/positions
 <span class="n">events</span> <span class="o">=</span> <span class="n">event_subscriber</span><span class="p">.</span><span class="n">get_events_array</span><span class="p">(</span><span class="n">event_type</span><span class="p">)</span>
 </code></pre></div>
 <p>This returns all the events that the event subscriber currently has stored in memory.</p>
-<h2 id='getting-events-by-transaction'>Getting Events By Transaction</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
-<span class="nx">tx_sig</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">3dq5PtQ3VnNTkQRrHhQ1nRACWZaFVvSBKs1RLXM8WvCqLHTzTuVGc7XER5awoLFLTdJ4kqZiNmo7e8b3pXaEGaoo</span><span class="dl">'</span>
-<span class="nx">events</span> <span class="o">=</span> <span class="nx">event_subscriber</span><span class="p">.</span><span class="nx">get_events_by_tx</span><span class="p">(</span><span class="nx">tx_sig</span><span class="p">)</span>
+<h2 id='getting-events-by-transaction'>Getting Events By Transaction</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">txSig</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">3dq5PtQ3VnNTkQRrHhQ1nRACWZaFVvSBKs1RLXM8WvCqLHTzTuVGc7XER5awoLFLTdJ4kqZiNmo7e8b3pXaEGaoo</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">events</span> <span class="o">=</span> <span class="nx">eventSubscriber</span><span class="p">.</span><span class="nx">getEventsByTx</span><span class="p">(</span><span class="nx">txSig</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>
+<span class="n">tx_sig</span> <span class="o">=</span> <span class="s">'3dq5PtQ3VnNTkQRrHhQ1nRACWZaFVvSBKs1RLXM8WvCqLHTzTuVGc7XER5awoLFLTdJ4kqZiNmo7e8b3pXaEGaoo'</span>
+<span class="n">events</span> <span class="o">=</span> <span class="n">event_subscriber</span><span class="p">.</span><span class="n">get_events_by_tx</span><span class="p">(</span><span class="n">tx_sig</span><span class="p">)</span>
 </code></pre></div>
 <p>This returns the events that the event subscriber currently has stored in memory for a given transaction.</p>
 <h1 id='margin-system'>Margin System</h1>
@@ -2551,6 +3666,9 @@ for borrows, negative perp pnl and perp base amount.</p>
 <span class="kd">const</span> <span class="nx">perpMarketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// SOL-PERP</span>
 <span class="kd">const</span> <span class="nx">perpPosition</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getPerpPosition</span><span class="p">(</span><span class="nx">perpMarketIndex</span><span class="p">);</span>
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">convertToNumber</span><span class="p">(</span><span class="nx">perpPosition</span><span class="p">.</span><span class="nx">baseAssetAmount</span><span class="p">,</span> <span class="nx">BASE_PRECISION</span><span class="p">));</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">perp_market_index</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># SOL-PERP
+</span><span class="n">perp_position</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_perp_position</span><span class="p">(</span><span class="n">market_index</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">convert_to_number</span><span class="p">(</span><span class="n">perp_position</span><span class="p">.</span><span class="n">base_asset_amount</span><span class="p">,</span> <span class="n">BASE_PRECISION</span><span class="p">))</span>
 </code></pre></div>
 <p>This prints the size of the current perp position in perp market index 0 (SOL-PERP)</p>
 <h2 id='getting-a-current-spot-position'>Getting a Current Spot Position</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
@@ -2558,8 +3676,13 @@ for borrows, negative perp pnl and perp base amount.</p>
 <span class="kd">const</span> <span class="nx">spotConfig</span> <span class="o">=</span> <span class="nx">SpotMarkets</span><span class="p">[</span><span class="dl">'</span><span class="s1">mainnet-beta</span><span class="dl">'</span><span class="p">][</span><span class="nx">spotMarketIndex</span><span class="p">];</span>
 <span class="kd">const</span> <span class="nx">spotMarket</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getSpotMarketAccount</span><span class="p">(</span><span class="nx">spotMarketIndex</span><span class="p">);</span>
 <span class="kd">const</span> <span class="nx">spotPosition</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getSpotPosition</span><span class="p">(</span><span class="nx">spotMarketIndex</span><span class="p">);</span>
-<span class="kd">const</span> <span class="nx">tokenAmount</span> <span class="o">=</span> <span class="nx">getTokenAmount</span><span class="p">(</span><span class="nx">spotPosition</span><span class="p">.</span><span class="nx">scaledBalance</span><span class="p">,</span> <span class="nx">spotMarket</span><span class="p">,</span> <span class="p">.</span><span class="nx">spotPosition</span><span class="p">.</span><span class="nx">balanceType</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">tokenAmount</span> <span class="o">=</span> <span class="nx">getTokenAmount</span><span class="p">(</span><span class="nx">spotPosition</span><span class="p">.</span><span class="nx">scaledBalance</span><span class="p">,</span> <span class="nx">spotMarket</span><span class="p">,</span> <span class="nx">spotPosition</span><span class="p">.</span><span class="nx">balanceType</span><span class="p">);</span>
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">convertToNumber</span><span class="p">(</span><span class="nx">tokenAmount</span><span class="p">,</span> <span class="nx">spotConfig</span><span class="p">.</span><span class="nx">precision</span><span class="p">));</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">spot_market_index</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># USDC
+</span><span class="n">spot_market</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_spot_market_account</span><span class="p">(</span><span class="n">spot_market_index</span><span class="p">)</span>
+<span class="n">spot_position</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_spot_position</span><span class="p">(</span><span class="n">spot_market_index</span><span class="p">)</span>
+<span class="n">token_amount</span> <span class="o">=</span> <span class="n">get_token_amount</span><span class="p">(</span><span class="n">spot_psoition</span><span class="p">.</span><span class="n">scaled_balance</span><span class="p">,</span> <span class="n">spot_market</span><span class="p">,</span> <span class="n">spot_position</span><span class="p">.</span><span class="n">balance_type</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">convert_to_number</span><span class="p">(</span><span class="n">token_amount</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="n">spot_market</span><span class="p">.</span><span class="n">decimals</span><span class="p">)))</span>
 </code></pre></div>
 <p>This prints the current spot position in spot market index 0 (USDC). This value is the same as the value shown on the UI,
 it includes any accumulated interest.</p>
