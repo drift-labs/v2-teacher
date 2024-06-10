@@ -176,6 +176,7 @@ driftClient.subscribe();
   drift_client = DriftClient(connection, wallet, "mainnet")
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | connection      | Connection object specifying solana rpc url       | No | |
@@ -193,6 +194,28 @@ driftClient.subscribe();
 | authoritySubAccountMap   | Map of authority to sub account ids to subscribe to. Only necessary if using multiple delegate accounts. If this and subAccountIds are empty, subscribes to all sub account ids. | Yes | {} |
 | includeDelegates   | Whether or not to subscribe to delegates when subAccountIds and authoritySubAccountMap are empty | Yes | false |
 | userStats   | Whether or not to listen subscribe to user stats account. | Yes | false |
+
+
+### Python
+| Parameter             | Description                                                                                     | Optional | Default                         |
+| --------------------- | ----------------------------------------------------------------------------------------------- | -------- | ------------------------------- |
+| connection            | AsyncClient connection to the Solana cluster                                                    | No       |                                 |
+| wallet                | Wallet object, can be Keypair or Wallet type                                                    | No       |                                 |
+| env                   | Drift environment, 'devnet' or 'mainnet'                                                        | Yes      | "mainnet"                       |
+| program_id            | Drift program identifier                                                                        | Yes      | DRIFT_PROGRAM_ID                |
+| opts                  | Options for transaction confirmation status                                                     | Yes      | DEFAULT_TX_OPTIONS              |
+| authority             | Public key of the user account authority                                                        | Yes      | None                            |
+| account_subscription  | Configuration for account subscriptions (websockets/polling)                                    | Yes      | AccountSubscriptionConfig.default() |
+| perp_market_indexes   | List of perpetual market indexes to interact with                                               | Yes      | None                            |
+| spot_market_indexes   | List of spot market indexes to interact with                                                    | Yes      | None                            |
+| oracle_infos          | List of OracleInfo objects for market data                                                      | Yes      | None                            |
+| tx_params             | Additional parameters for transactions                                                          | Yes      | None                            |
+| tx_version            | Version of the transaction                                                                      | Yes      | None                            |
+| tx_sender             | Object handling the sending of transactions                                                     | Yes      | None                            |
+| active_sub_account_id | ID of the initially active sub-account                                                          | Yes      | None                            |
+| sub_account_ids       | List of sub-account IDs to subscribe to                                                         | Yes      | None                            |
+| market_lookup_table   | Public key for the market lookup table                                                          | Yes      | None                            |
+
 
 ## User Initialization
 
@@ -214,14 +237,24 @@ const [txSig, userPublickKey] = await driftClient.initializeUserAccount(
 tx_sig = await drift_client.initialize_user(sub_account_id=0, name="toly")
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | subAccountId | The sub account id for the new user account.  | Yes | 0 |
 | name   | Display name for the user account    | Yes | Main Account |
 | referrerInfo   | The address of the referrer and referrer stats accounts | Yes | |
 
+### Python 
+
+| Parameter     | Description                              | Optional | Default |
+| ------------- | ---------------------------------------- | -------- | ------- |
+| sub_account_id| The sub account id for the new user account.         | Yes      | 0       |
+| name          | Display name for the user account            | Yes      | None    |
+| referrer_info | The address of the referrer and referrer stats accounts  | Yes      | None    |
+
+
 Sub account ids are monotonic. The first user account created will have sub account id 0, the second will have sub account id 1, etc.
-The next sub account id can be found by calling `driftClient.getNextSubAccountId()`.
+The next sub account id can be found by calling `driftClient.getNextSubAccountId()` in TypeScript.
 
 ## Updating User
 Users accounts can update names, set custom max intial margin ratio, enable margin trading, and add a delegate account.
@@ -230,19 +263,21 @@ Users accounts can update names, set custom max intial margin ratio, enable marg
 const subaccountId = 0;
 
 // set max 1x intiial leverage
-await this.driftClient.updateUserCustomMarginRatio(
-  MARGIN_PRECISION,
-  subaccountId
-);
+await driftClient.updateUserCustomMarginRatio([
+    { 
+        'marginRatio': MARGIN_PRECISION, 
+        'subAccountId': subaccountId 
+    }
+]);
 
 // enable spot margin trading
-await this.driftClient.updateUserMarginTradingEnabled(
+await driftClient.updateUserMarginTradingEnabled(
   true,
   subaccountId
 );
 
 // add a delegate this user account
-await this.driftClient.updateUserDelegate(
+await driftClient.updateUserDelegate(
   new PublicKey('satoshi'),
   subaccountId
 );
@@ -259,14 +294,24 @@ driftClient.switchActiveUser(
 drift_client.switch_active_user(sub_account_id=1)
 ```
 
+<<<<<<< HEAD
+### TypeScript
+=======
 ```shell
 curl http://localhost:8080/v2/resource?subAccountId=1
 ```
 
+>>>>>>> upstream/main
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | subAccountId | The sub account to switch to  | No | 0 |
 | authority   | The authority of the sub account you're signing for. Only needed for delegate accounts | Yes | Current authority |
+
+### Python
+| Parameter     | Description                                   | Optional | Default |
+| ------------- | --------------------------------------------- | -------- | ------- |
+| sub_account_id| Identifier for the sub-account to be activated| No       |         |
+
 
 ## Deleting User Account
 If an account contains no assets or liabilites, a user account can be deleted to reclaim rent.
@@ -284,7 +329,7 @@ const marketIndex = 0; // USDC
 const amount = driftClient.convertToSpotPrecision(marketIndex, 100); // $100
 const associatedTokenAccount = await driftClient.getAssociatedTokenAccount(marketIndex);
 
-driftClient.deposit(
+await driftClient.deposit(
   amount,
   marketIndex,
   associatedTokenAccount,
@@ -294,18 +339,31 @@ driftClient.deposit(
 ```python
 
 spot_market_index = 0 # USDC
-amount = drift_client.convert_to_spot_precision(spot_market_index, 100) # $100
+amount = drift_client.convert_to_spot_precision(100, spot_market_index) # $100
 
 tx_sig = await drift_client.deposit(amount, spot_market_index)
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | amount | The amount to deposit in spot market's token mint precision  | No | |
 | marketIndex   | The spot market index you're depositing into | No | |
 | associatedTokenAccount   | The public key of the token account you're depositing from. For sol, it can be the wallet's public key | No | |
-| subAccountId | The sub account you're depositing too  | Yes | active sub account |
+| subAccountId | The sub account you're depositing to  | Yes | active sub account |
 | reduceOnly | Whether the deposit should only reduce borrow  | Yes | false |
+
+
+### Python
+| Parameter           | Description                                                                 | Optional | Default               |
+| ------------------- | --------------------------------------------------------------------------- | -------- | --------------------- |
+| amount              | The amount to deposit in the spot market's token mint precision             | No       |                       |
+| spot_market_index   | The index of the spot market where the deposit is made                      | No       |                       |
+| user_token_account  | The public key of the token account from which you are depositing           | Yes      | None                  |
+| sub_account_id      | The sub account to which the deposit is being made                          | Yes      | Active sub-account    |
+| reduce_only         | Whether the deposit should only reduce borrow                               | Yes      | false                 |
+| user_initialized    | Indicates if the user is already initialized (used internally, typically)   | Yes      | true                  |
+
 
 ## Withdrawing
 
@@ -314,7 +372,7 @@ const marketIndex = 0;
 const amount = driftClient.convertToSpotPrecision(marketIndex, 100);
 const associatedTokenAccount = await driftClient.getAssociatedTokenAccount(marketIndex);
 
-driftClient.withdraw(
+await driftClient.withdraw(
   amount,
   marketIndex,
   associatedTokenAccount,
@@ -324,17 +382,31 @@ driftClient.withdraw(
 ```python
 
 market_index = 0 # USDC
-amount = drift_client.convert_to_spot_precision(market_index, 100) # $100
+amount = drift_client.convert_to_spot_precision(100, market_index) # $100
 
-tx_sig = await drift_client.withdraw(amount, spot_market_index)
+# derive user ata to withdraw to
+# ...
+
+tx_sig = await drift_client.withdraw(amount, spot_market_index, ata_to_withdraw_to)
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | amount | The amount to withdraw in spot market's token mint precision  | No | |
 | marketIndex   | The spot market index you're withdrawing from | No | |
 | associatedTokenAccount   | The public key of the token account you're withdrawing to. For sol, it can be the wallet's public key | No | |
 | reduceOnly | Whether the withdraw should only decrease a deposit and block a new borrow | Yes | false |
+
+### Python
+| Parameter           | Description                                                                 | Optional | Default |
+| ------------------- | --------------------------------------------------------------------------- | -------- | ------- |
+| amount              | The amount to withdraw in the spot market's token mint precision             | No       |         |
+| market_index        | The index of the spot market from which the withdrawal is made               | No       |         |
+| user_token_account  | The public key of the token account to which you are withdrawing             | No       |         |
+| reduce_only         | Whether the withdrawal should only decrease a deposit, blocking new borrows | Yes      | false   |
+| sub_account_id      | The sub account from which the withdrawal is made                            | Yes      | None    |
+
 
 Withdrawing can lead to a borrow if the user has no deposits in the market and the user has enough margin to cover it.
 
@@ -346,7 +418,7 @@ const amount = driftClient.convertToSpotPrecision(marketIndex, 100);
 const fromSubAccountId = 0;
 const toSubAccountId = 1;
 
-driftClient.transferDeposit(
+await driftClient.transferDeposit(
   amount,
   marketIndex,
   fromSubAccountId,
@@ -356,7 +428,11 @@ driftClient.transferDeposit(
 
 ```python
 market_index = 0
+<<<<<<< HEAD
+amount = drift_client.convert_to_spot_precision(100, market_index)
+=======
 amount = drift_client.convert_to_spot_precision(market_index, 100)
+>>>>>>> upstream/main
 from_sub_account_id = 0
 to_sub_account_id = 0
 
@@ -368,6 +444,7 @@ await drift_client.transfer_deposit(
 )
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | amount | The amount to transfer in spot market's token mint precision  | No | |
@@ -375,8 +452,17 @@ await drift_client.transfer_deposit(
 | fromSubAccountId | The sub account you're withdrawing from  | No | |
 | toSubAccountId | The sub account you're depositing too  | No | |
 
+### Python
+| Parameter           | Description                                           | Optional | Default |
+| ------------------- | ----------------------------------------------------- | -------- | ------- |
+| amount              | The amount to transfer in the spot market's token mint precision | No | |
+| market_index        | The spot market index you're transferring deposits in | No | |
+| from_sub_account_id | The sub account from which the funds are withdrawn    | No | |
+| to_sub_account_id   | The sub account to which the funds are deposited      | No | |
+
 ## Order Types
 
+### TypeScript
 MARKET, LIMIT, ORACLE orders all support auction parameters.
 
 | Type	| Description |
@@ -387,8 +473,20 @@ MARKET, LIMIT, ORACLE orders all support auction parameters.
 | TRIGGER_LIMIT |	 Stop / Take-profit limit order. |
 | ORACLE	| Market order using oracle offset for auction parameters. |
 
+### Python
+Market(), Limit(), Oracle() orders all support auction parameters.
+
+| Type	| Description |
+| ----- | ----------- |
+| Market() |	Market order. |
+| Limit() |	Limit order. |
+| TriggerMarket() |	Stop / Take-profit market order. |
+| TriggerLimit() |	 Stop / Take-profit limit order. |
+| Oracle()	| Market order using oracle offset for auction parameters. |
+
 ## Order Params
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | orderType | The type of order e.g. market, limit  | No | |
@@ -407,6 +505,28 @@ MARKET, LIMIT, ORACLE orders all support auction parameters.
 | auctionStartPrice | the price the auction starts at | Yes | |
 | auctionEndPrice | the price the auction ends at | Yes | |
 | maxTs | the max timestamp (on-chain unix timestamp) before the order expires | Yes | |
+
+### Python
+| Parameter           | Description                                           | Optional | Default                         |
+| ------------------- | ----------------------------------------------------- | -------- | ------------------------------- |
+| order_type          | Type of order                   | No       |                                 |
+| market_index        | Index of the market to place order in                 | No       |                                 |
+| direction           | Direction of the order         | No       |                                 |
+| base_asset_amount   | Amount of base asset to buy or sell                   | No       |                                 |
+| market_type         | Type of market                    | Yes      | Depends on method               |
+| price               | Limit price for the order                             | Yes      | 0                               |
+| user_order_id       | Unique order ID specified by user                     | Yes      | 0                               |
+| reduce_only         | Whether the order is only to reduce positions         | Yes      | false                           |
+| post_only           | If the order should only be a maker                   | Yes      | PostOnlyParams.NONE()             |
+| immediate_or_cancel | Whether the order is immediate or cancel              | Yes      | false                           |
+| max_ts              | Max timestamp for the order expiry                    | Yes      | None                            |
+| trigger_price       | Trigger price for trigger orders | Yes  | None                            |
+| trigger_condition   | Condition for triggering the order                    | Yes      | OrderTriggerCondition.Above()     |
+| oracle_price_offset | Offset for oracle-derived limit price                 | Yes      | None                            |
+| auction_duration    | Duration of the auction in slots                      | Yes      | None                            |
+| auction_start_price | Starting price of the auction                         | Yes      | None                            |
+| auction_end_price   | Ending price of the auction                           | Yes      | None                            |
+
 
 ## Post Only Params
 
@@ -471,14 +591,14 @@ market_index = 0
 
 # place order to long 1 SOL-PERP @ $21.88 (post only)
 order_params = OrderParams(
-            order_type=OrderType.LIMIT(),
-            direction=PositionDirection.LONG(),
+            order_type=OrderType.Limit(),
             base_asset_amount=drift_client.convert_to_perp_precision(1),
-            price=drift_client.convert_to_price_precision(21.88),
             market_index=market_index,
-            post_only=PostOnlyParams.TRY_POST_ONLY(),
+            direction=PositionDirection.Long(),
+            price=drift_client.convert_to_price_precision(21.88),
+            post_only=PostOnlyParams.TryPostOnly(),
         )
-await drift_client.get_place_perp_order(order_params)
+await drift_client.place_perp_order(order_params)
 ```
 
 ```shell
@@ -498,11 +618,18 @@ curl -X POST -H 'content-type: application/json' \
 localhost:8080/v2/orders
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | orderParams | The order params  | No | |
 
-The order type is set to PERP by default.
+
+### Python
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| order_params | The order params  | No | |
+
+The order type is set to PERP / Perp() by default.
 
 ## Placing Spot Order
 
@@ -524,11 +651,11 @@ await driftClient.placeSpotOrder(orderParams);
 market_index = 1
 
 order_params = OrderParams(
-            order_type=OrderType.LIMIT(),
-            direction=PositionDirection.LONG(),
-            base_asset_amount=drift_client.convert_to_spot_precision(market_index, 100),
-            price=drift_client.convert_to_price_precision(100),
+            order_type=OrderType.Limit(),
+            base_asset_amount=drift_client.convert_to_spot_precision(100, market_index),
             market_index=market_index,
+            direction=PositionDirection.Long(),
+            price=drift_client.convert_to_price_precision(100),
         )
 
 await driftClient.place_spot_order(order_params);
@@ -551,11 +678,17 @@ curl -X POST -H 'content-type: application/json' \
 localhost:8080/v2/orders
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | orderParams | The order params  | No | |
 
-The order type is set to SPOT by default.
+### Python
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| order_params | The order params  | No | |
+
+The order type is set to SPOT / Spot() by default.
 
 ## Placing Multiple Orders
 
@@ -563,21 +696,21 @@ The order type is set to SPOT by default.
 
 const placeOrderParams = [
 	{
-     orderType: OrderType.LIMIT,
-     marketType: MarketType.PERP,
-     marketIndex: 0,
-     direction: PositionDirection.LONG,
-     baseAssetAmount: driftClient.convertToPerpPrecision(100),
-     price: driftClient.convertToPricePrecision(21.23),
-   },
-   {
-     orderType: OrderType.LIMIT,
-     marketType: MarketType.PERP,
-     marketIndex: 0,
-     direction: PositionDirection.SHORT,
-     baseAssetAmount: driftClient.convertToPerpPrecision(100),
-     oraclePriceOffset: driftClient.convertToPricePrecision(.05).toNumber(),
-   }
+    orderType: OrderType.LIMIT,
+    marketType: MarketType.PERP,
+    marketIndex: 0,
+    direction: PositionDirection.LONG,
+    baseAssetAmount: driftClient.convertToPerpPrecision(100),
+    price: driftClient.convertToPricePrecision(21.23),
+  },
+  {
+    orderType: OrderType.LIMIT,
+    marketType: MarketType.PERP,
+    marketIndex: 0,
+    direction: PositionDirection.SHORT,
+    baseAssetAmount: driftClient.convertToPerpPrecision(100),
+    oraclePriceOffset: driftClient.convertToPricePrecision(.05).toNumber(),
+  }
 ];
 
 await driftClient.placeOrders(placeOrderParams);
@@ -587,21 +720,21 @@ await driftClient.placeOrders(placeOrderParams);
 
 place_order_params = [
 	OrderParams(
-     order_type=OrderType.LIMIT(),
-     market_type=MarketType.PERP(),
-     market_index=0,
-     direction=PositionDirection.LONG(),
-     base_asset_amount=drift_client.convert_to_perp_precision(100),
-     price=drift_client.convert_to_price_precision(21.23),
-   ),
+    order_type=OrderType.Limit(),
+    base_asset_amount=drift_client.convert_to_perp_precision(100),
+    market_index=0,
+    direction=PositionDirection.Long(),
+    market_type=MarketType.Perp(),
+    price=drift_client.convert_to_price_precision(21.23),
+  ),
    OrderParams(
-     order_type=OrderType.LIMIT(),
-     market_type=MarketType.PERP(),
-     market_index=0,
-     direction=PositionDirection.SHORT(),
-     base_asset_amount=drift_client.convert_to_perp_precision(100),
-     oracle_price_offset=drift_client.convert_to_price_precision(.05),
-   )
+    order_type=OrderType.Limit(),
+    base_asset_amount=drift_client.convert_to_perp_precision(100),
+    market_index=0,
+    direction=PositionDirection.Short(),
+    market_type=MarketType.Perp(),
+    oracle_price_offset=drift_client.convert_to_price_precision(.05),
+  )
 ]
 
 await drift_client.place_orders(place_order_params);
@@ -631,9 +764,15 @@ curl -X POST -H 'content-type: application/json' \
 localhost:8080/v2/orders
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | placeOrderParams | Parameters for place order instructions | | |
+
+### Python
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| place_order_params | Parameters for place order instructions | | |
 
 Placing multiple orders in one tx can be cheaper than placing them in separate tx.
 
@@ -665,10 +804,10 @@ auction_end_price = oracle_price // 1000 # end auction 10bps above oracle
 oracle_price_offset = oracle_price // 500 # limit price after auction 20bps above oracle
 auction_duration = 30 # 30 slots
 order_params = OrderParams(
-  OrderType.ORACLE(),
-  drift_client.convert_to_perp_precision(10),
-  18,
-  PositionDirection.LONG(),
+  order_type=OrderType.Oracle(),
+  base_asset_amount=drift_client.convert_to_perp_precision(10),
+  market_index=18,
+  direction=PositionDirection.Long(),
   auction_start_price=auction_start_price,
   auction_end_price=auction_end_price,
   oracle_price_offset=oracle_price_offset,
@@ -693,10 +832,16 @@ order_dd = 1;
 await drift_client.cancel_order(order_id);
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | orderId | The order being canceled  | No | |
 
+### Python
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| order_id | The order being canceled  | No | |
+| sub_account_id | Sub account to cancel order under  | Yes | None |
 
 ```shell
 curl -X DELETE -H 'content-type: application/json' \
@@ -724,9 +869,16 @@ curl -X DELETE -H 'content-type: application/json' \
   localhost:8080/v2/orders
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | userOrderId | Unique order id specified by user when order was placed  | No | |
+
+### Python
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| user_order_id | Unique order id specified by user when order was placed  | No | |
+| sub_account_id | Sub account to cancel orders under  | Yes | None |
 
 ## Cancel Orders
 
@@ -739,9 +891,9 @@ await driftClient.cancelOrders(marketType, marketIndex, direction);
 ```
 
 ``` python
-market_type = MarketType.PERP
+market_type = MarketType.Perp()
 market_index = 0
-direction = PositionDirection.LONG
+direction = PositionDirection.Long()
 await drift_client.cancel_orders(market_type, market_index, direction) # cancel bids in perp market 0
 
 await drift_client.cancel_orders() # cancels all orders
@@ -753,11 +905,21 @@ curl -X DELETE -H 'content-type: application/json' \
   localhost:8080/v2/orders
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marketType | The market type of orders to cancel. Must be set if marketIndex set | Yes | |
 | marketIndex | The market index of orders to cancel. Must be set if marketType set | Yes | |
 | direction | The direction of orders to cancel. | Yes | |
+
+### Python
+| Parameter     | Description                                             | Optional | Default |
+| ------------- | ------------------------------------------------------- | -------- | ------- |
+| market_type   | The market type of orders to cancel      | Yes      | None    |
+| market_index  | The market index of orders to cancel                    | Yes      | None    |
+| direction     | The direction  of orders to cancel       | Yes      | None    |
+| sub_account_id| The sub account from which to cancel orders          | Yes      | None    |
+
 
 To cancel all orders, do not set any parameters.
 
@@ -772,19 +934,19 @@ const cancelOrderParams = {
 
 const placeOrderParams = [
 	{
-     orderType: OrderType.LIMIT,
-     marketIndex: 0,
-     direction: PositionDirection.LONG,
-     baseAssetAmount: driftClient.convertToPerpPrecision(100),
-     price: driftClient.convertToPricePrecision(21.23),
-   },
-   {
-     orderType: OrderType.LIMIT,
-     marketIndex: 0,
-     direction: PositionDirection.SHORT,
-     baseAssetAmount: driftClient.convertToPerpPrecision(100),
-     oraclePriceOffset: driftClient.convertToPricePrecision(.05).toNumber(),
-   }
+    orderType: OrderType.LIMIT,
+    marketIndex: 0,
+    direction: PositionDirection.LONG,
+    baseAssetAmount: driftClient.convertToPerpPrecision(100),
+    price: driftClient.convertToPricePrecision(21.23),
+  },
+  {
+    orderType: OrderType.LIMIT,
+    marketIndex: 0,
+    direction: PositionDirection.SHORT,
+    baseAssetAmount: driftClient.convertToPerpPrecision(100),
+    oraclePriceOffset: driftClient.convertToPricePrecision(.05).toNumber(),
+  }
 ];
 
 await driftClient.cancelAndPlaceOrders(cancelOrderParams, placeOrderParams);
@@ -792,24 +954,24 @@ await driftClient.cancelAndPlaceOrders(cancelOrderParams, placeOrderParams);
 
 ```python
 
-canel_order_params = (MarketType.PERP(), 0, None) # cancel all orders in perp market 0
+canel_order_params = (MarketType.Perp(), 0, None) # cancel all orders in perp market 0
 place_order_params = [
 	OrderParams(
-     order_type=OrderType.LIMIT(),
-     market_type=MarketType.PERP(),
-     market_index=0,
-     direction=PositionDirection.LONG(),
-     base_asset_amount=drift_client.convert_to_perp_precision(100),
-     price=drift_client.convert_to_price_precision(21.23),
-   ),
+    order_type=OrderType.Limit(),
+    base_asset_amount=drift_client.convert_to_perp_precision(100),
+    market_index=0,
+    direction=PositionDirection.Long(),
+    market_type=MarketType.Perp(),
+    price=drift_client.convert_to_price_precision(21.23),
+  ),
    OrderParams(
-     order_type=OrderType.LIMIT(),
-     market_type=MarketType.PERP(),
-     market_index=0,
-     direction=PositionDirection.SHORT(),
-     base_asset_amount=drift_client.convert_to_perp_precision(100),
-     oracle_price_offset=drift_client.convert_to_price_precision(.05),
-   )
+    order_type=OrderType.Limit(),
+    base_asset_amount=drift_client.convert_to_perp_precision(100),
+    market_index=0,
+    direction=PositionDirection.Short(),
+    market_type=MarketType.Perp(),
+    oracle_price_offset=drift_client.convert_to_price_precision(.05),
+  )
 ]
 
 await drift_client.cancel_and_place_orders(canel_order_params, place_order_params);
@@ -838,15 +1000,25 @@ curl -X POST -H 'content-type: application/json' \
 localhost:8080/v2/orders/cancelAndPlace
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | cancelOrderParams | Parameters for cancel orders instruction | | |
 | placeOrderParams | Parameters for place order instructions | | |
 
+### Python
+| Parameter          | Description                                                | Optional | Default |
+| ------------------ | ---------------------------------------------------------- | -------- | ------- |
+| cancel_params      | Tuple with optional MarketType, market index, and PositionDirection for canceling orders | Yes | None |
+| place_order_params | List of OrderParams for placing new orders                 | No       |         |
+| sub_account_id     | The sub account to use          | Yes      | None    |
+
+
 To cancel all orders, do not set any parameters.
 
 ## Modify Order Params
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | orderId | The order id of order to modify  | No | |
@@ -862,6 +1034,25 @@ To cancel all orders, do not set any parameters.
 | auctionStartPrice | the price the auction starts at | Yes | |
 | auctionEndPrice | the price the auction ends at | Yes | |
 | maxTs | the max timestamp before the order expires | Yes | |
+
+### Python
+| Parameter          | Description                                                                 | Optional | Default |
+| ------------------ | --------------------------------------------------------------------------- | -------- | ------- |
+| direction          | The direction of the order                          | Yes      | None    |
+| base_asset_amount  | Amount of base asset to buy or sell                                         | Yes      | None    |
+| price              | Limit price for the order                                                   | Yes      | None    |
+| reduce_only        | If the order should only reduce positions                                  | Yes      | None    |
+| post_only          | If the order should only be a maker order                                   | Yes      | None    |
+| immediate_or_cancel| Whether the order is immediate or cancel                                    | Yes      | None    |
+| max_ts             | Max timestamp for order expiry                                              | Yes      | None    |
+| trigger_price      | Trigger price for trigger orders                     | Yes      | None    |
+| trigger_condition  | Condition for triggering the order                                          | Yes      | None    |
+| oracle_price_offset| Offset for oracle-derived limit price                                       | Yes      | None    |
+| auction_duration   | Duration of the auction in slots                                            | Yes      | None    |
+| auction_start_price| Starting price of the auction                                               | Yes      | None    |
+| auction_end_price  | Ending price of the auction                                                 | Yes      | None    |
+| policy             | Policy for modifying the order                                              | Yes      | None    |
+
 
 ## Modifying Order
 
@@ -899,10 +1090,19 @@ curl -X PATCH -H 'content-type: application/json' \
 localhost:8080/v2/orders
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | orderId | The order id of order to modify  | No | |
 | modifyOrderParams | The modify order params  | Yes | |
+
+### Python
+| Parameter           | Description                              | Optional | Default |
+| ------------------- | ---------------------------------------- | -------- | ------- |
+| order_id            | The order ID of the order to modify      | No       |         |
+| modify_order_params | The parameters for modifying the order   | No       |         |
+| sub_account_id      | The sub account to use       | Yes      | None    |
+
 
 Modify cancels and places a new order
 
@@ -944,10 +1144,18 @@ curl -X PATCH -H 'content-type: application/json' \
 localhost:8080/v2/orders
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | userOrderId | The user order id of order to modify  | No | |
 | modifyOrderParams | The modify order params  | Yes | |
+
+### Python
+| Parameter            | Description                                        | Optional | Default |
+| -------------------- | -------------------------------------------------- | -------- | ------- |
+| user_order_id        | The user order ID of the order to modify           | No       |         |
+| modify_order_params  | The parameters for modifying the order             | No       |         |
+| sub_account_id       | The sub-account ID associated with the order       | Yes      | None    |
 
 Modify cancels and places a new order
 
@@ -975,11 +1183,19 @@ await drift_client.settle_pnl(
 )
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | settleeUserAccountPublicKey | User address you're settling pnl for | No | |
 | settleeUserAccount | User account data you're settling pnl for | No | |
 | marketIndex | Market index for the perp market  | No | |
+
+### Python
+| Parameter                          | Description                                     | Optional | Default |
+| ---------------------------------- | ----------------------------------------------- | -------- | ------- |
+| settlee_user_account_public_key    | Public key of the user account to settle PNL for| No       |         |
+| settlee_user_account               | User account data for PNL settlement            | No       |         |
+| market_index                       | Index of the perpetual market for PNL settlement| No       |         |
 
 ## Get Spot Market Account
 
@@ -994,9 +1210,16 @@ market_index = 0;
 spot_market_account = drift_client.get_spot_market_account(market_index);
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marketIndex | The market index for the spot market | No | |
+
+### Python
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| market_index | The market index for the spot market | No | |
+
 
 ## Get Perp Market Account
 
@@ -1011,9 +1234,16 @@ market_index = 0;
 perp_market_account = drift_client.get_perp_market_account(market_index);
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marketIndex | The market index for the perp market | No | |
+
+
+### Python
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| market_index | The market index for the perp market | No | |
 
 # User
 
@@ -1027,10 +1257,16 @@ perp_market_account = drift_client.get_perp_market_account(market_index);
   user = drift_client.get_user();
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | subAccountId | The sub account id of user to get  | Yes | active sub account |
 | authority | The authority of user to get. Only necessary if using multiple delegate accounts | Yes | current authority |
+
+### Python
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| sub_account_id | The sub account id of user to get  | Yes | active sub account |
 
 ## Getting Deposit/Borrow Amounts
 
@@ -1061,9 +1297,15 @@ is_borrow = token_amount < 0
 localhost:8080/v2/positions
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marketIndex | Market index for the spot market  | No | |
+
+### Python
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| market_index | Market index for the spot market  | No | |
 
 If token amount is greater than 0, it is a deposit. If less than zero, it is a borrow.
 
@@ -1097,9 +1339,16 @@ curl -X GET \
 localhost:8080/v2/positions
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marketIndex | Market index for the perp market  | No | |
+
+
+### Python
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| market_index | Market index for the perp market  | No | |
 
 If base amount is greater than 0, it is a long. If less than zero, it is a short.
 
@@ -1118,10 +1367,15 @@ order_id = 1
 order = user.get_order(order_id)
 ```
 
-
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | orderId | Order id for the order you're getting | No | |
+
+### Python
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| order_id | Order id for the order you're getting | No | |
 
 ## Get Order By User Order Id
 ```typescript
@@ -1138,9 +1392,15 @@ user_order_id = 1
 order = user.get_order_by_user_order_id(user_order_id)
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | userOrderId | User order id for the order you're getting | No | |
+
+### Python
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| user_order_id | User order id for the order you're getting | No | |
 
 ## Get Open Orders
 ```typescript
@@ -1165,55 +1425,92 @@ curl localhost:8080/v2/orders
   pnl = user.get_unrealized_pnl()
   ```
 
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| withFunding | Whether to included unsettled funding payments  | Yes | false |
-| marketIndex | Whether to only return pnl for specific market  | Yes | |
+### TypeScript
+| Parameter               | Description                                          | Optional | Default |
+| ----------------------- | ---------------------------------------------------- | -------- | ------- |
+| withFunding             | Whether to include unsettled funding payments       | Yes      | false   |
+| marketIndex             | Index of a specific market for PNL calculation       | Yes      |         |
+| withWeightMarginCategory| To include margin category weighting in PNL calculation | Yes   |         |
+| strict                  | Whether the calculation should be strict             | Yes      | false   |
+
+
+### Python
+| Parameter               | Description                                          | Optional | Default |
+| ----------------------- | ---------------------------------------------------- | -------- | ------- |
+| with_funding             | Whether to include unsettled funding payments       | Yes      | false   |
+| market_index             | Index of a specific market for PNL calculation       | Yes      |         |
+| with_weight_margin_category| To include margin category weighting in PNL calculation | Yes   |         |
+| strict                  | Whether the calculation should be strict             | Yes      | false   |
 
 
 ## Get Unrealized Funding Pnl
 
   ```typescript
-  const pnl = await user.getUnrealizedFundingPNL();
+  const pnl = user.getUnrealizedFundingPNL();
   ```
 
   ```python
   pnl = user.get_unrealized_funding_pnl()
   ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marketIndex | Whether to only return pnl for specific market  | Yes | |
 
+### Python
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| market_index | Whether to only return pnl for specific market  | Yes | |
+
 ## Get Total Collateral
 
   ```typescript
-  const totalCollateral = await user.getTotalCollateral();
+  const totalCollateral = user.getTotalCollateral();
   ```
 
   ```python
-  total_collateral = await user.get_total_collateral()
+  total_collateral = user.get_total_collateral()
   ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marginCategory | Initial or Maintenance  | Yes | Initial |
+| strict                  | Whether the calculation should be strict             | Yes      | false   |
+
+### Python
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| margin_category | Initial or Maintenance  | Yes | Initial |
+| strict                  | Whether the calculation should be strict             | Yes      | false   |
 
 Asset weights vary based on whether you're checking the initial or maintenance margin requirement. Initial is used for initial leverage extension, maintenance for determining liquidations.
 
 ## Get Margin Requirement
 
   ```typescript
-  const marginRequirement = await user.getMarginRequirement();
+  const marginRequirement = user.getMarginRequirement();
   ```
 
   ```python
-  margin_requirement = await user.get_margin_requirement()
+  margin_requirement = user.get_margin_requirement()
   ```
 
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| marginCategory | Initial or Maintenance  | Yes | Initial |
+### TypeScript
+| Parameter        | Description                            | Optional | Default |
+| ---------------- | -------------------------------------- | -------- | ------- |
+| marginCategory   | The type of margin (Initial or Maintenance) | No   |         |
+| liquidationBuffer| Buffer value for liquidation calculation | Yes     |         |
+| strict           | Whether the calculation should be strict | Yes     | false   |
+
+### Python
+| Parameter        | Description                                         | Optional | Default                 |
+| ---------------- | --------------------------------------------------- | -------- | ----------------------- |
+| margin_category  | Type of margin, either Initial or Maintenance       | Yes      | MarginCategory.INITIAL  |
+| liquidation_buffer| Additional buffer value for liquidation calculation| Yes      | 0                       |
+| strict           | Whether the calculation should be strict | Yes     | False   |
+
 
 Liability weights (for borrows) and margin ratios (for perp positions) vary based on whether you're checking the initial or maintenance margin requirement. Initial is used for initial leverage extension, maintenance for determining liquidations.
 
@@ -1227,9 +1524,16 @@ Liability weights (for borrows) and margin ratios (for perp positions) vary base
   free_collateral = user.get_free_collateral()
   ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | marginCategory | Initial or Maintenance  | Yes | Initial |
+
+### Python
+| Parameter       | Description                          | Optional | Default                 |
+| --------------- | ------------------------------------ | -------- | ----------------------- |
+| marginCategory  | Type of margin, either Initial or Maintenance | Yes | MarginCategory.INITIAL  |
+
 
 Free collateral is the difference between your total collateral and your margin requirement.
 
@@ -1243,9 +1547,15 @@ Free collateral is the difference between your total collateral and your margin 
   leverage = user.get_leverage()
   ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | includeOpenOrders | Whether to factor in open orders in position size  | Yes | true |
+
+### Python
+| Parameter   | Description | Optional | Default |
+| ----------- | ----------- | -------- | ------- |
+| include_open_orders | Whether to factor in open orders in position size  | Yes | True |
 
 Leverage is the total liability value (borrows plus total perp position) divided by net asset value (total assets plus total liabilities)
 
@@ -1325,6 +1635,7 @@ event_subscriber.subscribe()
 event_subscriber.event_emitter.new_event += lambda event: print(event)
 ```
 
+### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | connection | Connection object specifying solana rpc url   | No | |
@@ -1337,6 +1648,23 @@ event_subscriber.event_emitter.new_event += lambda event: print(event)
 | options.commitment | What transaction commitment to wait for | Yes | 'confirmed' |
 | options.logProviderConfig | Whether to use websocket or polling to listen for tx logs | Yes | {type: "websocket"} |
 | options.address | Which address to listen to events for. Defaults to drift program. | Yes | dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH |
+
+### Python
+| Parameter               | Description                                                                               | Optional | Default                                            |
+| ----------------------- | ----------------------------------------------------------------------------------------- | -------- | -------------------------------------------------- |
+| connection              | AsyncClient object specifying Solana RPC URL                                               | No       |                                                    |
+| program                 | Anchor program object used to deserialize events from transaction logs                   | No       |                                                    |
+| options                 | Configuration options for event subscription                                              | Yes      | EventSubscriptionOptions.default()                 |
+| - address               | Address to listen to events for, defaults to Drift program                                | Yes      | DRIFT_PROGRAM_ID                                   |
+| - event_types           | Types of events to trigger event callbacks for                                            | Yes      | DEFAULT_EVENT_TYPES                                |
+| - max_events_per_type   | Maximum number of events per event type to keep in memory                                 | Yes      | 4096                                               |
+| - order_by              | Sort order of transactions, by 'blockchain' order or 'client' received order              | Yes      | "blockchain"                                       |
+| - order_dir             | Sorting direction, either most recent ('desc') or oldest ('asc')                           | Yes      | "asc"                                              |
+| - commitment            | Transaction commitment level to wait for                                                  | Yes      | "confirmed"                                        |
+| - max_tx                | Maximum number of transactions to keep in memory                                          | Yes      | 4096                                               |
+| - log_provider_config   | Configuration for log provider, either websocket or polling                               | Yes      | WebsocketLogProviderConfig()                       |
+| - until_tx              | Signature to listen until, used for log provider                                          | Yes      | None                                               |
+
 
 Protocol events are recorded in transactions logs. To listen for events, one must subscribe to the drift program's transaction logs.
 
@@ -1464,6 +1792,11 @@ This returns all the events that the event subscriber currently has stored in me
 ## Getting Events By Transaction
 
 ```typescript
+const txSig = '3dq5PtQ3VnNTkQRrHhQ1nRACWZaFVvSBKs1RLXM8WvCqLHTzTuVGc7XER5awoLFLTdJ4kqZiNmo7e8b3pXaEGaoo';
+const events = eventSubscriber.getEventsByTx(txSig);
+```
+
+```python
 
 tx_sig = '3dq5PtQ3VnNTkQRrHhQ1nRACWZaFVvSBKs1RLXM8WvCqLHTzTuVGc7XER5awoLFLTdJ4kqZiNmo7e8b3pXaEGaoo'
 events = event_subscriber.get_events_by_tx(tx_sig)
@@ -1529,6 +1862,12 @@ const perpPosition = driftClient.getPerpPosition(perpMarketIndex);
 console.log(convertToNumber(perpPosition.baseAssetAmount, BASE_PRECISION));
 ```
 
+```python
+perp_market_index = 0 # SOL-PERP
+perp_position = drift_client.get_perp_position(market_index)
+print(convert_to_number(perp_position.base_asset_amount, BASE_PRECISION))
+```
+
 This prints the size of the current perp position in perp market index 0 (SOL-PERP)
 
 ## Getting a Current Spot Position
@@ -1539,8 +1878,16 @@ const spotMarketIndex = 0; // USDC
 const spotConfig = SpotMarkets['mainnet-beta'][spotMarketIndex];
 const spotMarket = driftClient.getSpotMarketAccount(spotMarketIndex);
 const spotPosition = driftClient.getSpotPosition(spotMarketIndex);
-const tokenAmount = getTokenAmount(spotPosition.scaledBalance, spotMarket, .spotPosition.balanceType);
+const tokenAmount = getTokenAmount(spotPosition.scaledBalance, spotMarket, spotPosition.balanceType);
 console.log(convertToNumber(tokenAmount, spotConfig.precision));
+```
+
+```python
+spot_market_index = 0 # USDC
+spot_market = drift_client.get_spot_market_account(spot_market_index)
+spot_position = drift_client.get_spot_position(spot_market_index)
+token_amount = get_token_amount(spot_psoition.scaled_balance, spot_market, spot_position.balance_type)
+print(convert_to_number(token_amount, (10 ** spot_market.decimals)))
 ```
 
 This prints the current spot position in spot market index 0 (USDC). This value is the same as the value shown on the UI,
