@@ -15,6 +15,7 @@ includes:
   - orderbook_dlobserver
   - historicaldata
   - errors
+  - market_constants
 
 search: true
 
