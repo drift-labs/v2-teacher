@@ -1835,7 +1835,7 @@ Where
 * \\(p_i\\) is the price for spot market \\(i\\)
 * \\(w_i^l\\) is the liability weight for spot market \\(i\\)
 * \\(ba_j\\) is the base amount for perp market \\(j\\)
-* \\(o_j\\) is the oracle price for perp market \\(j\\)
+* \\(o_j\\) is the price for perp/prediction market \\(j\\)
 * \\(qp_j\\) is the quote asset price for perp market \\(j\\)
 * \\(m_j\\) is the margin ratio for perp market \\(j\\)
 
@@ -1849,6 +1849,10 @@ to reduce their risk.
 The prices used for deposits, borrows and perp quote assets differ between the initial and maintenance checks. The maintenance check uses
 the current oracle price. The initial check uses the `min(oracle_price, oracle_twap)` for deposits and positive perp pnl and `max(oracle_price, oracle_twap)`
 for borrows, negative perp pnl and perp base amount.
+
+For prediction markets, the price used in the margin system depends on the direction of the position. For short positions (betting no), the margin system uses
+1 - oracle price. For long position (betting yes), it uses the oracle price. This is the account for the user's worst case loss. E.g. if a user shorts at $.01,
+their worst case loss is $.99.
 
 # Numerical Precisions
 
