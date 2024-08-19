@@ -590,6 +590,9 @@
           <li>
             <a href="#market-indexes-names" class="toc-h1 toc-link" data-title="Market Indexes/Names">Market Indexes/Names</a>
           </li>
+          <li>
+            <a href="#prediction-markets" class="toc-h1 toc-link" data-title="Prediction Markets">Prediction Markets</a>
+          </li>
       </ul>
         <ul class="toc-footer">
             <li><a href='https://github.com/drift-labs/protocol-v2/releases/'> Release History </a></li>
@@ -6188,6 +6191,18 @@ This is a table of program errors as described in the programs IDL.
 <h1 id='market-indexes-names'>Market Indexes/Names</h1>
 <p>All spot and perp markets contain a market index and name field on chain.
 You can also find the <a href="https://github.com/drift-labs/protocol-v2/blob/master/sdk/src/constants/perpMarkets.ts">perp</a> and <a href="https://github.com/drift-labs/protocol-v2/blob/master/sdk/src/constants/spotMarkets.ts">spot</a> market indexes and names in the typescript sdk constants.</p>
+<h1 id='prediction-markets'>Prediction Markets</h1>
+<p>Prediction Markets are Perp Markets with the <code>contract_type</code> set as <code>Prediction</code>.</p>
+
+<p>Prediction Markets function the same as Perp Markets with the following additional constraints:</p>
+
+<ul>
+<li>Prices must be between 0 and 1</li>
+<li>Funding is paused</li>
+<li>Margin ratios are set to 1 so that the position is fully collateralized</li>
+<li>The margin system uses <code>1 - oracle price</code> to value short positions</li>
+<li>They use prelaunch oracles (the oracle price is the mark twap)</li>
+</ul>
 
       </div>
       <div class="dark-box">
