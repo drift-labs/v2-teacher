@@ -3648,7 +3648,7 @@ as their margin requirement, the weighted value out the user&#39;s outstanding b
 <li>\(p_i\) is the price for spot market \(i\)</li>
 <li>\(w_i^l\) is the liability weight for spot market \(i\)</li>
 <li>\(ba_j\) is the base amount for perp market \(j\)</li>
-<li>\(o_j\) is the oracle price for perp market \(j\)</li>
+<li>\(o_j\) is the price for perp/prediction market \(j\)</li>
 <li>\(qp_j\) is the quote asset price for perp market \(j\)</li>
 <li>\(m_j\) is the margin ratio for perp market \(j\)</li>
 </ul>
@@ -3663,6 +3663,10 @@ to reduce their risk.</p>
 <p>The prices used for deposits, borrows and perp quote assets differ between the initial and maintenance checks. The maintenance check uses
 the current oracle price. The initial check uses the <code>min(oracle_price, oracle_twap)</code> for deposits and positive perp pnl and <code>max(oracle_price, oracle_twap)</code>
 for borrows, negative perp pnl and perp base amount.</p>
+
+<p>For prediction markets, the price used in the margin system depends on the direction of the position. For short positions (betting no), the margin system uses
+1 - oracle price. For long position (betting yes), it uses the oracle price. This is the account for the user&#39;s worst case loss. E.g. if a user shorts at $.01,
+their worst case loss is $.99.</p>
 <h1 id='numerical-precisions'>Numerical Precisions</h1>
 <p>To maintain numerical precision, the on-chain program stores all values as integers.</p>
 <h2 id='getting-a-current-perp-position'>Getting a Current Perp Position</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>
