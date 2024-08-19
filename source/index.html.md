@@ -16,6 +16,7 @@ includes:
   - historicaldata
   - errors
   - market_constants
+  - prediction_markets
 
 search: true
 
