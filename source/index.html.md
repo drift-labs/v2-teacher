@@ -166,7 +166,7 @@ const driftClient = new DriftClient({
   env: 'mainnet-beta',
 });
 
-driftClient.subscribe();
+await driftClient.subscribe();
 ```
 ```python
   from anchorpy import Wallet
