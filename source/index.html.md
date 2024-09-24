@@ -246,7 +246,7 @@ tx_sig = await drift_client.initialize_user(sub_account_id=0, name="toly")
 | name   | Display name for the user account    | Yes | Main Account |
 | referrerInfo   | The address of the referrer and referrer stats accounts | Yes | |
 
-### Python 
+### Python
 
 | Parameter     | Description                              | Optional | Default |
 | ------------- | ---------------------------------------- | -------- | ------- |
@@ -266,9 +266,9 @@ const subaccountId = 0;
 
 // set max 1x intiial leverage
 await driftClient.updateUserCustomMarginRatio([
-    { 
-        'marginRatio': MARGIN_PRECISION, 
-        'subAccountId': subaccountId 
+    {
+        'marginRatio': MARGIN_PRECISION,
+        'subAccountId': subaccountId
     }
 ]);
 
@@ -361,7 +361,7 @@ tx_sig = await drift_client.deposit(amount, spot_market_index)
 | ------------------- | --------------------------------------------------------------------------- | -------- | --------------------- |
 | amount              | The amount to deposit in the spot market's token mint precision             | No       |                       |
 | spot_market_index   | The index of the spot market where the deposit is made                      | No       |                       |
-| user_token_account  | The public key of the token account from which you are depositing           | Yes      | None                  |
+| user_token_account  | The public key of the token account from which you are depositing           | Yes      | None (will derive ATA)|
 | sub_account_id      | The sub account to which the deposit is being made                          | Yes      | Active sub-account    |
 | reduce_only         | Whether the deposit should only reduce borrow                               | Yes      | false                 |
 | user_initialized    | Indicates if the user is already initialized (used internally, typically)   | Yes      | true                  |
