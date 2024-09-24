@@ -1002,9 +1002,9 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 
 <span class="c1">// set max 1x intiial leverage</span>
 <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">updateUserCustomMarginRatio</span><span class="p">([</span>
-    <span class="p">{</span> 
-        <span class="dl">'</span><span class="s1">marginRatio</span><span class="dl">'</span><span class="p">:</span> <span class="nx">MARGIN_PRECISION</span><span class="p">,</span> 
-        <span class="dl">'</span><span class="s1">subAccountId</span><span class="dl">'</span><span class="p">:</span> <span class="nx">subaccountId</span> 
+    <span class="p">{</span>
+        <span class="dl">'</span><span class="s1">marginRatio</span><span class="dl">'</span><span class="p">:</span> <span class="nx">MARGIN_PRECISION</span><span class="p">,</span>
+        <span class="dl">'</span><span class="s1">subAccountId</span><span class="dl">'</span><span class="p">:</span> <span class="nx">subaccountId</span>
     <span class="p">}</span>
 <span class="p">]);</span>
 
@@ -1150,7 +1150,7 @@ curl http://localhost:8080/v2/resource?subAccountId=1
 <td>user_token_account</td>
 <td>The public key of the token account from which you are depositing</td>
 <td>Yes</td>
-<td>None</td>
+<td>None (will derive ATA)</td>
 </tr>
 <tr>
 <td>sub_account_id</td>
