@@ -13,6 +13,7 @@ includes:
   - examples
   - orderbook_blockchain
   - orderbook_dlobserver
+  - data_api
   - historicaldata
   - errors
   - market_constants
