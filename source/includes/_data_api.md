@@ -22,9 +22,9 @@ Example: [https://data.api.drift.trade/contracts](https://data.api.drift.trade/c
 
 Returns the tokenomics information about the Drift token.
 
-| Parameter        | Description                                      | Optional | Values    |
-| ---------------- | ------------------------------------------------ | -------- | ------------------------------------------------ |
-| q                | Metrics related to the drift tokenomics          | NO       | circulating-supply | locked-supply | total-supply   |
+| Parameter        | Description                                      | Optional | Values                                              |
+| ---------------- | ------------------------------------------------ | -------- | --------------------------------------------------- |
+| q                | Metrics related to the drift tokenomics          | NO       | `circulating-supply`,`locked-supply`,`total-supply` |
 
 Example: [https://data.api.drift.trade/DRIFT?q=circulating-supply](https://data.api.drift.trade/DRIFT?q=circulating-supply)
 
