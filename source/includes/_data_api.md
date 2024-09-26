@@ -13,7 +13,7 @@ The Drift Data API utilizes caching mechanisms to improve performance and reduce
 
 ## `GET /contracts`
 
-Returns the contract information for each market 
+Returns the contract information for each market. Contract information contains funding rate and open interest (oi).
 
 Example: [https://data.api.drift.trade/contracts](https://data.api.drift.trade/contracts)
 
