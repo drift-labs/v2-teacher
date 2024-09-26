@@ -4805,7 +4805,7 @@ devnet: <a href="https://master-data.api.drift.trade/">https://master-data.drift
 <h2 id='caching'>Caching</h2>
 <p>The Drift Data API utilizes caching mechanisms to improve performance and reduce server load. Responses may be cached for a short period, typically ranging from a few seconds to a few minutes, depending on the endpoint and the nature of the data. While this ensures quick response times, it also means that there might be a slight delay in reflecting the most recent updates. Time-sensitive operations should account for this potential delay.</p>
 <h2 id='get-contracts'><code>GET /contracts</code></h2>
-<p>Returns the contract information for each market </p>
+<p>Returns the contract information for each market. Contract information contains funding rate and open interest (oi).</p>
 
 <p>Example: <a href="https://data.api.drift.trade/contracts">https://data.api.drift.trade/contracts</a></p>
 <h2 id='get-drift'><code>GET /DRIFT/</code></h2>
