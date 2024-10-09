@@ -17,6 +17,17 @@ Returns the contract information for each market. Contract information contains 
 
 Example: [https://data.api.drift.trade/contracts](https://data.api.drift.trade/contracts)
 
+## `GET /fundingRates`
+
+Returns the last 30 days of funding rates by marketName or marketIndex.
+
+| Parameter        | Description                                      | Optional | Values                                              |
+| ---------------- | ------------------------------------------------ | -------- | --------------------------------------------------- |
+| marketName or marketIndex               | The market name or index for the perp market	         | NO       |  |
+
+Example: [https://data.api.drift.trade/fundingRates?marketName=SOL-PERP](https://data.api.drift.trade/fundingRates?marketName=SOL-PERP)
+
+
 
 ## `GET /DRIFT/`
 
