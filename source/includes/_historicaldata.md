@@ -16,6 +16,7 @@ mainnet-beta:  `https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/prog
 | --- | --- |
 | trades | `user/${accountKey}/tradeRecords/${year}/${year}${month}${day}` |
 | market-trades | `market/${marketSymbol}/tradeRecords/${year}/${year}${month}${day}` |
+| swaps | `user/${accountKey}/swapRecords/${year}/${year}${month}${day}` |
 | funding-rates | `market/${marketSymbol}/fundingRateRecords/${year}/${year}${month}${day}` |
 | funding-payments | `user/${accountKey}/fundingPaymentRecords/${year}/${year}${month}${day}` |
 | deposits | `user/${accountKey}/depositRecords/${year}/${year}${month}${day}` |
