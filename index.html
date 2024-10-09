@@ -580,6 +580,9 @@
                     <a href="#get-contracts" class="toc-h2 toc-link" data-title="GET /contracts"><code>GET /contracts</code></a>
                   </li>
                   <li>
+                    <a href="#get-fundingrates" class="toc-h2 toc-link" data-title="GET /fundingRates"><code>GET /fundingRates</code></a>
+                  </li>
+                  <li>
                     <a href="#get-drift" class="toc-h2 toc-link" data-title="GET /DRIFT/"><code>GET /DRIFT/</code></a>
                   </li>
               </ul>
@@ -4808,6 +4811,26 @@ devnet: <a href="https://master-data.api.drift.trade/">https://master-data.drift
 <p>Returns the contract information for each market. Contract information contains funding rate and open interest (oi).</p>
 
 <p>Example: <a href="https://data.api.drift.trade/contracts">https://data.api.drift.trade/contracts</a></p>
+<h2 id='get-fundingrates'><code>GET /fundingRates</code></h2>
+<p>Returns the last 30 days of funding rates by marketName or marketIndex.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Values</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>marketName or marketIndex</td>
+<td>The market name or index for the perp market</td>
+<td>NO</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<p>Example: <a href="https://data.api.drift.trade/fundingRates?marketName=SOL-PERP">https://data.api.drift.trade/fundingRates?marketName=SOL-PERP</a></p>
 <h2 id='get-drift'><code>GET /DRIFT/</code></h2>
 <p>Returns the tokenomics information about the Drift token.</p>
 
