@@ -21,11 +21,96 @@ Example: [https://data.api.drift.trade/contracts](https://data.api.drift.trade/c
 
 Returns the last 30 days of funding rates by marketName or marketIndex.
 
+```python
+import requests
+
+def get_funding_rates(market_symbol='SOL-PERP'):
+    url = f'https://data.api.drift.trade/fundingRates'
+    params = {'marketName': market_symbol}
+
+    response = requests.get(url, params=params)
+    return response.json()['fundingRates']
+
+# Example usage, print the funding rates for SOL-PERP
+market_symbol = 'SOL-PERP'
+rates = get_funding_rates(market_symbol)
+
+print(f"Funding Rates for {market_symbol}:")
+for rate in rates:
+    funding_rate = float(rate['fundingRate']) / 1e9
+    # ... any logic here, for example...
+    print(f"Slot: {rate['slot']}, Funding Rate: {funding_rate:.9f}")
+
+```
+```typescript
+interface FundingRate {
+  slot: number;
+  fundingRate: string;
+  // Other fields... (view the response section for the full list)
+}
+
+async function getFundingRates(marketSymbol: string = 'SOL-PERP'): Promise<FundingRate[]> {
+  const url = `https://data.api.drift.trade/fundingRates?marketName=${marketSymbol}`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data.fundingRates;
+  } catch (error) {
+    console.error('Error fetching funding rates:', error);
+    return [];
+  }
+}
+
+async function main() {
+  const marketSymbol = 'SOL-PERP';
+  const rates = await getFundingRates(marketSymbol);
+
+  console.log(`Funding Rates for ${marketSymbol}:`);
+  rates.forEach(rate => {
+    const fundingRate = parseFloat(rate.fundingRate) / 1e9;
+    // ... any logic here, for example...
+    console.log(`Slot: ${rate.slot}, Funding Rate: ${fundingRate.toFixed(9)}`);
+  });
+}
+
+main().catch(error => console.error('An error occurred:', error));
+```
+
+<aside class="notice">
+The funding rate is returned as a string and needs to be divided by 1e9 to get the actual rate.
+</aside>
+
+
 | Parameter        | Description                                      | Optional | Values                                              |
 | ---------------- | ------------------------------------------------ | -------- | --------------------------------------------------- |
 | marketName or marketIndex               | The market name or index for the perp market	         | NO       |  |
 
 Example: [https://data.api.drift.trade/fundingRates?marketName=SOL-PERP](https://data.api.drift.trade/fundingRates?marketName=SOL-PERP)
+
+### Response
+The response is a json object with a `fundingRates` array. Each funding rate entry contains the following fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `txSig` | string | Transaction signature |
+| `slot` | integer | Slot number |
+| `ts` | string | Timestamp |
+| `recordId` | string | Record identifier |
+| `marketIndex` | integer | Market index |
+| `fundingRate` | string | Funding rate (divide by 1e9 for actual rate) |
+| `cumulativeFundingRateLong` | string | Cumulative funding rate for long positions |
+| `cumulativeFundingRateShort` | string | Cumulative funding rate for short positions |
+| `oraclePriceTwap` | string | Oracle price time-weighted average price |
+| `markPriceTwap` | string | Mark price time-weighted average price |
+| `fundingRateLong` | string | Funding rate for long positions |
+| `fundingRateShort` | string | Funding rate for short positions |
+| `periodRevenue` | string | Revenue for the period |
+| `baseAssetAmountWithAmm` | string | Base asset amount with AMM |
+| `baseAssetAmountWithUnsettledLp` | string | Base asset amount with unsettled LP |
 
 
 
