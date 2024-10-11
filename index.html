@@ -597,7 +597,10 @@
                     <a href="#url-suffix" class="toc-h2 toc-link" data-title="URL Suffix">URL Suffix</a>
                   </li>
                   <li>
-                    <a href="#examples" class="toc-h2 toc-link" data-title="Examples">Examples</a>
+                    <a href="#example-trades-for-market" class="toc-h2 toc-link" data-title="Example: Trades for market">Example: Trades for market</a>
+                  </li>
+                  <li>
+                    <a href="#example-trades-for-date-range" class="toc-h2 toc-link" data-title="Example: Trades for date range">Example: Trades for date range</a>
                   </li>
                   <li>
                     <a href="#records-columns" class="toc-h2 toc-link" data-title="Records Columns">Records Columns</a>
@@ -4813,6 +4816,64 @@ devnet: <a href="https://master-data.api.drift.trade/">https://master-data.drift
 <p>Example: <a href="https://data.api.drift.trade/contracts">https://data.api.drift.trade/contracts</a></p>
 <h2 id='get-fundingrates'><code>GET /fundingRates</code></h2>
 <p>Returns the last 30 days of funding rates by marketName or marketIndex.</p>
+<div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="k">def</span> <span class="nf">get_funding_rates</span><span class="p">(</span><span class="n">market_symbol</span><span class="o">=</span><span class="s">'SOL-PERP'</span><span class="p">):</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s">'https://data.api.drift.trade/fundingRates'</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s">'marketName'</span><span class="p">:</span> <span class="n">market_symbol</span><span class="p">}</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span><span class="p">.</span><span class="n">json</span><span class="p">()[</span><span class="s">'fundingRates'</span><span class="p">]</span>
+
+<span class="c1"># Example usage, print the funding rates for SOL-PERP
+</span><span class="n">market_symbol</span> <span class="o">=</span> <span class="s">'SOL-PERP'</span>
+<span class="n">rates</span> <span class="o">=</span> <span class="n">get_funding_rates</span><span class="p">(</span><span class="n">market_symbol</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Funding Rates for </span><span class="si">{</span><span class="n">market_symbol</span><span class="si">}</span><span class="s">:"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">rate</span> <span class="ow">in</span> <span class="n">rates</span><span class="p">:</span>
+    <span class="n">funding_rate</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">rate</span><span class="p">[</span><span class="s">'fundingRate'</span><span class="p">])</span> <span class="o">/</span> <span class="mf">1e9</span>
+    <span class="c1"># ... any logic here, for example...
+</span>    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Slot: </span><span class="si">{</span><span class="n">rate</span><span class="p">[</span><span class="s">'slot'</span><span class="p">]</span><span class="si">}</span><span class="s">, Funding Rate: </span><span class="si">{</span><span class="n">funding_rate</span><span class="si">:</span><span class="p">.</span><span class="mi">9</span><span class="n">f</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+</code></pre></div><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kr">interface</span> <span class="nx">FundingRate</span> <span class="p">{</span>
+  <span class="nl">slot</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+  <span class="nl">fundingRate</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="c1">// Other fields... (view the response section for the full list)</span>
+<span class="p">}</span>
+
+<span class="k">async</span> <span class="kd">function</span> <span class="nx">getFundingRates</span><span class="p">(</span><span class="nx">marketSymbol</span><span class="p">:</span> <span class="kr">string</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">SOL-PERP</span><span class="dl">'</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">FundingRate</span><span class="p">[]</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`https://data.api.drift.trade/fundingRates?marketName=</span><span class="p">${</span><span class="nx">marketSymbol</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">response</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">fetch</span><span class="p">(</span><span class="nx">url</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">response</span><span class="p">.</span><span class="nx">ok</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">`HTTP error! status: </span><span class="p">${</span><span class="nx">response</span><span class="p">.</span><span class="nx">status</span><span class="p">}</span><span class="s2">`</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="kd">const</span> <span class="nx">data</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+    <span class="k">return</span> <span class="nx">data</span><span class="p">.</span><span class="nx">fundingRates</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="dl">'</span><span class="s1">Error fetching funding rates:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">error</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">[];</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">async</span> <span class="kd">function</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">marketSymbol</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">SOL-PERP</span><span class="dl">'</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">rates</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">getFundingRates</span><span class="p">(</span><span class="nx">marketSymbol</span><span class="p">);</span>
+
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`Funding Rates for </span><span class="p">${</span><span class="nx">marketSymbol</span><span class="p">}</span><span class="s2">:`</span><span class="p">);</span>
+  <span class="nx">rates</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">rate</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">fundingRate</span> <span class="o">=</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">rate</span><span class="p">.</span><span class="nx">fundingRate</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1</span><span class="nx">e9</span><span class="p">;</span>
+    <span class="c1">// ... any logic here, for example...</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`Slot: </span><span class="p">${</span><span class="nx">rate</span><span class="p">.</span><span class="nx">slot</span><span class="p">}</span><span class="s2">, Funding Rate: </span><span class="p">${</span><span class="nx">fundingRate</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">9</span><span class="p">)}</span><span class="s2">`</span><span class="p">);</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="nx">main</span><span class="p">().</span><span class="k">catch</span><span class="p">(</span><span class="nx">error</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="dl">'</span><span class="s1">An error occurred:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">error</span><span class="p">));</span>
+</code></pre></div>
+<aside class="notice">
+The funding rate is returned as a string and needs to be divided by 1e9 to get the actual rate.
+</aside>
 
 <table><thead>
 <tr>
@@ -4831,6 +4892,92 @@ devnet: <a href="https://master-data.api.drift.trade/">https://master-data.drift
 </tbody></table>
 
 <p>Example: <a href="https://data.api.drift.trade/fundingRates?marketName=SOL-PERP">https://data.api.drift.trade/fundingRates?marketName=SOL-PERP</a></p>
+<h3 id='response'>Response</h3>
+<p>The response is a json object with a <code>fundingRates</code> array. Each funding rate entry contains the following fields:</p>
+
+<table><thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code>txSig</code></td>
+<td>string</td>
+<td>Transaction signature</td>
+</tr>
+<tr>
+<td><code>slot</code></td>
+<td>integer</td>
+<td>Slot number</td>
+</tr>
+<tr>
+<td><code>ts</code></td>
+<td>string</td>
+<td>Timestamp</td>
+</tr>
+<tr>
+<td><code>recordId</code></td>
+<td>string</td>
+<td>Record identifier</td>
+</tr>
+<tr>
+<td><code>marketIndex</code></td>
+<td>integer</td>
+<td>Market index</td>
+</tr>
+<tr>
+<td><code>fundingRate</code></td>
+<td>string</td>
+<td>Funding rate (divide by 1e9 for actual rate)</td>
+</tr>
+<tr>
+<td><code>cumulativeFundingRateLong</code></td>
+<td>string</td>
+<td>Cumulative funding rate for long positions</td>
+</tr>
+<tr>
+<td><code>cumulativeFundingRateShort</code></td>
+<td>string</td>
+<td>Cumulative funding rate for short positions</td>
+</tr>
+<tr>
+<td><code>oraclePriceTwap</code></td>
+<td>string</td>
+<td>Oracle price time-weighted average price</td>
+</tr>
+<tr>
+<td><code>markPriceTwap</code></td>
+<td>string</td>
+<td>Mark price time-weighted average price</td>
+</tr>
+<tr>
+<td><code>fundingRateLong</code></td>
+<td>string</td>
+<td>Funding rate for long positions</td>
+</tr>
+<tr>
+<td><code>fundingRateShort</code></td>
+<td>string</td>
+<td>Funding rate for short positions</td>
+</tr>
+<tr>
+<td><code>periodRevenue</code></td>
+<td>string</td>
+<td>Revenue for the period</td>
+</tr>
+<tr>
+<td><code>baseAssetAmountWithAmm</code></td>
+<td>string</td>
+<td>Base asset amount with AMM</td>
+</tr>
+<tr>
+<td><code>baseAssetAmountWithUnsettledLp</code></td>
+<td>string</td>
+<td>Base asset amount with unsettled LP</td>
+</tr>
+</tbody></table>
 <h2 id='get-drift'><code>GET /DRIFT/</code></h2>
 <p>Returns the tokenomics information about the Drift token.</p>
 
@@ -4955,11 +5102,203 @@ devnet: <a href="https://master-data.api.drift.trade/">https://master-data.drift
 <td>1M</td>
 </tr>
 </tbody></table>
-<h2 id='examples'>Examples</h2>
-<p>Get historical trades on <code>SOL-PERP</code> for August 5, 2023:
+<h2 id='example-trades-for-market'>Example: Trades for market</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
+
+
+<span class="n">URL_PREFIX</span> <span class="o">=</span> <span class="s">'https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH'</span>
+
+<span class="n">market_symbol</span> <span class="o">=</span> <span class="s">'SOL-PERP'</span>
+<span class="n">year</span> <span class="o">=</span> <span class="s">'2024'</span>
+<span class="n">month</span> <span class="o">=</span> <span class="s">'01'</span>
+<span class="n">day</span> <span class="o">=</span> <span class="s">'01'</span>
+
+<span class="c1"># Method 1: using pandas (this is the easiest and fastest way)
+</span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="n">URL_PREFIX</span><span class="si">}</span><span class="s">/market/</span><span class="si">{</span><span class="n">market_symbol</span><span class="si">}</span><span class="s">/tradeRecords/</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s">/</span><span class="si">{</span><span class="n">year</span><span class="si">}{</span><span class="n">month</span><span class="si">}{</span><span class="n">day</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="c1"># Method 2: using csv reader
+</span><span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="n">URL_PREFIX</span><span class="si">}</span><span class="s">/market/</span><span class="si">{</span><span class="n">market_symbol</span><span class="si">}</span><span class="s">/tradeRecords/</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s">/</span><span class="si">{</span><span class="n">year</span><span class="si">}{</span><span class="n">month</span><span class="si">}{</span><span class="n">day</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>
+<span class="n">response</span><span class="p">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+
+<span class="n">csv_data</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">text</span><span class="p">)</span>
+<span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="p">.</span><span class="n">reader</span><span class="p">(</span><span class="n">csv_data</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+</code></pre></div><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">parse</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">csv-parse/sync</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">URL_PREFIX</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="k">async</span> <span class="kd">function</span> <span class="nx">fetchAndParseCSV</span><span class="p">(</span><span class="nx">marketSymbol</span><span class="p">:</span> <span class="kr">string</span><span class="p">,</span> <span class="nx">year</span><span class="p">:</span> <span class="kr">string</span><span class="p">,</span> <span class="nx">month</span><span class="p">:</span> <span class="kr">string</span><span class="p">,</span> <span class="nx">day</span><span class="p">:</span> <span class="kr">string</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="k">void</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">URL_PREFIX</span><span class="p">}</span><span class="s2">/market/</span><span class="p">${</span><span class="nx">marketSymbol</span><span class="p">}</span><span class="s2">/tradeRecords/</span><span class="p">${</span><span class="nx">year</span><span class="p">}</span><span class="s2">/</span><span class="p">${</span><span class="nx">year</span><span class="p">}${</span><span class="nx">month</span><span class="p">}${</span><span class="nx">day</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">response</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">fetch</span><span class="p">(</span><span class="nx">url</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">response</span><span class="p">.</span><span class="nx">ok</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">`HTTP error! status: </span><span class="p">${</span><span class="nx">response</span><span class="p">.</span><span class="nx">status</span><span class="p">}</span><span class="s2">`</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kd">const</span> <span class="nx">csvText</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">response</span><span class="p">.</span><span class="nx">text</span><span class="p">();</span>
+    <span class="kd">const</span> <span class="nx">records</span> <span class="o">=</span> <span class="nx">parse</span><span class="p">(</span><span class="nx">csvText</span><span class="p">,</span> <span class="p">{</span>
+      <span class="na">skip_empty_lines</span><span class="p">:</span> <span class="kc">true</span>
+    <span class="p">});</span>
+
+    <span class="nx">records</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="na">row</span><span class="p">:</span> <span class="kr">string</span><span class="p">[])</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">row</span><span class="p">);</span>
+    <span class="p">});</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="dl">'</span><span class="s1">Error fetching or parsing CSV:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">error</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">async</span> <span class="kd">function</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">marketSymbol</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">SOL-PERP</span><span class="dl">'</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">year</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">2024</span><span class="dl">'</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">month</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">01</span><span class="dl">'</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">day</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">01</span><span class="dl">'</span><span class="p">;</span>
+
+  <span class="k">await</span> <span class="nx">fetchAndParseCSV</span><span class="p">(</span><span class="nx">marketSymbol</span><span class="p">,</span> <span class="nx">year</span><span class="p">,</span> <span class="nx">month</span><span class="p">,</span> <span class="nx">day</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">main</span><span class="p">().</span><span class="k">catch</span><span class="p">(</span><span class="nx">error</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="dl">'</span><span class="s1">An error occurred:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">error</span><span class="p">));</span>
+</code></pre></div>
+<p>Get historical trades on <code>SOL-PERP</code> for a given date (ex. 2024-01-01):
 <code>
 https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/market/SOL-PERP/tradeRecords/2024/20240101
 </code></p>
+<h2 id='example-trades-for-date-range'>Example: Trades for date range</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+
+<span class="n">URL_PREFIX</span> <span class="o">=</span> <span class="s">'https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH'</span>
+
+<span class="c1"># Method 1: using pandas
+</span><span class="k">def</span> <span class="nf">get_trades_for_range_pandas</span><span class="p">(</span><span class="n">account_key</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">):</span>
+    <span class="n">all_trades</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">current_date</span> <span class="o">=</span> <span class="n">start_date</span>
+    <span class="k">while</span> <span class="n">current_date</span> <span class="o">&lt;=</span> <span class="n">end_date</span><span class="p">:</span>
+        <span class="n">year</span> <span class="o">=</span> <span class="n">current_date</span><span class="p">.</span><span class="n">year</span>
+        <span class="n">month</span> <span class="o">=</span> <span class="n">current_date</span><span class="p">.</span><span class="n">month</span>
+        <span class="n">day</span> <span class="o">=</span> <span class="n">current_date</span><span class="p">.</span><span class="n">day</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">URL_PREFIX</span><span class="si">}</span><span class="s">/user/</span><span class="si">{</span><span class="n">account_key</span><span class="si">}</span><span class="s">/tradeRecords/</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s">/</span><span class="si">{</span><span class="n">year</span><span class="si">}{</span><span class="n">month</span><span class="si">:</span><span class="mi">02</span><span class="si">}{</span><span class="n">day</span><span class="si">:</span><span class="mi">02</span><span class="si">}</span><span class="s">"</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+            <span class="n">all_trades</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">requests</span><span class="p">.</span><span class="n">exceptions</span><span class="p">.</span><span class="n">RequestException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Error fetching data for </span><span class="si">{</span><span class="n">current_date</span><span class="si">}</span><span class="s">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">pd</span><span class="p">.</span><span class="n">errors</span><span class="p">.</span><span class="n">EmptyDataError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"No data available for </span><span class="si">{</span><span class="n">current_date</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+        <span class="n">current_date</span> <span class="o">+=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">all_trades</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="p">.</span><span class="n">concat</span><span class="p">(</span><span class="n">all_trades</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+<span class="c1"># Method 2: using csv reader
+</span><span class="k">def</span> <span class="nf">get_trades_for_range_csv</span><span class="p">(</span><span class="n">account_key</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">):</span>
+    <span class="n">all_trades</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">current_date</span> <span class="o">=</span> <span class="n">start_date</span>
+    <span class="k">while</span> <span class="n">current_date</span> <span class="o">&lt;=</span> <span class="n">end_date</span><span class="p">:</span>
+        <span class="n">year</span> <span class="o">=</span> <span class="n">current_date</span><span class="p">.</span><span class="n">year</span>
+        <span class="n">month</span> <span class="o">=</span> <span class="n">current_date</span><span class="p">.</span><span class="n">month</span>
+        <span class="n">day</span> <span class="o">=</span> <span class="n">current_date</span><span class="p">.</span><span class="n">day</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">URL_PREFIX</span><span class="si">}</span><span class="s">/user/</span><span class="si">{</span><span class="n">account_key</span><span class="si">}</span><span class="s">/tradeRecords/</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s">/</span><span class="si">{</span><span class="n">year</span><span class="si">}{</span><span class="n">month</span><span class="si">:</span><span class="mi">02</span><span class="si">}{</span><span class="n">day</span><span class="si">:</span><span class="mi">02</span><span class="si">}</span><span class="s">"</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">response</span><span class="p">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+
+        <span class="n">csv_data</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="p">.</span><span class="n">reader</span><span class="p">(</span><span class="n">csv_data</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+            <span class="n">all_trades</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+        <span class="n">current_date</span> <span class="o">+=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">all_trades</span>
+
+
+<span class="c1"># Example usage
+</span><span class="n">account_key</span> <span class="o">=</span> <span class="s">"&lt;Some Account Key&gt;"</span>
+<span class="n">start_date</span> <span class="o">=</span> <span class="n">date</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span>
+<span class="n">end_date</span> <span class="o">=</span> <span class="n">date</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">26</span><span class="p">)</span>
+
+<span class="n">trades</span> <span class="o">=</span> <span class="n">get_trades_for_range</span><span class="p">(</span><span class="n">account_key</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">parse</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">csv-parse/sync</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">URL_PREFIX</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kr">interface</span> <span class="nx">Trade</span> <span class="p">{</span>
+  <span class="c1">// Define the structure of a trade record here</span>
+  <span class="c1">// For example:</span>
+  <span class="c1">// date: string;</span>
+  <span class="c1">// amount: number;</span>
+  <span class="c1">// price: number;</span>
+  <span class="p">[</span><span class="nx">key</span><span class="p">:</span> <span class="kr">string</span><span class="p">]:</span> <span class="kr">any</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">async</span> <span class="kd">function</span> <span class="nx">getTradesForRange</span><span class="p">(</span><span class="nx">accountKey</span><span class="p">:</span> <span class="kr">string</span><span class="p">,</span> <span class="nx">startDate</span><span class="p">:</span> <span class="nb">Date</span><span class="p">,</span> <span class="nx">endDate</span><span class="p">:</span> <span class="nb">Date</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">Trade</span><span class="p">[]</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="na">allTrades</span><span class="p">:</span> <span class="nx">Trade</span><span class="p">[]</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="kd">let</span> <span class="nx">currentDate</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">startDate</span><span class="p">);</span>
+
+  <span class="k">while</span> <span class="p">(</span><span class="nx">currentDate</span> <span class="o">&lt;=</span> <span class="nx">endDate</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">year</span> <span class="o">=</span> <span class="nx">currentDate</span><span class="p">.</span><span class="nx">getFullYear</span><span class="p">();</span>
+    <span class="kd">const</span> <span class="nx">month</span> <span class="o">=</span> <span class="p">(</span><span class="nx">currentDate</span><span class="p">.</span><span class="nx">getMonth</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">).</span><span class="nx">toString</span><span class="p">().</span><span class="nx">padStart</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="dl">'</span><span class="s1">0</span><span class="dl">'</span><span class="p">);</span>
+    <span class="kd">const</span> <span class="nx">day</span> <span class="o">=</span> <span class="nx">currentDate</span><span class="p">.</span><span class="nx">getDate</span><span class="p">().</span><span class="nx">toString</span><span class="p">().</span><span class="nx">padStart</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="dl">'</span><span class="s1">0</span><span class="dl">'</span><span class="p">);</span>
+
+    <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">URL_PREFIX</span><span class="p">}</span><span class="s2">/user/</span><span class="p">${</span><span class="nx">accountKey</span><span class="p">}</span><span class="s2">/tradeRecords/</span><span class="p">${</span><span class="nx">year</span><span class="p">}</span><span class="s2">/</span><span class="p">${</span><span class="nx">year</span><span class="p">}${</span><span class="nx">month</span><span class="p">}${</span><span class="nx">day</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+
+    <span class="k">try</span> <span class="p">{</span>
+      <span class="kd">const</span> <span class="nx">response</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">fetch</span><span class="p">(</span><span class="nx">url</span><span class="p">);</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">response</span><span class="p">.</span><span class="nx">ok</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">`HTTP error! status: </span><span class="p">${</span><span class="nx">response</span><span class="p">.</span><span class="nx">status</span><span class="p">}</span><span class="s2">`</span><span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="kd">const</span> <span class="nx">csvText</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">response</span><span class="p">.</span><span class="nx">text</span><span class="p">();</span>
+      <span class="kd">const</span> <span class="nx">records</span> <span class="o">=</span> <span class="nx">parse</span><span class="p">(</span><span class="nx">csvText</span><span class="p">,</span> <span class="p">{</span>
+        <span class="na">skip_empty_lines</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="na">columns</span><span class="p">:</span> <span class="kc">true</span>
+      <span class="p">});</span>
+
+      <span class="nx">allTrades</span><span class="p">.</span><span class="nx">push</span><span class="p">(...</span><span class="nx">records</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s2">`Error fetching or parsing CSV for </span><span class="p">${</span><span class="nx">year</span><span class="p">}</span><span class="s2">-</span><span class="p">${</span><span class="nx">month</span><span class="p">}</span><span class="s2">-</span><span class="p">${</span><span class="nx">day</span><span class="p">}</span><span class="s2">:`</span><span class="p">,</span> <span class="nx">error</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">currentDate</span><span class="p">.</span><span class="nx">setDate</span><span class="p">(</span><span class="nx">currentDate</span><span class="p">.</span><span class="nx">getDate</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nx">allTrades</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">async</span> <span class="kd">function</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">accountKey</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">&lt;Some Account Key&gt;</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">startDate</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">24</span><span class="p">);</span> <span class="c1">// Note: month is 0-indexed in JavaScript</span>
+  <span class="kd">const</span> <span class="nx">endDate</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">26</span><span class="p">);</span>
+
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">trades</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">getTradesForRange</span><span class="p">(</span><span class="nx">accountKey</span><span class="p">,</span> <span class="nx">startDate</span><span class="p">,</span> <span class="nx">endDate</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`Total trades fetched: </span><span class="p">${</span><span class="nx">trades</span><span class="p">.</span><span class="nx">length</span><span class="p">}</span><span class="s2">`</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">First few trades:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">trades</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">));</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="dl">'</span><span class="s1">An error occurred:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">error</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">main</span><span class="p">();</span>
+</code></pre></div>
+<blockquote>
+<p>Note: To speed this up, you could download the data in parallel (Promise.all or asyncio).</p>
+</blockquote>
+
+<p>We can write a script to download all the data, one by one, for a given account in a given date range.</p>
 <h2 id='records-columns'>Records Columns</h2>
 <p>Below are definitions of the columns in each record type.</p>
 <h3 id='trades'>trades</h3>
