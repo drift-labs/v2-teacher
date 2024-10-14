@@ -25,6 +25,7 @@ mainnet-beta:  `https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/prog
 | lp | `user/${accountKey}/lpRecord/${year}/${year}${month}${day}` |
 | insurance-fund | `market/${marketSymbol}/insuranceFundRecords/${year}/${year}${month}${day}` |
 | insurance-fund-stake | `authority/${authorityAccountKey}/insuranceFundStakeRecords/${year}/${year}${month}${day}` |
+| candle-history | `candle-history/{year}/{marketKey}/{candleResolution}.csv` | 
 
 
 
@@ -33,13 +34,23 @@ mainnet-beta:  `https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/prog
 | --- | --- | --- |
 | accountKey | user sub account public key (not authority) | |
 | authority | authority public key | |
-| marketSymbol | market name | SOL-PERP |
+| marketSymbol | market name. E.g. `SOL-PERP` for Solana PERP or `SOL` for Solana SPOT | SOL-PERP |
 | year |  | 2023 |
 | month |  | 4 |
 | day | utc time | 25 |
-| candleResolution | | 1M |
+| marketKey | The key for the market. Format: {marketType}_{marketIndex} | perp_0 |
+| candleResolution | Candle Resolution. See "Available Candle Resolutions" below | M |
 
+### Available Candle Resolutions:
 
+| resolution | description |
+| --- | --- |
+| 1 | 1 minute |
+| 15 | 15 minute |
+| 60 | 1 hr |
+| 240 | 4 hr |
+| D | 1 day |
+| W | 1 week |
 
 ## Example: Trades for market
 ```python
