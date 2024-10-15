@@ -171,7 +171,7 @@ async function makePlaceAndTakePerpOrderIx(
 }
 
 // Example: Make a LONG order for 1 SOL-PERP which will "fill-or-kill" if the entire order isn't filled atomically. 
-const driftClient = DRIFT_CLIENT; // Assume you have a Drift Client set up and ready to go
+const driftClient = DRIFT_CLIENT; // Assume you have a Drift Client set up and ready to go, see https://drift-labs.github.io/v2-teacher/#client-initialization
 const sizeInSol = 1;
 await makePlaceAndTakePerpOrderIx(
 	PositionDirection.LONG,
