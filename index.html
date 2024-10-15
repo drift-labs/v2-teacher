@@ -508,13 +508,21 @@
               </ul>
           </li>
           <li>
-            <a href="#examples-bots" class="toc-h1 toc-link" data-title="Examples Bots">Examples Bots</a>
+            <a href="#examples-bots" class="toc-h1 toc-link" data-title="Examples: Bots">Examples: Bots</a>
               <ul class="toc-list-h2">
                   <li>
                     <a href="#typescript" class="toc-h2 toc-link" data-title="Typescript">Typescript</a>
                   </li>
                   <li>
                     <a href="#python" class="toc-h2 toc-link" data-title="Python">Python</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#examples-atomic-place-amp-take" class="toc-h1 toc-link" data-title="Examples: Atomic Place&amp;Take">Examples: Atomic Place&amp;Take</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#place-and-take-orders" class="toc-h2 toc-link" data-title="Place And Take Orders">Place And Take Orders</a>
                   </li>
               </ul>
           </li>
@@ -3768,9 +3776,9 @@ it includes any accumulated interest.</p>
 <td><code>SPOT_WEIGHT_PRECISION</code></td>
 </tr>
 </tbody></table>
-<h1 id='examples-bots'>Examples Bots</h1>
+<h1 id='examples-bots'>Examples: Bots</h1>
 <aside class="notice">
-This examples should be used as code reference only. Be cautious running any unreviewed code, especially off devnet.
+This examples should be used as code reference only. Be cautious running any unreviewed code, especially if not on devnet.
 </aside>
 <h2 id='typescript'>Typescript</h2>
 <p><a href="https://github.com/drift-labs/keeper-bots-v2">Keeper-bots-v2</a></p>
@@ -3789,7 +3797,161 @@ This examples should be used as code reference only. Be cautious running any unr
 </ul>
 <h2 id='python'>Python</h2>
 <p><a href="https://github.com/drift-labs/driftpy/tree/master/examples">driftpy examples/</a></p>
-<h1 id='orderbook-blockchain'>Orderbook (Blockchain)</h1>
+<h1 id='examples-atomic-place-amp-take'>Examples: Atomic Place&amp;Take</h1><h2 id='place-and-take-orders'>Place And Take Orders</h2>
+<p><strong>Place And Take orders allow you to place an order with an atomic fill in the same transaction. There are a few benefits to using them:</strong></p>
+
+<ul>
+<li>They are the fastest way to get into a position.</li>
+<li>They allow the use of a &quot;fill or kill&quot; style flag to ensure that the transaction fails unless the order is filled.</li>
+<li>These are the easiest way to integrate Drift orders into other products - you don&#39;t need to wait to see if the order is filled.</li>
+</ul>
+
+<p>The one caveat to these orders is that there is an extra upfront cost in that you need to know ahead of time which onchain maker order you want to be filled against. Drift has some off-chain infrastructure which provides an API to help you do this.</p>
+<div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="cm">/**
+ * Making a Place And Take with atomic "fill-or-kill" flag to ensure the transaction only succeeds if the entire order is filled
+ * 
+ **/</span>
+
+<span class="k">import</span> <span class="p">{</span>
+    <span class="nx">decodeUser</span><span class="p">,</span>
+    <span class="nx">PublicKey</span><span class="p">,</span>
+    <span class="nx">MarketType</span><span class="p">,</span>
+    <span class="nx">BASE_PRECISION</span><span class="p">,</span>
+    <span class="nx">PlaceAndTakeOrderSuccessCondition</span><span class="p">,</span>
+    <span class="nx">UserAccount</span><span class="p">,</span>
+    <span class="nx">isVariant</span><span class="p">,</span>
+    <span class="nx">PositionDirection</span><span class="p">,</span>
+    <span class="nx">DriftClient</span><span class="p">,</span>
+    <span class="nx">getUserStatsAccountPublicKey</span><span class="p">,</span>
+    <span class="nx">BN</span><span class="p">,</span>
+    <span class="nx">OrderType</span><span class="p">,</span>
+<span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@drift-labs/sdk</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="c1">// Method to fetch the current top makers taking advantage of Drift's off-chain infra which can provide these. You may eventually want to keep track of the state of on-chain makers yourself.</span>
+<span class="k">async</span> <span class="kd">function</span> <span class="nx">getTopMakersForPlaceAndTake</span><span class="p">({</span>
+    <span class="nx">marketIndex</span><span class="p">,</span>
+    <span class="nx">marketType</span><span class="p">,</span>
+    <span class="nx">side</span><span class="p">,</span>
+<span class="p">}:</span> <span class="p">{</span>
+    <span class="nl">marketIndex</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+    <span class="nl">marketType</span><span class="p">:</span> <span class="nx">MarketType</span><span class="p">;</span>
+    <span class="nl">side</span><span class="p">:</span> <span class="dl">'</span><span class="s1">bid</span><span class="dl">'</span> <span class="o">|</span> <span class="dl">'</span><span class="s1">ask</span><span class="dl">'</span><span class="p">;</span>
+<span class="p">}):</span> <span class="nb">Promise</span><span class="o">&lt;</span>
+    <span class="p">{</span>
+        <span class="na">userAccountPubKey</span><span class="p">:</span> <span class="nx">PublicKey</span><span class="p">;</span>
+        <span class="nl">userAccount</span><span class="p">:</span> <span class="nx">UserAccount</span><span class="p">;</span>
+    <span class="p">}[]</span>
+<span class="o">&gt;</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">dlobServerUrl</span> <span class="o">=</span> <span class="s2">`https://dlob.drift.trade/`</span><span class="p">;</span>
+    <span class="kd">const</span> <span class="nx">marketTypeStr</span> <span class="o">=</span> <span class="nx">isVariant</span><span class="p">(</span><span class="nx">marketType</span><span class="p">,</span> <span class="dl">'</span><span class="s1">perp</span><span class="dl">'</span><span class="p">)</span> <span class="p">?</span> <span class="dl">'</span><span class="s1">perp</span><span class="dl">'</span> <span class="p">:</span> <span class="dl">'</span><span class="s1">spot</span><span class="dl">'</span><span class="p">;</span>
+    <span class="kd">const</span> <span class="nx">limit</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span> <span class="c1">// NOTE: This parameter controls the number of top makers that will be returned. It is suggested not to use more than 4, in our current testing the size of the transaction will larger than the current limits if you pass more than 4 makers in.</span>
+
+    <span class="kd">const</span> <span class="nx">queryParams</span> <span class="o">=</span> <span class="s2">`marketIndex=</span><span class="p">${</span><span class="nx">marketIndex</span><span class="p">}</span><span class="s2">&amp;marketType=</span><span class="p">${</span><span class="nx">marketTypeStr</span><span class="p">}</span><span class="s2">&amp;side=</span><span class="p">${</span><span class="nx">side</span><span class="p">}</span><span class="s2">&amp;limit=</span><span class="p">${</span><span class="nx">limit</span><span class="p">}</span><span class="s2">&amp;includeAccounts=true`</span><span class="p">;</span>
+
+    <span class="kd">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">await</span> <span class="k">new</span> <span class="nb">Promise</span><span class="o">&lt;</span>
+        <span class="p">{</span>
+            <span class="na">userAccountPubKey</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+            <span class="nl">accountBase64</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+        <span class="p">}[]</span>
+    <span class="o">&gt;</span><span class="p">((</span><span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="nx">fetch</span><span class="p">(</span><span class="s2">`</span><span class="p">${</span><span class="nx">dlobServerUrl</span><span class="p">}</span><span class="s2">/topMakers?</span><span class="p">${</span><span class="nx">queryParams</span><span class="p">}</span><span class="s2">`</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="k">async</span> <span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">response</span><span class="p">.</span><span class="nx">ok</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="c1">// Handle failure</span>
+                    <span class="k">return</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="nx">res</span><span class="p">(</span><span class="k">await</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">());</span>
+            <span class="p">})</span>
+            <span class="p">.</span><span class="k">catch</span><span class="p">((</span><span class="nx">err</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+                <span class="c1">// Handle failure</span>
+            <span class="p">});</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span>
+        <span class="p">(</span><span class="na">value</span><span class="p">:</span> <span class="p">{</span> <span class="na">userAccountPubKey</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span> <span class="nl">accountBase64</span><span class="p">:</span> <span class="kr">string</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="na">userAccountPubKey</span><span class="p">:</span> <span class="k">new</span> <span class="nx">PublicKey</span><span class="p">(</span><span class="nx">value</span><span class="p">.</span><span class="nx">userAccountPubKey</span><span class="p">),</span>
+                <span class="na">userAccount</span><span class="p">:</span> <span class="nx">decodeUser</span><span class="p">(</span><span class="nx">Buffer</span><span class="p">.</span><span class="k">from</span><span class="p">(</span><span class="nx">value</span><span class="p">.</span><span class="nx">accountBase64</span><span class="p">,</span> <span class="dl">'</span><span class="s1">base64</span><span class="dl">'</span><span class="p">)),</span>
+            <span class="p">};</span>
+        <span class="p">}</span>
+    <span class="p">);</span>
+
+    <span class="k">return</span> <span class="p">[];</span>
+<span class="p">}</span>
+
+<span class="c1">// Fetch and process the top makers result into params for a place and take order</span>
+<span class="k">async</span> <span class="kd">function</span> <span class="nx">getMakerInfoForPlaceAndTake</span><span class="p">(</span>
+    <span class="nx">orderDirection</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">,</span>
+    <span class="nx">orderMarketIndex</span><span class="p">:</span> <span class="kr">number</span><span class="p">,</span>
+    <span class="nx">orderMarketType</span><span class="p">:</span> <span class="nx">MarketType</span><span class="p">,</span>
+    <span class="nx">driftClient</span><span class="p">:</span> <span class="nx">DriftClient</span>
+<span class="p">)</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">topMakers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">getTopMakersForPlaceAndTake</span><span class="p">({</span>
+        <span class="na">marketIndex</span><span class="p">:</span> <span class="nx">orderMarketIndex</span><span class="p">,</span>
+        <span class="na">marketType</span><span class="p">:</span> <span class="nx">orderMarketType</span><span class="p">,</span>
+        <span class="na">side</span><span class="p">:</span> <span class="nx">isVariant</span><span class="p">(</span><span class="nx">orderDirection</span><span class="p">,</span> <span class="dl">'</span><span class="s1">long</span><span class="dl">'</span><span class="p">)</span> <span class="p">?</span> <span class="dl">'</span><span class="s1">ask</span><span class="dl">'</span> <span class="p">:</span> <span class="dl">'</span><span class="s1">bid</span><span class="dl">'</span><span class="p">,</span> <span class="c1">// If we're going LONG, we want the makers on the ASK side, and vice-versa</span>
+    <span class="p">});</span>
+
+    <span class="kd">const</span> <span class="nx">makerAccountKeys</span> <span class="o">=</span> <span class="nx">topMakers</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">maker</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">maker</span><span class="p">.</span><span class="nx">userAccountPubKey</span><span class="p">);</span>
+    <span class="kd">const</span> <span class="nx">makerStatsAccountKeys</span> <span class="o">=</span> <span class="nx">topMakers</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">makerAccount</span><span class="p">)</span> <span class="o">=&gt;</span>
+        <span class="nx">getUserStatsAccountPublicKey</span><span class="p">(</span>
+            <span class="nx">driftClient</span><span class="p">.</span><span class="nx">program</span><span class="p">.</span><span class="nx">programId</span><span class="p">,</span>
+            <span class="nx">makerAccount</span><span class="p">.</span><span class="nx">userAccount</span><span class="p">.</span><span class="nx">authority</span>
+        <span class="p">)</span>
+    <span class="p">);</span>
+    <span class="kd">const</span> <span class="nx">makerAccounts</span> <span class="o">=</span> <span class="nx">topMakers</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">maker</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">maker</span><span class="p">.</span><span class="nx">userAccount</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">makerAccountKeys</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">makerUserAccountKey</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="na">maker</span><span class="p">:</span> <span class="nx">makerUserAccountKey</span><span class="p">,</span>
+            <span class="na">makerUserAccount</span><span class="p">:</span> <span class="nx">makerAccounts</span><span class="p">[</span><span class="nx">index</span><span class="p">],</span>
+            <span class="na">makerStats</span><span class="p">:</span> <span class="nx">makerStatsAccountKeys</span><span class="p">[</span><span class="nx">index</span><span class="p">],</span>
+        <span class="p">};</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="c1">// Create a PlaceAndTake Instruction. DriftClient also has a `placeAndTakePerpOrder` If you want DriftClient to create+sign+send the transaction if you don't want to manually handle the instruction.</span>
+<span class="k">async</span> <span class="kd">function</span> <span class="nx">makePlaceAndTakePerpOrderIx</span><span class="p">(</span>
+    <span class="nx">orderDirection</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">,</span>
+    <span class="nx">orderMarketIndex</span><span class="p">:</span> <span class="kr">number</span><span class="p">,</span>
+    <span class="nx">orderSizeBase</span><span class="p">:</span> <span class="nx">BN</span><span class="p">,</span>
+    <span class="nx">successCondition</span><span class="p">:</span> <span class="nx">PlaceAndTakeOrderSuccessCondition</span><span class="p">,</span>
+    <span class="nx">driftClient</span><span class="p">:</span> <span class="nx">DriftClient</span>
+<span class="p">)</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">makerInfos</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">getMakerInfoForPlaceAndTake</span><span class="p">(</span>
+        <span class="nx">orderDirection</span><span class="p">,</span>
+        <span class="nx">orderMarketIndex</span><span class="p">,</span>
+        <span class="nx">MarketType</span><span class="p">.</span><span class="nx">PERP</span><span class="p">,</span>
+        <span class="nx">driftClient</span>
+    <span class="p">);</span>
+
+    <span class="kd">const</span> <span class="nx">placeAndTakeIx</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getPlaceAndTakePerpOrderIx</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="na">direction</span><span class="p">:</span> <span class="nx">orderDirection</span><span class="p">,</span>
+            <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">orderSizeBase</span><span class="p">,</span>
+            <span class="na">marketIndex</span><span class="p">:</span> <span class="nx">orderMarketIndex</span><span class="p">,</span>
+            <span class="na">marketType</span><span class="p">:</span> <span class="nx">MarketType</span><span class="p">.</span><span class="nx">PERP</span><span class="p">,</span>
+            <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">MARKET</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="nx">makerInfos</span><span class="p">,</span>
+        <span class="kc">undefined</span><span class="p">,</span>
+        <span class="nx">successCondition</span>
+    <span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">placeAndTakeIx</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Example: Make a LONG order for 1 SOL-PERP which will "fill-or-kill" if the entire order isn't filled atomically. </span>
+<span class="kd">const</span> <span class="nx">driftClient</span> <span class="o">=</span> <span class="nx">DRIFT_CLIENT</span><span class="p">;</span> <span class="c1">// Assume you have a Drift Client set up and ready to go, see https://drift-labs.github.io/v2-teacher/#client-initialization</span>
+<span class="kd">const</span> <span class="nx">sizeInSol</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="k">await</span> <span class="nx">makePlaceAndTakePerpOrderIx</span><span class="p">(</span>
+    <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
+    <span class="mi">0</span><span class="p">,</span> <span class="c1">// SOL-PERP's market index is 0</span>
+    <span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="nx">sizeInSol</span><span class="p">).</span><span class="nx">mul</span><span class="p">(</span><span class="nx">BASE_PRECISION</span><span class="p">),</span>
+    <span class="nx">PlaceAndTakeOrderSuccessCondition</span><span class="p">.</span><span class="nx">FullFill</span><span class="p">,</span> <span class="c1">// This ensures the order is completely filled, or the tx fails.</span>
+    <span class="nx">driftClient</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div><h1 id='orderbook-blockchain'>Orderbook (Blockchain)</h1>
 <p>The drift orderbook is a collection of all open orders on the Drift protocol. There is no single source of truth for the orderbook. The most up to date view of the orderbook is one where you track user orders and maintain the orderbook structure yourself. This section shows how to do that with the various SDKs.</p>
 <h2 id='dlob-source'>Dlob Source</h2>
 <p>This is the main source of orders for maintaing the orderbook.</p>
