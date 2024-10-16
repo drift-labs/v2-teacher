@@ -5219,6 +5219,10 @@ The funding rate is returned as a string and needs to be divided by 1e9 to get t
 <td>insurance-fund-stake</td>
 <td><code>authority/${authorityAccountKey}/insuranceFundStakeRecords/${year}/${year}${month}${day}</code></td>
 </tr>
+<tr>
+<td>candle-history</td>
+<td><code>candle-history/{year}/{marketKey}/{candleResolution}.csv</code></td>
+</tr>
 </tbody></table>
 <h3 id='variables'>Variables</h3>
 <table><thead>
@@ -5240,7 +5244,7 @@ The funding rate is returned as a string and needs to be divided by 1e9 to get t
 </tr>
 <tr>
 <td>marketSymbol</td>
-<td>market name</td>
+<td>market name. E.g. <code>SOL-PERP</code> for Solana PERP or <code>SOL</code> for Solana SPOT</td>
 <td>SOL-PERP</td>
 </tr>
 <tr>
@@ -5259,9 +5263,46 @@ The funding rate is returned as a string and needs to be divided by 1e9 to get t
 <td>25</td>
 </tr>
 <tr>
+<td>marketKey</td>
+<td>The key for the market. Format: {marketType}_{marketIndex}</td>
+<td>perp_0</td>
+</tr>
+<tr>
 <td>candleResolution</td>
-<td></td>
-<td>1M</td>
+<td>Candle Resolution. See &quot;Available Candle Resolutions&quot; below</td>
+<td>M</td>
+</tr>
+</tbody></table>
+<h3 id='available-candle-resolutions'>Available Candle Resolutions:</h3>
+<table><thead>
+<tr>
+<th>resolution</th>
+<th>description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>1</td>
+<td>1 minute</td>
+</tr>
+<tr>
+<td>15</td>
+<td>15 minute</td>
+</tr>
+<tr>
+<td>60</td>
+<td>1 hr</td>
+</tr>
+<tr>
+<td>240</td>
+<td>4 hr</td>
+</tr>
+<tr>
+<td>D</td>
+<td>1 day</td>
+</tr>
+<tr>
+<td>W</td>
+<td>1 week</td>
 </tr>
 </tbody></table>
 <h2 id='example-trades-for-market'>Example: Trades for market</h2><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
