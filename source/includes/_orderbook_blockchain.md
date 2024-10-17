@@ -14,7 +14,7 @@ This is the main source of orders for maintaing the orderbook.
 import {Connection} from "@solana/web3.js";
 import {DriftClient, UserMap, Wallet, loadKeypair} from "@drift-labs/sdk";
 
-const connection = new Connection("https://api.mainnet-beta.solana.com");
+const connection = new Connection("https://api.mainnet-beta.solana.com", 'confirmed');
 
 const keyPairFile = `${process.env.HOME}/.config/solana/my-keypair.json`;
 const wallet = new Wallet(loadKeypair(keyPairFile))
@@ -92,7 +92,7 @@ await user_map.subscribe()
 import {Connection} from "@solana/web3.js";
 import {DriftClient, OrderSubscriber, Wallet, loadKeypair} from "@drift-labs/sdk";
 
-const connection = new Connection("https://api.mainnet-beta.solana.com");
+const connection = new Connection("https://api.mainnet-beta.solana.com", 'confirmed');
 
 const keyPairFile = `${process.env.HOME}/.config/solana/my-keypair.json`;
 const wallet = new Wallet(loadKeypair(keyPairFile))

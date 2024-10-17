@@ -106,7 +106,7 @@ Use the self-hosted HTTP [gateway](https://github.com/drift-labs/gateway)
 import {Connection} from "@solana/web3.js";
 
 // the default RPC for devnet is `https://api.devnet.solana.com`
-const connection = new Connection('https://api.mainnet-beta.solana.com');
+const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
 ```
 
 ```python
@@ -156,7 +156,7 @@ Make sure this wallet has some SOL first. SOL is used to pay for transactions an
 import {Connection} from "@solana/web3.js";
 import {Wallet, loadKeypair, DriftClient} from "@drift-labs/sdk";
 
-const connection = new Connection('https://api.mainnet-beta.solana.com');
+const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
 
 const keyPairFile = `${process.env.HOME}/.config/solana/my-keypair.json`;
 const wallet = new Wallet(loadKeypair(keyPairFile))
