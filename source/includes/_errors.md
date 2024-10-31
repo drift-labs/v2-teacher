@@ -255,4 +255,53 @@ Drift Protocol uses has following error codes:
 |   6244 | FailedToDeserializePhoenixMarket           | FailedToDeserializePhoenixMarket                            |
 |   6245 | InvalidPricePrecision                      | InvalidPricePrecision                                       |
 |   6246 | InvalidPhoenixProgram                      | InvalidPhoenixProgram                                       |
-|   6247 | InvalidPhoenixMarket                       | InvalidPhoenixMarket    
+|   6247 | InvalidPhoenixMarket                       | InvalidPhoenixMarket                                        |
+|   6248 | InvalidSwap                                | InvalidSwap                                                 |
+|   6249 | SwapLimitPriceBreached                     | SwapLimitPriceBreached                                      |
+|   6250 | SpotMarketReduceOnly                       | SpotMarketReduceOnly                                        |
+|   6251 | FundingWasNotUpdated                       | FundingWasNotUpdated                                        |
+|   6252 | ImpossibleFill                             | ImpossibleFill                                              |
+|   6253 | CantUpdatePerpBidAskTwap                   | CantUpdatePerpBidAskTwap                                    |
+|   6254 | UserReduceOnly                             | UserReduceOnly                                              |
+|   6255 | InvalidMarginCalculation                   | InvalidMarginCalculation                                    |
+|   6256 | CantPayUserInitFee                         | CantPayUserInitFee                                          |
+|   6257 | CantReclaimRent                            | CantReclaimRent                                             |
+|   6258 | InsuranceFundOperationPaused               | InsuranceFundOperationPaused                                |
+|   6259 | NoUnsettledPnl                             | NoUnsettledPnl                                              |
+|   6260 | PnlPoolCantSettleUser                      | PnlPoolCantSettleUser                                       |
+|   6261 | OracleNonPositive                          | OracleInvalid                                               |
+|   6262 | OracleTooVolatile                          | OracleTooVolatile                                           |
+|   6263 | OracleTooUncertain                         | OracleTooUncertain                                          |
+|   6264 | OracleStaleForMargin                       | OracleStaleForMargin                                        |
+|   6265 | OracleInsufficientDataPoints               | OracleInsufficientDataPoints                                |
+|   6266 | OracleStaleForAMM                          | OracleStaleForAMM                                           |
+|   6267 | UnableToParsePullOracleMessage             | Unable to parse pull oracle message                         |
+|   6268 | MaxBorrows                                 | Can not borow more than max borrows                         |
+|   6269 | OracleUpdatesNotMonotonic                  | Updates must be monotonically increasing                    |
+|   6270 | OraclePriceFeedMessageMismatch             | Trying to update price feed with the wrong feed id          |
+|   6271 | OracleUnsupportedMessageType               | The message in the update must be a PriceFeedMessage        |
+|   6272 | OracleDeserializeMessageFailed             | Could not deserialize the message in the update             |
+|   6273 | OracleWrongGuardianSetOwner                | Wrong guardian set owner in update price atomic             |
+|   6274 | OracleWrongWriteAuthority                  | Oracle post update atomic price feed account must be drift program  |
+|   6275 | OracleWrongVaaOwner                        | Oracle vaa owner must be wormhole program                   |
+|   6276 | OracleTooManyPriceAccountUpdates           | Multi updates must have 2 or fewer accounts passed in remaining accounts    |
+|   6277 | OracleMismatchedVaaAndPriceUpdates         | Don't have the same remaining accounts number and merkle price updates left |
+|   6278 | OracleBadRemainingAccountPublicKey         | Remaining account passed is not a valid pda                 |
+|   6279 | FailedOpenbookV2CPI                        | FailedOpenbookV2CPI                                         |
+|   6280 | InvalidOpenbookV2Program                   | InvalidOpenbookV2Program                                    |
+|   6281 | InvalidOpenbookV2Market                    | InvalidOpenbookV2Market                                     |
+|   6282 | NonZeroTransferFee                         | Non zero transfer fee                                       |
+|   6283 | LiquidationOrderFailedToFill               | Liquidation order failed to fill                            |
+|   6284 | InvalidPredictionMarketOrder               | Invalid prediction market order                             |
+|   6285 | InvalidVerificationIxIndex                 | Ed25519 Ix must be before place and make swift order ix     |
+|   6286 | SigVerificationFailed                      | Swift message verificaiton failed                           |
+|   6287 | MismatchedSwiftOrderParamsMarketIndex      | Market index mismatched b/w taker and maker swift order params  |
+|   6288 | InvalidSwiftOrderParam                     | Swift only available for market/oracle perp orders          |
+|   6289 | PlaceAndTakeOrderSuccessConditionFailed    | Place and take order success condition failed               |
+|   6290 | InvalidHighLeverageModeConfig              | Invalid High Leverage Mode Config                           |
+|   6291 | InvalidRFQUserAccount                      | Invalid RFQ User Account                                    |
+|   6292 | RFQUserAccountWrongMutability              | RFQUserAccount should be mutable                            |
+|   6293 | RFQUserAccountFull                         | RFQUserAccount has too many active RFQs                     |
+|   6294 | RFQOrderNotFilled                          | RFQ order not filled as expected                            |
+|   6295 | InvalidRFQOrder                            | RFQ orders must be jit makers                               |
+|   6296 | InvalidRFQMatch                            | RFQ matches must be valid                          
