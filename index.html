@@ -701,7 +701,7 @@
 <h2 id='connection'>Connection</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
 
 <span class="c1">// the default RPC for devnet is `https://api.devnet.solana.com`</span>
-<span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.mainnet-beta.solana.com</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.mainnet-beta.solana.com</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">confirmed</span><span class="dl">'</span><span class="p">);</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">solana.rpc.async_api</span> <span class="kn">import</span> <span class="n">AsyncClient</span>
 
 <span class="n">url</span> <span class="o">=</span> <span class="s">'https://api.mainnet-beta.solana.com'</span> <span class="c1"># replace w/ any rpc
@@ -730,7 +730,7 @@
 <h2 id='client-initialization'>Client Initialization</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
 <span class="k">import</span> <span class="p">{</span><span class="nx">Wallet</span><span class="p">,</span> <span class="nx">loadKeypair</span><span class="p">,</span> <span class="nx">DriftClient</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
 
-<span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.mainnet-beta.solana.com</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.mainnet-beta.solana.com</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">confirmed</span><span class="dl">'</span><span class="p">);</span>
 
 <span class="kd">const</span> <span class="nx">keyPairFile</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">HOME</span><span class="p">}</span><span class="s2">/.config/solana/my-keypair.json`</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">wallet</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Wallet</span><span class="p">(</span><span class="nx">loadKeypair</span><span class="p">(</span><span class="nx">keyPairFile</span><span class="p">))</span>
@@ -3960,7 +3960,7 @@ This examples should be used as code reference only. Be cautious running any unr
 <div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
 <span class="k">import</span> <span class="p">{</span><span class="nx">DriftClient</span><span class="p">,</span> <span class="nx">UserMap</span><span class="p">,</span> <span class="nx">Wallet</span><span class="p">,</span> <span class="nx">loadKeypair</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
 
-<span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">"</span><span class="s2">https://api.mainnet-beta.solana.com</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">"</span><span class="s2">https://api.mainnet-beta.solana.com</span><span class="dl">"</span><span class="p">,</span> <span class="dl">'</span><span class="s1">confirmed</span><span class="dl">'</span><span class="p">);</span>
 
 <span class="kd">const</span> <span class="nx">keyPairFile</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">HOME</span><span class="p">}</span><span class="s2">/.config/solana/my-keypair.json`</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">wallet</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Wallet</span><span class="p">(</span><span class="nx">loadKeypair</span><span class="p">(</span><span class="nx">keyPairFile</span><span class="p">))</span>
@@ -4029,7 +4029,7 @@ This examples should be used as code reference only. Be cautious running any unr
 <div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
 <span class="k">import</span> <span class="p">{</span><span class="nx">DriftClient</span><span class="p">,</span> <span class="nx">OrderSubscriber</span><span class="p">,</span> <span class="nx">Wallet</span><span class="p">,</span> <span class="nx">loadKeypair</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
 
-<span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">"</span><span class="s2">https://api.mainnet-beta.solana.com</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">"</span><span class="s2">https://api.mainnet-beta.solana.com</span><span class="dl">"</span><span class="p">,</span> <span class="dl">'</span><span class="s1">confirmed</span><span class="dl">'</span><span class="p">);</span>
 
 <span class="kd">const</span> <span class="nx">keyPairFile</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">HOME</span><span class="p">}</span><span class="s2">/.config/solana/my-keypair.json`</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">wallet</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Wallet</span><span class="p">(</span><span class="nx">loadKeypair</span><span class="p">(</span><span class="nx">keyPairFile</span><span class="p">))</span>
@@ -6805,6 +6805,251 @@ This is a table of program errors as described in the programs IDL.
 <td style="text-align: right">6247</td>
 <td style="text-align: left">InvalidPhoenixMarket</td>
 <td style="text-align: left">InvalidPhoenixMarket</td>
+</tr>
+<tr>
+<td style="text-align: right">6248</td>
+<td style="text-align: left">InvalidSwap</td>
+<td style="text-align: left">InvalidSwap</td>
+</tr>
+<tr>
+<td style="text-align: right">6249</td>
+<td style="text-align: left">SwapLimitPriceBreached</td>
+<td style="text-align: left">SwapLimitPriceBreached</td>
+</tr>
+<tr>
+<td style="text-align: right">6250</td>
+<td style="text-align: left">SpotMarketReduceOnly</td>
+<td style="text-align: left">SpotMarketReduceOnly</td>
+</tr>
+<tr>
+<td style="text-align: right">6251</td>
+<td style="text-align: left">FundingWasNotUpdated</td>
+<td style="text-align: left">FundingWasNotUpdated</td>
+</tr>
+<tr>
+<td style="text-align: right">6252</td>
+<td style="text-align: left">ImpossibleFill</td>
+<td style="text-align: left">ImpossibleFill</td>
+</tr>
+<tr>
+<td style="text-align: right">6253</td>
+<td style="text-align: left">CantUpdatePerpBidAskTwap</td>
+<td style="text-align: left">CantUpdatePerpBidAskTwap</td>
+</tr>
+<tr>
+<td style="text-align: right">6254</td>
+<td style="text-align: left">UserReduceOnly</td>
+<td style="text-align: left">UserReduceOnly</td>
+</tr>
+<tr>
+<td style="text-align: right">6255</td>
+<td style="text-align: left">InvalidMarginCalculation</td>
+<td style="text-align: left">InvalidMarginCalculation</td>
+</tr>
+<tr>
+<td style="text-align: right">6256</td>
+<td style="text-align: left">CantPayUserInitFee</td>
+<td style="text-align: left">CantPayUserInitFee</td>
+</tr>
+<tr>
+<td style="text-align: right">6257</td>
+<td style="text-align: left">CantReclaimRent</td>
+<td style="text-align: left">CantReclaimRent</td>
+</tr>
+<tr>
+<td style="text-align: right">6258</td>
+<td style="text-align: left">InsuranceFundOperationPaused</td>
+<td style="text-align: left">InsuranceFundOperationPaused</td>
+</tr>
+<tr>
+<td style="text-align: right">6259</td>
+<td style="text-align: left">NoUnsettledPnl</td>
+<td style="text-align: left">NoUnsettledPnl</td>
+</tr>
+<tr>
+<td style="text-align: right">6260</td>
+<td style="text-align: left">PnlPoolCantSettleUser</td>
+<td style="text-align: left">PnlPoolCantSettleUser</td>
+</tr>
+<tr>
+<td style="text-align: right">6261</td>
+<td style="text-align: left">OracleNonPositive</td>
+<td style="text-align: left">OracleInvalid</td>
+</tr>
+<tr>
+<td style="text-align: right">6262</td>
+<td style="text-align: left">OracleTooVolatile</td>
+<td style="text-align: left">OracleTooVolatile</td>
+</tr>
+<tr>
+<td style="text-align: right">6263</td>
+<td style="text-align: left">OracleTooUncertain</td>
+<td style="text-align: left">OracleTooUncertain</td>
+</tr>
+<tr>
+<td style="text-align: right">6264</td>
+<td style="text-align: left">OracleStaleForMargin</td>
+<td style="text-align: left">OracleStaleForMargin</td>
+</tr>
+<tr>
+<td style="text-align: right">6265</td>
+<td style="text-align: left">OracleInsufficientDataPoints</td>
+<td style="text-align: left">OracleInsufficientDataPoints</td>
+</tr>
+<tr>
+<td style="text-align: right">6266</td>
+<td style="text-align: left">OracleStaleForAMM</td>
+<td style="text-align: left">OracleStaleForAMM</td>
+</tr>
+<tr>
+<td style="text-align: right">6267</td>
+<td style="text-align: left">UnableToParsePullOracleMessage</td>
+<td style="text-align: left">Unable to parse pull oracle message</td>
+</tr>
+<tr>
+<td style="text-align: right">6268</td>
+<td style="text-align: left">MaxBorrows</td>
+<td style="text-align: left">Can not borow more than max borrows</td>
+</tr>
+<tr>
+<td style="text-align: right">6269</td>
+<td style="text-align: left">OracleUpdatesNotMonotonic</td>
+<td style="text-align: left">Updates must be monotonically increasing</td>
+</tr>
+<tr>
+<td style="text-align: right">6270</td>
+<td style="text-align: left">OraclePriceFeedMessageMismatch</td>
+<td style="text-align: left">Trying to update price feed with the wrong feed id</td>
+</tr>
+<tr>
+<td style="text-align: right">6271</td>
+<td style="text-align: left">OracleUnsupportedMessageType</td>
+<td style="text-align: left">The message in the update must be a PriceFeedMessage</td>
+</tr>
+<tr>
+<td style="text-align: right">6272</td>
+<td style="text-align: left">OracleDeserializeMessageFailed</td>
+<td style="text-align: left">Could not deserialize the message in the update</td>
+</tr>
+<tr>
+<td style="text-align: right">6273</td>
+<td style="text-align: left">OracleWrongGuardianSetOwner</td>
+<td style="text-align: left">Wrong guardian set owner in update price atomic</td>
+</tr>
+<tr>
+<td style="text-align: right">6274</td>
+<td style="text-align: left">OracleWrongWriteAuthority</td>
+<td style="text-align: left">Oracle post update atomic price feed account must be drift program</td>
+</tr>
+<tr>
+<td style="text-align: right">6275</td>
+<td style="text-align: left">OracleWrongVaaOwner</td>
+<td style="text-align: left">Oracle vaa owner must be wormhole program</td>
+</tr>
+<tr>
+<td style="text-align: right">6276</td>
+<td style="text-align: left">OracleTooManyPriceAccountUpdates</td>
+<td style="text-align: left">Multi updates must have 2 or fewer accounts passed in remaining accounts</td>
+</tr>
+<tr>
+<td style="text-align: right">6277</td>
+<td style="text-align: left">OracleMismatchedVaaAndPriceUpdates</td>
+<td style="text-align: left">Don&#39;t have the same remaining accounts number and merkle price updates left</td>
+</tr>
+<tr>
+<td style="text-align: right">6278</td>
+<td style="text-align: left">OracleBadRemainingAccountPublicKey</td>
+<td style="text-align: left">Remaining account passed is not a valid pda</td>
+</tr>
+<tr>
+<td style="text-align: right">6279</td>
+<td style="text-align: left">FailedOpenbookV2CPI</td>
+<td style="text-align: left">FailedOpenbookV2CPI</td>
+</tr>
+<tr>
+<td style="text-align: right">6280</td>
+<td style="text-align: left">InvalidOpenbookV2Program</td>
+<td style="text-align: left">InvalidOpenbookV2Program</td>
+</tr>
+<tr>
+<td style="text-align: right">6281</td>
+<td style="text-align: left">InvalidOpenbookV2Market</td>
+<td style="text-align: left">InvalidOpenbookV2Market</td>
+</tr>
+<tr>
+<td style="text-align: right">6282</td>
+<td style="text-align: left">NonZeroTransferFee</td>
+<td style="text-align: left">Non zero transfer fee</td>
+</tr>
+<tr>
+<td style="text-align: right">6283</td>
+<td style="text-align: left">LiquidationOrderFailedToFill</td>
+<td style="text-align: left">Liquidation order failed to fill</td>
+</tr>
+<tr>
+<td style="text-align: right">6284</td>
+<td style="text-align: left">InvalidPredictionMarketOrder</td>
+<td style="text-align: left">Invalid prediction market order</td>
+</tr>
+<tr>
+<td style="text-align: right">6285</td>
+<td style="text-align: left">InvalidVerificationIxIndex</td>
+<td style="text-align: left">Ed25519 Ix must be before place and make swift order ix</td>
+</tr>
+<tr>
+<td style="text-align: right">6286</td>
+<td style="text-align: left">SigVerificationFailed</td>
+<td style="text-align: left">Swift message verificaiton failed</td>
+</tr>
+<tr>
+<td style="text-align: right">6287</td>
+<td style="text-align: left">MismatchedSwiftOrderParamsMarketIndex</td>
+<td style="text-align: left">Market index mismatched b/w taker and maker swift order params</td>
+</tr>
+<tr>
+<td style="text-align: right">6288</td>
+<td style="text-align: left">InvalidSwiftOrderParam</td>
+<td style="text-align: left">Swift only available for market/oracle perp orders</td>
+</tr>
+<tr>
+<td style="text-align: right">6289</td>
+<td style="text-align: left">PlaceAndTakeOrderSuccessConditionFailed</td>
+<td style="text-align: left">Place and take order success condition failed</td>
+</tr>
+<tr>
+<td style="text-align: right">6290</td>
+<td style="text-align: left">InvalidHighLeverageModeConfig</td>
+<td style="text-align: left">Invalid High Leverage Mode Config</td>
+</tr>
+<tr>
+<td style="text-align: right">6291</td>
+<td style="text-align: left">InvalidRFQUserAccount</td>
+<td style="text-align: left">Invalid RFQ User Account</td>
+</tr>
+<tr>
+<td style="text-align: right">6292</td>
+<td style="text-align: left">RFQUserAccountWrongMutability</td>
+<td style="text-align: left">RFQUserAccount should be mutable</td>
+</tr>
+<tr>
+<td style="text-align: right">6293</td>
+<td style="text-align: left">RFQUserAccountFull</td>
+<td style="text-align: left">RFQUserAccount has too many active RFQs</td>
+</tr>
+<tr>
+<td style="text-align: right">6294</td>
+<td style="text-align: left">RFQOrderNotFilled</td>
+<td style="text-align: left">RFQ order not filled as expected</td>
+</tr>
+<tr>
+<td style="text-align: right">6295</td>
+<td style="text-align: left">InvalidRFQOrder</td>
+<td style="text-align: left">RFQ orders must be jit makers</td>
+</tr>
+<tr>
+<td style="text-align: right">6296</td>
+<td style="text-align: left">InvalidRFQMatch</td>
+<td style="text-align: left">RFQ matches must be valid</td>
 </tr>
 </tbody></table>
 <h1 id='market-indexes-names'>Market Indexes/Names</h1>
