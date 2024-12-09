@@ -1913,3 +1913,4 @@ it includes any accumulated interest.
 | spot token balance | 1e9 | `SPOT_MARKET_BALANCE_PRECISION` |
 | margin ratio | 1e4 | `MARGIN_PRECISION` |
 | asset/liability weight | 1e4 | `SPOT_WEIGHT_PRECISION` |
+| imf weight precision | 1e6 | `SPOT_IMF_PRECISION` |
