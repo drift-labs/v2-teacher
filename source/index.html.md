@@ -10,7 +10,6 @@ toc_footers:
   - <a href='https://github.com/drift-labs/protocol-v2/releases/'> Release History </a>
   - <a href='https://docs.drift.trade/'> Documentation </a>
 includes:
-  - examples
   - orderbook_blockchain
   - orderbook_dlobserver
   - data_api
@@ -18,6 +17,7 @@ includes:
   - errors
   - market_constants
   - prediction_markets
+  - examples
 
 search: true
 
