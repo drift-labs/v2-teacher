@@ -124,4 +124,15 @@ Returns the tokenomics information about the Drift token.
 
 Example: [https://data.api.drift.trade/DRIFT?q=circulating-supply](https://data.api.drift.trade/DRIFT?q=circulating-supply)
 
+## `GET /rateHistory`
+
+Returns the tokenomics information about the Drift token.
+
+| Parameter        | Description                                      | Optional | Values                                              |
+| ---------------- | ------------------------------------------------ | -------- | --------------------------------------------------- |
+| marketIndex      | The market index of the market to get            | NO       |                                                      |
+| type             | The metric returned. Default: `deposit`          | YES      | `deposit`,`borrow`,`deposit_balance`,`borrow_balance` |
+
+Example: [https://data.api.drift.trade/rateHistory?marketIndex=0](https://data.api.drift.trade/rateHistory?marketIndex=0)
+
 
