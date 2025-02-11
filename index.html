@@ -590,6 +590,9 @@
                   <li>
                     <a href="#get-drift" class="toc-h2 toc-link" data-title="GET /DRIFT/"><code>GET /DRIFT/</code></a>
                   </li>
+                  <li>
+                    <a href="#get-ratehistory" class="toc-h2 toc-link" data-title="GET /rateHistory"><code>GET /rateHistory</code></a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -5156,6 +5159,32 @@ The funding rate is returned as a string and needs to be divided by 1e9 to get t
 </tbody></table>
 
 <p>Example: <a href="https://data.api.drift.trade/DRIFT?q=circulating-supply">https://data.api.drift.trade/DRIFT?q=circulating-supply</a></p>
+<h2 id='get-ratehistory'><code>GET /rateHistory</code></h2>
+<p>Returns the tokenomics information about the Drift token.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Values</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>marketIndex</td>
+<td>The market index of the market to get</td>
+<td>NO</td>
+<td></td>
+</tr>
+<tr>
+<td>type</td>
+<td>The metric returned. Default: <code>deposit</code></td>
+<td>YES</td>
+<td><code>deposit</code>,<code>borrow</code>,<code>deposit_balance</code>,<code>borrow_balance</code></td>
+</tr>
+</tbody></table>
+
+<p>Example: <a href="https://data.api.drift.trade/rateHistory?marketIndex=0">https://data.api.drift.trade/rateHistory?marketIndex=0</a></p>
 <h1 id='historical-data'>Historical Data</h1>
 <p>Snapshots are collected by parsing on-chain transaction logs. For convience the below are parsed logs collected, stored as a CSV, and stored off-chain (~99% of records). Records are updated once per day.</p>
 
