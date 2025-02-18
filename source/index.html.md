@@ -297,7 +297,6 @@ driftClient.switchActiveUser(
 drift_client.switch_active_user(sub_account_id=1)
 ```
 
-<<<<<<< HEAD
 ### TypeScript
 =======
 ```shell
@@ -431,11 +430,7 @@ await driftClient.transferDeposit(
 
 ```python
 market_index = 0
-<<<<<<< HEAD
 amount = drift_client.convert_to_spot_precision(100, market_index)
-=======
-amount = drift_client.convert_to_spot_precision(market_index, 100)
->>>>>>> upstream/main
 from_sub_account_id = 0
 to_sub_account_id = 0
 
