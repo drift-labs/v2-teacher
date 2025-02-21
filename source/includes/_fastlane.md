@@ -7,7 +7,7 @@ Endpoints:
 mainnet-beta: [https://fastlane.drift.trade/](https://fastlane.drift.trade/)
 devnet: [https://master.fastlane.drift.trade/](https://master.fastlane.drift.trade/)
 
-## Signing Messages
+## Takers: Signing Order Messages
 
 Fastlane relies on takers signing messages to send orders. This happens under the hood in the UI, but for programmatic traders, the best way to do this is via the DriftClient. In order to render useful messages to wallet providers, the process of encoding OrderParmas is quite involved -- so we recommend using the DriftClient utility functions. See the typescript example on how to do this.
 
@@ -45,7 +45,7 @@ const { orderParams: message, signature } =
   driftClient.signSignedMsgOrderParamsMessage(orderMessage);
 ```
 
-## Sending orders (/orders)
+### Sending orders (/orders)
 
 To submit an order to Fastlane, submit a POST request to the /orders path.
 
@@ -76,9 +76,9 @@ const response = await axios.default.post(
 );
 ```
 
-## Subscribing to Orders as a Market Maker
+## Makers: Subscribing to Orders Messages
 
-Drift sdks offer a FastlaneOrderSubscriber as a wrapper around the Fastlane websocket to easily subscribe to fastlane orders. Traders can also subscribe directly to the websocket feed and access trades that way.
+Drift sdks offer a FastlaneOrderSubscriber as a wrapper around the Fastlane websocket to easily subscribe to fastlane orders. Traders can also subscribe directly to the websocket feed and gain access to trades that way.
 
 To start receiving messages from the fastlane server, you must authenticate your connection with your wallet by signing a nonce sent by the server. This all happens under the hood in the FastlaneOrderSubscriber, but examples for how to do this for direct connections are given below
 
