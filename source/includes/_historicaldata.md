@@ -1,58 +1,26 @@
 # Historical Data
 
-Snapshots are collected by parsing on-chain transaction logs. For convience the below are parsed logs collected, stored as a CSV, and stored off-chain (~99% of records). Records are updated once per day.
+Snapshots are collected by parsing on-chain transaction logs. For convience the below are parsed logs collected, stored as a CSV, and stored off-chain (~99% of records). Please share any transaction signatures or time ranges you believe might be missing in Drift Protocol Discord. Data can be accessed via the export feature on the UI, or are also available using the below URL.
 
-Please share any transaction signatures or time ranges you believe might be missing in Drift Protocol Discord.
+mainnet-beta: `https://data.api.drift.trade/`
 
-## URL Prefix
-mainnet-beta:  `https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/`
+For examples visit `https://data.api.drift.trade/playground`.
 
 <!-- devnet: `https://drift-historical-data.s3.us-east-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/` -->
 
-## URL Suffix
+## Variables
 
-### Schema
-| recordType | url suffix |
-| --- | --- |
-| trades | `user/${accountKey}/tradeRecords/${year}/${year}${month}${day}` |
-| market-trades | `market/${marketSymbol}/tradeRecords/${year}/${year}${month}${day}` |
-| swaps | `user/${accountKey}/swapRecords/${year}/${year}${month}${day}` |
-| funding-rates | `market/${marketSymbol}/fundingRateRecords/${year}/${year}${month}${day}` |
-| funding-payments | `user/${accountKey}/fundingPaymentRecords/${year}/${year}${month}${day}` |
-| deposits | `user/${accountKey}/depositRecords/${year}/${year}${month}${day}` |
-| liquidations | `user/${accountKey}/liquidationRecords/${year}/${year}${month}${day}` |
-| settle-pnl | `user/${accountKey}/settlePnlRecords/${year}/${year}${month}${day}` |
-| lp | `user/${accountKey}/lpRecord/${year}/${year}${month}${day}` |
-| insurance-fund | `market/${marketSymbol}/insuranceFundRecords/${year}/${year}${month}${day}` |
-| insurance-fund-stake | `authority/${authorityAccountKey}/insuranceFundStakeRecords/${year}/${year}${month}${day}` |
-| candle-history | `candle-history/{year}/{marketKey}/{candleResolution}.csv` | 
-
-
-
-### Variables
-| variable | description | example |
-| --- | --- | --- |
-| accountKey | user sub account public key (not authority) | |
-| authority | authority public key | |
+| variable     | description                                                           | example  |
+| ------------ | --------------------------------------------------------------------- | -------- |
+| accountId    | user sub account public key (not authority)                           |          |
+| authority    | authority public key                                                  |          |
 | marketSymbol | market name. E.g. `SOL-PERP` for Solana PERP or `SOL` for Solana SPOT | SOL-PERP |
-| year |  | 2023 |
-| month |  | 4 |
-| day | utc time | 25 |
-| marketKey | The key for the market. Format: {marketType}_{marketIndex} | perp_0 |
-| candleResolution | Candle Resolution. See "Available Candle Resolutions" below | M |
-
-### Available Candle Resolutions:
-
-| resolution | description |
-| --- | --- |
-| 1 | 1 minute |
-| 15 | 15 minute |
-| 60 | 1 hr |
-| 240 | 4 hr |
-| D | 1 day |
-| W | 1 week |
+| year         |                                                                       | 2023     |
+| month        |                                                                       | 4        |
+| day          | utc time                                                              | 25       |
 
 ## Example: Trades for market
+
 ```python
 import requests
 
@@ -84,11 +52,17 @@ for row in reader:
 ```
 
 ```typescript
-import { parse } from 'csv-parse/sync';
+import { parse } from "csv-parse/sync";
 
-const URL_PREFIX = 'https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH';
+const URL_PREFIX =
+  "https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH";
 
-async function fetchAndParseCSV(marketSymbol: string, year: string, month: string, day: string): Promise<void> {
+async function fetchAndParseCSV(
+  marketSymbol: string,
+  year: string,
+  month: string,
+  day: string
+): Promise<void> {
   const url = `${URL_PREFIX}/market/${marketSymbol}/tradeRecords/${year}/${year}${month}${day}`;
 
   try {
@@ -96,39 +70,40 @@ async function fetchAndParseCSV(marketSymbol: string, year: string, month: strin
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     const csvText = await response.text();
     const records = parse(csvText, {
-      skip_empty_lines: true
+      skip_empty_lines: true,
     });
 
     records.forEach((row: string[]) => {
       console.log(row);
     });
   } catch (error) {
-    console.error('Error fetching or parsing CSV:', error);
+    console.error("Error fetching or parsing CSV:", error);
   }
 }
 
 async function main() {
-  const marketSymbol = 'SOL-PERP';
-  const year = '2024';
-  const month = '01';
-  const day = '01';
+  const marketSymbol = "SOL-PERP";
+  const year = "2024";
+  const month = "01";
+  const day = "01";
 
   await fetchAndParseCSV(marketSymbol, year, month, day);
 }
 
-main().catch(error => console.error('An error occurred:', error));
+main().catch((error) => console.error("An error occurred:", error));
 ```
 
 Get historical trades on `SOL-PERP` for a given date (ex. 2024-01-01):
+
 ```
 https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH/market/SOL-PERP/tradeRecords/2024/20240101
 ```
 
-
 ## Example: Trades for date range
+
 ```python
 import requests
 import csv
@@ -147,7 +122,7 @@ def get_trades_for_range_pandas(account_key, start_date, end_date):
         month = current_date.month
         day = current_date.day
         url = f"{URL_PREFIX}/user/{account_key}/tradeRecords/{year}/{year}{month:02}{day:02}"
-        
+
         try:
             df = pd.read_csv(url)
             all_trades.append(df)
@@ -155,9 +130,9 @@ def get_trades_for_range_pandas(account_key, start_date, end_date):
             print(f"Error fetching data for {current_date}: {e}")
         except pd.errors.EmptyDataError:
             print(f"No data available for {current_date}")
-        
+
         current_date += timedelta(days=1)
-    
+
     if all_trades:
         return pd.concat(all_trades, ignore_index=True)
     else:
@@ -194,9 +169,10 @@ trades = get_trades_for_range(account_key, start_date, end_date)
 ```
 
 ```typescript
-import { parse } from 'csv-parse/sync';
+import { parse } from "csv-parse/sync";
 
-const URL_PREFIX = 'https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH';
+const URL_PREFIX =
+  "https://drift-historical-data-v2.s3.eu-west-1.amazonaws.com/program/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH";
 
 interface Trade {
   // Define the structure of a trade record here
@@ -207,15 +183,19 @@ interface Trade {
   [key: string]: any;
 }
 
-async function getTradesForRange(accountKey: string, startDate: Date, endDate: Date): Promise<Trade[]> {
+async function getTradesForRange(
+  accountKey: string,
+  startDate: Date,
+  endDate: Date
+): Promise<Trade[]> {
   const allTrades: Trade[] = [];
   let currentDate = new Date(startDate);
 
   while (currentDate <= endDate) {
     const year = currentDate.getFullYear();
-    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
-    const day = currentDate.getDate().toString().padStart(2, '0');
-    
+    const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
+    const day = currentDate.getDate().toString().padStart(2, "0");
+
     const url = `${URL_PREFIX}/user/${accountKey}/tradeRecords/${year}/${year}${month}${day}`;
 
     try {
@@ -223,16 +203,19 @@ async function getTradesForRange(accountKey: string, startDate: Date, endDate: D
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const csvText = await response.text();
       const records = parse(csvText, {
         skip_empty_lines: true,
-        columns: true
+        columns: true,
       });
 
       allTrades.push(...records);
     } catch (error) {
-      console.error(`Error fetching or parsing CSV for ${year}-${month}-${day}:`, error);
+      console.error(
+        `Error fetching or parsing CSV for ${year}-${month}-${day}:`,
+        error
+      );
     }
 
     currentDate.setDate(currentDate.getDate() + 1);
@@ -249,9 +232,9 @@ async function main() {
   try {
     const trades = await getTradesForRange(accountKey, startDate, endDate);
     console.log(`Total trades fetched: ${trades.length}`);
-    console.log('First few trades:', trades.slice(0, 5));
+    console.log("First few trades:", trades.slice(0, 5));
   } catch (error) {
-    console.error('An error occurred:', error);
+    console.error("An error occurred:", error);
   }
 }
 
@@ -268,32 +251,19 @@ Below are definitions of the columns in each record type.
 
 ### trades
 
-| variable | description | example |
-| --- | --- | --- |
-| accountKey | user sub account public key (not authority) | |
+| variable  | description                                 | example |
+| --------- | ------------------------------------------- | ------- |
+| accountId | user sub account public key (not authority) |         |
 
 ### funding-rates
 
 note: 'rate' is in quote per base, to allow for async settlement
 
-| variable | description | example |
-| --- | --- | --- |
-| fundingRate | the quote asset amount (precision=1e6) per base asset amount (precision=1e9) | |
+| variable    | description                                                                  | example |
+| ----------- | ---------------------------------------------------------------------------- | ------- |
+| fundingRate | the quote asset amount (precision=1e6) per base asset amount (precision=1e9) |         |
 
 to convert to the rates seen on the ui, use the following formula: `(funding_rate / BASE_PRECISION) / (oracle_twap / QUOTE_PRECISION)  * 100`
-
-<!-- ### market-trades
-
-### funding-payments
-
-### deposits
-
-### liquidations
-
-### candles
-
-### settle-pnl-records -->
-
 
 ```python
 import requests
