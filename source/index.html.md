@@ -13,6 +13,7 @@ includes:
   - examples
   - orderbook_blockchain
   - orderbook_dlobserver
+  - fastlane
   - data_api
   - historicaldata
   - errors
@@ -28,8 +29,8 @@ meta:
     content: Documentation for drift protocol-v2
 ---
 
-
 # Terms of Use
+
 By using any API provided by Drift Labs, you agree to the <a href="https://docs.drift.trade/legal-and-regulations/terms-of-use">Terms of Use</a>. If you do not agree to the foregoing, then do not use any such API.
 
 # Introduction
@@ -40,25 +41,23 @@ There are language bindings in [Typescript](https://github.com/drift-labs/protoc
 
 This API documentation page is open sourced and available [here](https://github.com/drift-labs/v2-teacher) was created with [Slate](https://github.com/slatedocs/slate). Feel free to submit questions/comments in [Issues](https://github.com/drift-labs/v2-teacher/issues) or suggest changes as a [PR](https://github.com/drift-labs/v2-teacher/pulls).
 
-
 ## Program Addresses
 
 <aside class="notice">
   All documented descriptions are for the following deployed programs IDs of the protocol.
 </aside>
 
-Enviroment | Program ID | User Interface |
----------- | ----------- | -------- |
-mainnet-beta | [dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH](https://solscan.io/account/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH) | [app](https://app.drift.trade) |
-devnet | [dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH](https://solscan.io/account/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH?cluster=devnet) | [app](https://beta.drift.trade) |
+| Enviroment   | Program ID                                                                                                                           | User Interface                  |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------- |
+| mainnet-beta | [dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH](https://solscan.io/account/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH)                | [app](https://app.drift.trade)  |
+| devnet       | [dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH](https://solscan.io/account/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH?cluster=devnet) | [app](https://beta.drift.trade) |
 
 <aside class="warning">
   It is strictly against the <a href="https://docs.drift.trade/legal-and-regulations/terms-of-use">Terms of Use</a> to use these interfaces from a Restricted Territory.
 </aside>
 
-
-
 # Authentication
+
 To access and interact with a blockchain, such as Solana, you need a keypair, which consists of a public key and a private key. The private key should be kept secure and not shared with anyone else.
 
 To generate a new keypair, you can use the [Solana Tool Suite](https://docs.solana.com/cli/install-solana-cli-tools) by running the following command on the command line:
@@ -84,6 +83,7 @@ This command sets the ANCHOR_WALLET environment variable to the path of the JSON
 # Client
 
 ## Typescript
+
 Install @drift-labs/sdk from [npm](https://www.npmjs.com/package/@drift-labs/sdk) using yarn:
 
 `yarn add @drift-labs/sdk`
@@ -91,6 +91,7 @@ Install @drift-labs/sdk from [npm](https://www.npmjs.com/package/@drift-labs/sdk
 auto-generated documentation here: [https://drift-labs.github.io/protocol-v2/sdk/]
 
 ## Python
+
 Install driftpy from PyPI using pip:
 
 `pip install driftpy`
@@ -98,15 +99,19 @@ Install driftpy from PyPI using pip:
 auto-generated documentation here: [https://drift-labs.github.io/driftpy/]
 
 ## HTTP
+
 Use the self-hosted HTTP [gateway](https://github.com/drift-labs/gateway)
 
 ## Connection
 
-  ```typescript
-import {Connection} from "@solana/web3.js";
+```typescript
+import { Connection } from "@solana/web3.js";
 
 // the default RPC for devnet is `https://api.devnet.solana.com`
-const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
+const connection = new Connection(
+  "https://api.mainnet-beta.solana.com",
+  "confirmed"
+);
 ```
 
 ```python
@@ -122,15 +127,15 @@ drift-gateway https://api.mainnet-beta.solana.com --port 8080
 
 The connection object is used to send transactions to the Solana blockchain. It is used by the DriftClient to send transactions to the blockchain.
 
-
 ## Wallet
 
-  ```typescript
-import {Wallet, loadKeypair} from "@drift-labs/sdk";
+```typescript
+import { Wallet, loadKeypair } from "@drift-labs/sdk";
 
 const keyPairFile = `${process.env.HOME}/.config/solana/my-keypair.json`;
 const wallet = new Wallet(loadKeypair(keyPairFile));
 ```
+
 ```python
 import os
 from anchorpy import Wallet
@@ -140,6 +145,7 @@ keypair_file = os.path.expanduser('~/.config/solana/my-keypair.json')
 keypair = load_keypair(keypair_file)
 wallet = Wallet(kp)
 ```
+
 ```shell
 # use `DRIFT_GATEWAY_KEY` environment variable to configure the gateway wallet
 # either path to .json keypair or base58 seed string
@@ -153,22 +159,26 @@ Make sure this wallet has some SOL first. SOL is used to pay for transactions an
 ## Client Initialization
 
 ```typescript
-import {Connection} from "@solana/web3.js";
-import {Wallet, loadKeypair, DriftClient} from "@drift-labs/sdk";
+import { Connection } from "@solana/web3.js";
+import { Wallet, loadKeypair, DriftClient } from "@drift-labs/sdk";
 
-const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
+const connection = new Connection(
+  "https://api.mainnet-beta.solana.com",
+  "confirmed"
+);
 
 const keyPairFile = `${process.env.HOME}/.config/solana/my-keypair.json`;
-const wallet = new Wallet(loadKeypair(keyPairFile))
+const wallet = new Wallet(loadKeypair(keyPairFile));
 
 const driftClient = new DriftClient({
   connection,
   wallet,
-  env: 'mainnet-beta',
+  env: "mainnet-beta",
 });
 
 await driftClient.subscribe();
 ```
+
 ```python
   from anchorpy import Wallet
   from driftpy.drift_client import DriftClient
@@ -180,45 +190,45 @@ await driftClient.subscribe();
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| connection      | Connection object specifying solana rpc url       | No | |
-| wallet   | The wallet used to sign transactions sent to solana blockchain       | No | |
-| programId   | Drift program id      | Yes | dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH |
-| env   | `devnet` or `mainnet-beta`. Used to automatically derive market accounts to subscribe to if they're not explicitly set | Yes | |
-| perpMarketIndexes   | Which perp markets accounts to subscribe to. | Yes | Derived based on env|
-| spotMarketIndexes   | Which spot markets accounts to subscribe to. | Yes | Derived based on env|
-| oracleInfos   | Which oracles accounts to subscribe to. | Yes | Derived based on env|
-| accountSubscription   | Whether to use websocket or polling to subscribe to on-chain accounts e.g. markets, users, oracle.| Yes | Websockets |
-| opts   | Transaction confirmation status options | Yes | {preflightCommitment: "processed", commitment: "processed"} |
-| activeSubAccountId   | Which sub account to use initially | Yes | 0 |
-| subAccountIds   | All the sub account ids to subscribe to. If this and authoritySubAccountMap are empty, subscribes to all sub account ids. | Yes | [] |
-| authority   | Which user account authority you're signing for. Only set if you're signing for delegated account. | Yes | wallet.publicKey |
-| authoritySubAccountMap   | Map of authority to sub account ids to subscribe to. Only necessary if using multiple delegate accounts. If this and subAccountIds are empty, subscribes to all sub account ids. | Yes | {} |
-| includeDelegates   | Whether or not to subscribe to delegates when subAccountIds and authoritySubAccountMap are empty | Yes | false |
-| userStats   | Whether or not to listen subscribe to user stats account. | Yes | false |
 
+| Parameter              | Description                                                                                                                                                                      | Optional | Default                                                     |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------- |
+| connection             | Connection object specifying solana rpc url                                                                                                                                      | No       |                                                             |
+| wallet                 | The wallet used to sign transactions sent to solana blockchain                                                                                                                   | No       |                                                             |
+| programId              | Drift program id                                                                                                                                                                 | Yes      | dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH                 |
+| env                    | `devnet` or `mainnet-beta`. Used to automatically derive market accounts to subscribe to if they're not explicitly set                                                           | Yes      |                                                             |
+| perpMarketIndexes      | Which perp markets accounts to subscribe to.                                                                                                                                     | Yes      | Derived based on env                                        |
+| spotMarketIndexes      | Which spot markets accounts to subscribe to.                                                                                                                                     | Yes      | Derived based on env                                        |
+| oracleInfos            | Which oracles accounts to subscribe to.                                                                                                                                          | Yes      | Derived based on env                                        |
+| accountSubscription    | Whether to use websocket or polling to subscribe to on-chain accounts e.g. markets, users, oracle.                                                                               | Yes      | Websockets                                                  |
+| opts                   | Transaction confirmation status options                                                                                                                                          | Yes      | {preflightCommitment: "processed", commitment: "processed"} |
+| activeSubAccountId     | Which sub account to use initially                                                                                                                                               | Yes      | 0                                                           |
+| subAccountIds          | All the sub account ids to subscribe to. If this and authoritySubAccountMap are empty, subscribes to all sub account ids.                                                        | Yes      | []                                                          |
+| authority              | Which user account authority you're signing for. Only set if you're signing for delegated account.                                                                               | Yes      | wallet.publicKey                                            |
+| authoritySubAccountMap | Map of authority to sub account ids to subscribe to. Only necessary if using multiple delegate accounts. If this and subAccountIds are empty, subscribes to all sub account ids. | Yes      | {}                                                          |
+| includeDelegates       | Whether or not to subscribe to delegates when subAccountIds and authoritySubAccountMap are empty                                                                                 | Yes      | false                                                       |
+| userStats              | Whether or not to listen subscribe to user stats account.                                                                                                                        | Yes      | false                                                       |
 
 ### Python
-| Parameter             | Description                                                                                     | Optional | Default                         |
-| --------------------- | ----------------------------------------------------------------------------------------------- | -------- | ------------------------------- |
-| connection            | AsyncClient connection to the Solana cluster                                                    | No       |                                 |
-| wallet                | Wallet object, can be Keypair or Wallet type                                                    | No       |                                 |
-| env                   | Drift environment, 'devnet' or 'mainnet'                                                        | Yes      | "mainnet"                       |
-| program_id            | Drift program identifier                                                                        | Yes      | DRIFT_PROGRAM_ID                |
-| opts                  | Options for transaction confirmation status                                                     | Yes      | DEFAULT_TX_OPTIONS              |
-| authority             | Public key of the user account authority                                                        | Yes      | None                            |
-| account_subscription  | Configuration for account subscriptions (websockets/polling)                                    | Yes      | AccountSubscriptionConfig.default() |
-| perp_market_indexes   | List of perpetual market indexes to interact with                                               | Yes      | None                            |
-| spot_market_indexes   | List of spot market indexes to interact with                                                    | Yes      | None                            |
-| oracle_infos          | List of OracleInfo objects for market data                                                      | Yes      | None                            |
-| tx_params             | Additional parameters for transactions                                                          | Yes      | None                            |
-| tx_version            | Version of the transaction                                                                      | Yes      | None                            |
-| tx_sender             | Object handling the sending of transactions                                                     | Yes      | None                            |
-| active_sub_account_id | ID of the initially active sub-account                                                          | Yes      | None                            |
-| sub_account_ids       | List of sub-account IDs to subscribe to                                                         | Yes      | None                            |
-| market_lookup_table   | Public key for the market lookup table                                                          | Yes      | None                            |
 
+| Parameter             | Description                                                  | Optional | Default                             |
+| --------------------- | ------------------------------------------------------------ | -------- | ----------------------------------- |
+| connection            | AsyncClient connection to the Solana cluster                 | No       |                                     |
+| wallet                | Wallet object, can be Keypair or Wallet type                 | No       |                                     |
+| env                   | Drift environment, 'devnet' or 'mainnet'                     | Yes      | "mainnet"                           |
+| program_id            | Drift program identifier                                     | Yes      | DRIFT_PROGRAM_ID                    |
+| opts                  | Options for transaction confirmation status                  | Yes      | DEFAULT_TX_OPTIONS                  |
+| authority             | Public key of the user account authority                     | Yes      | None                                |
+| account_subscription  | Configuration for account subscriptions (websockets/polling) | Yes      | AccountSubscriptionConfig.default() |
+| perp_market_indexes   | List of perpetual market indexes to interact with            | Yes      | None                                |
+| spot_market_indexes   | List of spot market indexes to interact with                 | Yes      | None                                |
+| oracle_infos          | List of OracleInfo objects for market                        | Yes      | None                                |
+| tx_params             | Additional parameters for transactions                       | Yes      | None                                |
+| tx_version            | Version of the transaction                                   | Yes      | None                                |
+| tx_sender             | Object handling the sending of transactions                  | Yes      | None                                |
+| active_sub_account_id | ID of the initially active sub-account                       | Yes      | None                                |
+| sub_account_ids       | List of sub-account IDs to subscribe to                      | Yes      | None                                |
+| market_lookup_table   | Public key for the market lookup table                       | Yes      | None                                |
 
 ## User Initialization
 
@@ -241,25 +251,26 @@ tx_sig = await drift_client.initialize_user(sub_account_id=0, name="toly")
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| subAccountId | The sub account id for the new user account.  | Yes | 0 |
-| name   | Display name for the user account    | Yes | Main Account |
-| referrerInfo   | The address of the referrer and referrer stats accounts | Yes | |
+
+| Parameter    | Description                                             | Optional | Default      |
+| ------------ | ------------------------------------------------------- | -------- | ------------ |
+| subAccountId | The sub account id for the new user account.            | Yes      | 0            |
+| name         | Display name for the user account                       | Yes      | Main Account |
+| referrerInfo | The address of the referrer and referrer stats accounts | Yes      |              |
 
 ### Python
 
-| Parameter     | Description                              | Optional | Default |
-| ------------- | ---------------------------------------- | -------- | ------- |
-| sub_account_id| The sub account id for the new user account.         | Yes      | 0       |
-| name          | Display name for the user account            | Yes      | None    |
-| referrer_info | The address of the referrer and referrer stats accounts  | Yes      | None    |
-
+| Parameter      | Description                                             | Optional | Default |
+| -------------- | ------------------------------------------------------- | -------- | ------- |
+| sub_account_id | The sub account id for the new user account.            | Yes      | 0       |
+| name           | Display name for the user account                       | Yes      | None    |
+| referrer_info  | The address of the referrer and referrer stats accounts | Yes      | None    |
 
 Sub account ids are monotonic. The first user account created will have sub account id 0, the second will have sub account id 1, etc.
 The next sub account id can be found by calling `driftClient.getNextSubAccountId()` in TypeScript.
 
 ## Updating User
+
 Users accounts can update names, set custom max intial margin ratio, enable margin trading, and add a delegate account.
 
 ```typescript
@@ -267,30 +278,23 @@ const subaccountId = 0;
 
 // set max 1x intiial leverage
 await driftClient.updateUserCustomMarginRatio([
-    {
-        'marginRatio': MARGIN_PRECISION,
-        'subAccountId': subaccountId
-    }
+  {
+    marginRatio: MARGIN_PRECISION,
+    subAccountId: subaccountId,
+  },
 ]);
 
 // enable spot margin trading
-await driftClient.updateUserMarginTradingEnabled(
-  true,
-  subaccountId
-);
+await driftClient.updateUserMarginTradingEnabled(true, subaccountId);
 
 // add a delegate this user account
-await driftClient.updateUserDelegate(
-  new PublicKey('satoshi'),
-  subaccountId
-);
+await driftClient.updateUserDelegate(new PublicKey("satoshi"), subaccountId);
 ```
 
 ## Switching Sub Accounts
+
 ```typescript
-driftClient.switchActiveUser(
-  1,
-);
+driftClient.switchActiveUser(1);
 ```
 
 ```python
@@ -298,31 +302,33 @@ drift_client.switch_active_user(sub_account_id=1)
 ```
 
 <<<<<<< HEAD
+
 ### TypeScript
+
 =======
+
 ```shell
 curl http://localhost:8080/v2/resource?subAccountId=1
 ```
 
->>>>>>> upstream/main
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| subAccountId | The sub account to switch to  | No | 0 |
-| authority   | The authority of the sub account you're signing for. Only needed for delegate accounts | Yes | Current authority |
+> > > > > > > upstream/main
+> > > > > > > | Parameter | Description | Optional | Default |
+> > > > > > > | ----------- | ----------- | -------- | ------- |
+> > > > > > > | subAccountId | The sub account to switch to | No | 0 |
+> > > > > > > | authority | The authority of the sub account you're signing for. Only needed for delegate accounts | Yes | Current authority |
 
 ### Python
-| Parameter     | Description                                   | Optional | Default |
-| ------------- | --------------------------------------------- | -------- | ------- |
-| sub_account_id| Identifier for the sub-account to be activated| No       |         |
 
+| Parameter      | Description                                    | Optional | Default |
+| -------------- | ---------------------------------------------- | -------- | ------- |
+| sub_account_id | Identifier for the sub-account to be activated | No       |         |
 
 ## Deleting User Account
+
 If an account contains no assets or liabilites, a user account can be deleted to reclaim rent.
 
 ```typescript
-driftClient.deleteUser(
-  1,
-);
+driftClient.deleteUser(1);
 ```
 
 ## Depositing
@@ -330,13 +336,11 @@ driftClient.deleteUser(
 ```typescript
 const marketIndex = 0; // USDC
 const amount = driftClient.convertToSpotPrecision(marketIndex, 100); // $100
-const associatedTokenAccount = await driftClient.getAssociatedTokenAccount(marketIndex);
-
-await driftClient.deposit(
-  amount,
-  marketIndex,
-  associatedTokenAccount,
+const associatedTokenAccount = await driftClient.getAssociatedTokenAccount(
+  marketIndex
 );
+
+await driftClient.deposit(amount, marketIndex, associatedTokenAccount);
 ```
 
 ```python
@@ -348,38 +352,36 @@ tx_sig = await drift_client.deposit(amount, spot_market_index)
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| amount | The amount to deposit in spot market's token mint precision  | No | |
-| marketIndex   | The spot market index you're depositing into | No | |
-| associatedTokenAccount   | The public key of the token account you're depositing from. For sol, it can be the wallet's public key | No | |
-| subAccountId | The sub account you're depositing to  | Yes | active sub account |
-| reduceOnly | Whether the deposit should only reduce borrow  | Yes | false |
 
+| Parameter              | Description                                                                                            | Optional | Default            |
+| ---------------------- | ------------------------------------------------------------------------------------------------------ | -------- | ------------------ |
+| amount                 | The amount to deposit in spot market's token mint precision                                            | No       |                    |
+| marketIndex            | The spot market index you're depositing into                                                           | No       |                    |
+| associatedTokenAccount | The public key of the token account you're depositing from. For sol, it can be the wallet's public key | No       |                    |
+| subAccountId           | The sub account you're depositing to                                                                   | Yes      | active sub account |
+| reduceOnly             | Whether the deposit should only reduce borrow                                                          | Yes      | false              |
 
 ### Python
-| Parameter           | Description                                                                 | Optional | Default               |
-| ------------------- | --------------------------------------------------------------------------- | -------- | --------------------- |
-| amount              | The amount to deposit in the spot market's token mint precision             | No       |                       |
-| spot_market_index   | The index of the spot market where the deposit is made                      | No       |                       |
-| user_token_account  | The public key of the token account from which you are depositing           | Yes      | None (will derive ATA)|
-| sub_account_id      | The sub account to which the deposit is being made                          | Yes      | Active sub-account    |
-| reduce_only         | Whether the deposit should only reduce borrow                               | Yes      | false                 |
-| user_initialized    | Indicates if the user is already initialized (used internally, typically)   | Yes      | true                  |
 
+| Parameter          | Description                                                               | Optional | Default                |
+| ------------------ | ------------------------------------------------------------------------- | -------- | ---------------------- |
+| amount             | The amount to deposit in the spot market's token mint precision           | No       |                        |
+| spot_market_index  | The index of the spot market where the deposit is made                    | No       |                        |
+| user_token_account | The public key of the token account from which you are depositing         | Yes      | None (will derive ATA) |
+| sub_account_id     | The sub account to which the deposit is being made                        | Yes      | Active sub-account     |
+| reduce_only        | Whether the deposit should only reduce borrow                             | Yes      | false                  |
+| user_initialized   | Indicates if the user is already initialized (used internally, typically) | Yes      | true                   |
 
 ## Withdrawing
 
 ```typescript
 const marketIndex = 0;
 const amount = driftClient.convertToSpotPrecision(marketIndex, 100);
-const associatedTokenAccount = await driftClient.getAssociatedTokenAccount(marketIndex);
-
-await driftClient.withdraw(
-  amount,
-  marketIndex,
-  associatedTokenAccount,
+const associatedTokenAccount = await driftClient.getAssociatedTokenAccount(
+  marketIndex
 );
+
+await driftClient.withdraw(amount, marketIndex, associatedTokenAccount);
 ```
 
 ```python
@@ -394,22 +396,23 @@ tx_sig = await drift_client.withdraw(amount, spot_market_index, ata_to_withdraw_
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| amount | The amount to withdraw in spot market's token mint precision  | No | |
-| marketIndex   | The spot market index you're withdrawing from | No | |
-| associatedTokenAccount   | The public key of the token account you're withdrawing to. For sol, it can be the wallet's public key | No | |
-| reduceOnly | Whether the withdraw should only decrease a deposit and block a new borrow | Yes | false |
+
+| Parameter              | Description                                                                                           | Optional | Default |
+| ---------------------- | ----------------------------------------------------------------------------------------------------- | -------- | ------- |
+| amount                 | The amount to withdraw in spot market's token mint precision                                          | No       |         |
+| marketIndex            | The spot market index you're withdrawing from                                                         | No       |         |
+| associatedTokenAccount | The public key of the token account you're withdrawing to. For sol, it can be the wallet's public key | No       |         |
+| reduceOnly             | Whether the withdraw should only decrease a deposit and block a new borrow                            | Yes      | false   |
 
 ### Python
-| Parameter           | Description                                                                 | Optional | Default |
-| ------------------- | --------------------------------------------------------------------------- | -------- | ------- |
-| amount              | The amount to withdraw in the spot market's token mint precision             | No       |         |
-| market_index        | The index of the spot market from which the withdrawal is made               | No       |         |
-| user_token_account  | The public key of the token account to which you are withdrawing             | No       |         |
-| reduce_only         | Whether the withdrawal should only decrease a deposit, blocking new borrows | Yes      | false   |
-| sub_account_id      | The sub account from which the withdrawal is made                            | Yes      | None    |
 
+| Parameter          | Description                                                                 | Optional | Default |
+| ------------------ | --------------------------------------------------------------------------- | -------- | ------- |
+| amount             | The amount to withdraw in the spot market's token mint precision            | No       |         |
+| market_index       | The index of the spot market from which the withdrawal is made              | No       |         |
+| user_token_account | The public key of the token account to which you are withdrawing            | No       |         |
+| reduce_only        | Whether the withdrawal should only decrease a deposit, blocking new borrows | Yes      | false   |
+| sub_account_id     | The sub account from which the withdrawal is made                           | Yes      | None    |
 
 Withdrawing can lead to a borrow if the user has no deposits in the market and the user has enough margin to cover it.
 
@@ -425,7 +428,7 @@ await driftClient.transferDeposit(
   amount,
   marketIndex,
   fromSubAccountId,
-  toSubAccountId,
+  toSubAccountId
 );
 ```
 
@@ -448,88 +451,93 @@ await drift_client.transfer_deposit(
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| amount | The amount to transfer in spot market's token mint precision  | No | |
-| marketIndex   | The spot market index you're transferring deposits in | No | |
-| fromSubAccountId | The sub account you're withdrawing from  | No | |
-| toSubAccountId | The sub account you're depositing too  | No | |
+
+| Parameter        | Description                                                  | Optional | Default |
+| ---------------- | ------------------------------------------------------------ | -------- | ------- |
+| amount           | The amount to transfer in spot market's token mint precision | No       |         |
+| marketIndex      | The spot market index you're transferring deposits in        | No       |         |
+| fromSubAccountId | The sub account you're withdrawing from                      | No       |         |
+| toSubAccountId   | The sub account you're depositing too                        | No       |         |
 
 ### Python
-| Parameter           | Description                                           | Optional | Default |
-| ------------------- | ----------------------------------------------------- | -------- | ------- |
-| amount              | The amount to transfer in the spot market's token mint precision | No | |
-| market_index        | The spot market index you're transferring deposits in | No | |
-| from_sub_account_id | The sub account from which the funds are withdrawn    | No | |
-| to_sub_account_id   | The sub account to which the funds are deposited      | No | |
+
+| Parameter           | Description                                                      | Optional | Default |
+| ------------------- | ---------------------------------------------------------------- | -------- | ------- |
+| amount              | The amount to transfer in the spot market's token mint precision | No       |         |
+| market_index        | The spot market index you're transferring deposits in            | No       |         |
+| from_sub_account_id | The sub account from which the funds are withdrawn               | No       |         |
+| to_sub_account_id   | The sub account to which the funds are deposited                 | No       |         |
 
 ## Order Types
 
 ### TypeScript
+
 MARKET, LIMIT, ORACLE orders all support auction parameters.
 
-| Type	| Description |
-| ----- | ----------- |
-| MARKET |	Market order. |
-| LIMIT |	Limit order. |
-| TRIGGER_MARKET |	Stop / Take-profit market order. |
-| TRIGGER_LIMIT |	 Stop / Take-profit limit order. |
-| ORACLE	| Market order using oracle offset for auction parameters. |
+| Type           | Description                                              |
+| -------------- | -------------------------------------------------------- |
+| MARKET         | Market order.                                            |
+| LIMIT          | Limit order.                                             |
+| TRIGGER_MARKET | Stop / Take-profit market order.                         |
+| TRIGGER_LIMIT  | Stop / Take-profit limit order.                          |
+| ORACLE         | Market order using oracle offset for auction parameters. |
 
 ### Python
+
 Market(), Limit(), Oracle() orders all support auction parameters.
 
-| Type	| Description |
-| ----- | ----------- |
-| Market() |	Market order. |
-| Limit() |	Limit order. |
-| TriggerMarket() |	Stop / Take-profit market order. |
-| TriggerLimit() |	 Stop / Take-profit limit order. |
-| Oracle()	| Market order using oracle offset for auction parameters. |
+| Type            | Description                                              |
+| --------------- | -------------------------------------------------------- |
+| Market()        | Market order.                                            |
+| Limit()         | Limit order.                                             |
+| TriggerMarket() | Stop / Take-profit market order.                         |
+| TriggerLimit()  | Stop / Take-profit limit order.                          |
+| Oracle()        | Market order using oracle offset for auction parameters. |
 
 ## Order Params
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| orderType | The type of order e.g. market, limit  | No | |
-| marketIndex | The market to place order in  | No | |
-| direction | The direction of order e.g. long (bid) or short (ask)  | No | |
-| baseAssetAmount | The amount of base asset to buy or sell  | No | |
-| marketType | The type of market order is for e.g. PERP or SPOT  | Yes | Depends on method |
-| price | The limit price for order | Yes | 0 |
-| userOrderId | Unique order id specified by user| Yes | 0 |
-| reduceOnly | If the order can only reduce positions| Yes | false |
-| postOnly | If the order can only be a maker | PostOnlyParam | None |
-| triggerPrice | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders | Yes | |
-| triggerCondition | whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders | Yes | |
-| oraclePriceOffset | priceOffset for oracle derived limit price. only applicable for limit and oracle orders  | Yes | |
-| auctionDuration | how many slots the auction lasts. only applicable for market and oracle orders | Yes | |
-| auctionStartPrice | the price the auction starts at | Yes | |
-| auctionEndPrice | the price the auction ends at | Yes | |
-| maxTs | the max timestamp (on-chain unix timestamp) before the order expires | Yes | |
+
+| Parameter         | Description                                                                                                       | Optional      | Default           |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------- | ------------- | ----------------- |
+| orderType         | The type of order e.g. market, limit                                                                              | No            |                   |
+| marketIndex       | The market to place order in                                                                                      | No            |                   |
+| direction         | The direction of order e.g. long (bid) or short (ask)                                                             | No            |                   |
+| baseAssetAmount   | The amount of base asset to buy or sell                                                                           | No            |                   |
+| marketType        | The type of market order is for e.g. PERP or SPOT                                                                 | Yes           | Depends on method |
+| price             | The limit price for order                                                                                         | Yes           | 0                 |
+| userOrderId       | Unique order id specified by user                                                                                 | Yes           | 0                 |
+| reduceOnly        | If the order can only reduce positions                                                                            | Yes           | false             |
+| postOnly          | If the order can only be a maker                                                                                  | PostOnlyParam | None              |
+| triggerPrice      | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders                       | Yes           |                   |
+| triggerCondition  | whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders | Yes           |                   |
+| oraclePriceOffset | priceOffset for oracle derived limit price. only applicable for limit and oracle orders                           | Yes           |                   |
+| auctionDuration   | how many slots the auction lasts. only applicable for market and oracle orders                                    | Yes           |                   |
+| auctionStartPrice | the price the auction starts at                                                                                   | Yes           |                   |
+| auctionEndPrice   | the price the auction ends at                                                                                     | Yes           |                   |
+| maxTs             | the max timestamp (on-chain unix timestamp) before the order expires                                              | Yes           |                   |
 
 ### Python
-| Parameter           | Description                                           | Optional | Default                         |
-| ------------------- | ----------------------------------------------------- | -------- | ------------------------------- |
-| order_type          | Type of order                   | No       |                                 |
-| market_index        | Index of the market to place order in                 | No       |                                 |
-| direction           | Direction of the order         | No       |                                 |
-| base_asset_amount   | Amount of base asset to buy or sell                   | No       |                                 |
-| market_type         | Type of market                    | Yes      | Depends on method               |
-| price               | Limit price for the order                             | Yes      | 0                               |
-| user_order_id       | Unique order ID specified by user                     | Yes      | 0                               |
-| reduce_only         | Whether the order is only to reduce positions         | Yes      | false                           |
-| post_only           | If the order should only be a maker                   | Yes      | PostOnlyParams.NONE()             |
-| immediate_or_cancel | Whether the order is immediate or cancel              | Yes      | false                           |
-| max_ts              | Max timestamp for the order expiry                    | Yes      | None                            |
-| trigger_price       | Trigger price for trigger orders | Yes  | None                            |
-| trigger_condition   | Condition for triggering the order                    | Yes      | OrderTriggerCondition.Above()     |
-| oracle_price_offset | Offset for oracle-derived limit price                 | Yes      | None                            |
-| auction_duration    | Duration of the auction in slots                      | Yes      | None                            |
-| auction_start_price | Starting price of the auction                         | Yes      | None                            |
-| auction_end_price   | Ending price of the auction                           | Yes      | None                            |
 
+| Parameter           | Description                                   | Optional | Default                       |
+| ------------------- | --------------------------------------------- | -------- | ----------------------------- |
+| order_type          | Type of order                                 | No       |                               |
+| market_index        | Index of the market to place order in         | No       |                               |
+| direction           | Direction of the order                        | No       |                               |
+| base_asset_amount   | Amount of base asset to buy or sell           | No       |                               |
+| market_type         | Type of market                                | Yes      | Depends on method             |
+| price               | Limit price for the order                     | Yes      | 0                             |
+| user_order_id       | Unique order ID specified by user             | Yes      | 0                             |
+| reduce_only         | Whether the order is only to reduce positions | Yes      | false                         |
+| post_only           | If the order should only be a maker           | Yes      | PostOnlyParams.NONE()         |
+| immediate_or_cancel | Whether the order is immediate or cancel      | Yes      | false                         |
+| max_ts              | Max timestamp for the order expiry            | Yes      | None                          |
+| trigger_price       | Trigger price for trigger orders              | Yes      | None                          |
+| trigger_condition   | Condition for triggering the order            | Yes      | OrderTriggerCondition.Above() |
+| oracle_price_offset | Offset for oracle-derived limit price         | Yes      | None                          |
+| auction_duration    | Duration of the auction in slots              | Yes      | None                          |
+| auction_start_price | Starting price of the auction                 | Yes      | None                          |
+| auction_end_price   | Ending price of the auction                   | Yes      | None                          |
 
 ## Post Only Params
 
@@ -538,18 +546,16 @@ take advantage of the solana runtime. To force an order to always be a maker, us
 drift will check that an order does not cross the vamm spread, similar to how a traditional clob would check that an order doesn't cross the book's best bid/ask.
 If the post only is not used, a limit order can end up being a taker or maker.
 
-
-| Parameter   | Description |
-| ----------- | ----------- |
-| None | Does not enforce being maker |
-| MustPostOnly | Tx fails if order crosses the vamm |
-| TryPostOnly | Order is skipped (not placed) and tx succeeds if order crosses the vamm |
-| Slide | Order price is modified to be one tick below/above the vamm ask/bid |
+| Parameter    | Description                                                             |
+| ------------ | ----------------------------------------------------------------------- |
+| None         | Does not enforce being maker                                            |
+| MustPostOnly | Tx fails if order crosses the vamm                                      |
+| TryPostOnly  | Order is skipped (not placed) and tx succeeds if order crosses the vamm |
+| Slide        | Order price is modified to be one tick below/above the vamm ask/bid     |
 
 ## Placing Perp Order
 
 ```typescript
-
 // market buy for 100 SOL-PERP @ $21.20->$21.30 over 60 slots (~30 seconds)
 // after 60 slots, market buy 100 SOL-PERP @ $21.35 until maxTs
 const orderParams = {
@@ -557,12 +563,12 @@ const orderParams = {
   marketIndex: 0,
   direction: PositionDirection.LONG,
   baseAssetAmount: driftClient.convertToPerpPrecision(100),
-  auctionStartPrice: driftClient.convertToPricePrecision(21.20),
-  auctionEndPrice: driftClient.convertToPricePrecision(21.30),
+  auctionStartPrice: driftClient.convertToPricePrecision(21.2),
+  auctionEndPrice: driftClient.convertToPricePrecision(21.3),
   price: driftClient.convertToPricePrecision(21.35),
   auctionDuration: 60,
   maxTs: now + 100,
-}
+};
 await driftClient.placePerpOrder(orderParams);
 
 // bid for 100 SOL-PERP @ $21.23
@@ -572,7 +578,7 @@ const orderParams = {
   direction: PositionDirection.LONG,
   baseAssetAmount: driftClient.convertToPerpPrecision(100),
   price: driftClient.convertToPricePrecision(21.23),
-}
+};
 await driftClient.placePerpOrder(orderParams);
 
 // ask for 100 SOL-PERP @ ${OraclePrice} + .05
@@ -581,8 +587,8 @@ const orderParams = {
   marketIndex: 0,
   direction: PositionDirection.SHORT,
   baseAssetAmount: driftClient.convertToPerpPrecision(100),
-  oraclePriceOffset: driftClient.convertToPricePrecision(.05).toNumber(),
-}
+  oraclePriceOffset: driftClient.convertToPricePrecision(0.05).toNumber(),
+};
 await driftClient.placePerpOrder(orderParams);
 ```
 
@@ -622,29 +628,29 @@ localhost:8080/v2/orders
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| orderParams | The order params  | No | |
 
+| Parameter   | Description      | Optional | Default |
+| ----------- | ---------------- | -------- | ------- |
+| orderParams | The order params | No       |         |
 
 ### Python
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| order_params | The order params  | No | |
+
+| Parameter    | Description      | Optional | Default |
+| ------------ | ---------------- | -------- | ------- |
+| order_params | The order params | No       |         |
 
 The order type is set to PERP / Perp() by default.
 
 ## Placing Spot Order
 
 ```typescript
-
 const orderParams = {
   orderType: OrderType.LIMIT,
   marketIndex: 1,
   direction: PositionDirection.LONG,
   baseAssetAmount: driftClient.convertToSpotPrecision(1, 100),
   price: driftClient.convertToPricePrecision(100),
-}
+};
 
 await driftClient.placeSpotOrder(orderParams);
 ```
@@ -682,23 +688,24 @@ localhost:8080/v2/orders
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| orderParams | The order params  | No | |
+
+| Parameter   | Description      | Optional | Default |
+| ----------- | ---------------- | -------- | ------- |
+| orderParams | The order params | No       |         |
 
 ### Python
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| order_params | The order params  | No | |
+
+| Parameter    | Description      | Optional | Default |
+| ------------ | ---------------- | -------- | ------- |
+| order_params | The order params | No       |         |
 
 The order type is set to SPOT / Spot() by default.
 
 ## Placing Multiple Orders
 
 ```typescript
-
 const placeOrderParams = [
-	{
+  {
     orderType: OrderType.LIMIT,
     marketType: MarketType.PERP,
     marketIndex: 0,
@@ -712,8 +719,8 @@ const placeOrderParams = [
     marketIndex: 0,
     direction: PositionDirection.SHORT,
     baseAssetAmount: driftClient.convertToPerpPrecision(100),
-    oraclePriceOffset: driftClient.convertToPricePrecision(.05).toNumber(),
-  }
+    oraclePriceOffset: driftClient.convertToPricePrecision(0.05).toNumber(),
+  },
 ];
 
 await driftClient.placeOrders(placeOrderParams);
@@ -768,14 +775,16 @@ localhost:8080/v2/orders
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| placeOrderParams | Parameters for place order instructions | | |
+
+| Parameter        | Description                             | Optional | Default |
+| ---------------- | --------------------------------------- | -------- | ------- |
+| placeOrderParams | Parameters for place order instructions |          |         |
 
 ### Python
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| place_order_params | Parameters for place order instructions | | |
+
+| Parameter          | Description                             | Optional | Default |
+| ------------------ | --------------------------------------- | -------- | ------- |
+| place_order_params | Parameters for place order instructions |          |         |
 
 Placing multiple orders in one tx can be cheaper than placing them in separate tx.
 
@@ -797,7 +806,7 @@ const orderParams = {
   oraclePriceOffset: oraclePriceOffset,
   auctionDuration: auctionDuration,
 };
-await driftClient.placePerpOrder(orderParams)
+await driftClient.placePerpOrder(orderParams);
 ```
 
 ```python
@@ -824,7 +833,6 @@ Oracle market orders enable a user to define their auction params as an offset (
 ## Canceling Order
 
 ```typescript
-
 const orderId = 1;
 await driftClient.cancelOrder(orderId);
 ```
@@ -836,15 +844,17 @@ await drift_client.cancel_order(order_id);
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| orderId | The order being canceled  | No | |
+
+| Parameter | Description              | Optional | Default |
+| --------- | ------------------------ | -------- | ------- |
+| orderId   | The order being canceled | No       |         |
 
 ### Python
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| order_id | The order being canceled  | No | |
-| sub_account_id | Sub account to cancel order under  | Yes | None |
+
+| Parameter      | Description                       | Optional | Default |
+| -------------- | --------------------------------- | -------- | ------- |
+| order_id       | The order being canceled          | No       |         |
+| sub_account_id | Sub account to cancel order under | Yes      | None    |
 
 ```shell
 curl -X DELETE -H 'content-type: application/json' \
@@ -855,7 +865,6 @@ curl -X DELETE -H 'content-type: application/json' \
 ## Canceling Order By User Order Id
 
 ```typescript
-
 const userOrderId = 1;
 await driftClient.cancelOrderByUserOrderId(userOrderId);
 ```
@@ -873,27 +882,28 @@ curl -X DELETE -H 'content-type: application/json' \
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| userOrderId | Unique order id specified by user when order was placed  | No | |
+
+| Parameter   | Description                                             | Optional | Default |
+| ----------- | ------------------------------------------------------- | -------- | ------- |
+| userOrderId | Unique order id specified by user when order was placed | No       |         |
 
 ### Python
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| user_order_id | Unique order id specified by user when order was placed  | No | |
-| sub_account_id | Sub account to cancel orders under  | Yes | None |
+
+| Parameter      | Description                                             | Optional | Default |
+| -------------- | ------------------------------------------------------- | -------- | ------- |
+| user_order_id  | Unique order id specified by user when order was placed | No       |         |
+| sub_account_id | Sub account to cancel orders under                      | Yes      | None    |
 
 ## Cancel Orders
 
 ```typescript
-
 const marketType = MarketType.PERP;
 const marketIndex = 0;
 const direction = PositionDirection.LONG;
 await driftClient.cancelOrders(marketType, marketIndex, direction);
 ```
 
-``` python
+```python
 market_type = MarketType.Perp()
 market_index = 0
 direction = PositionDirection.Long()
@@ -909,34 +919,34 @@ curl -X DELETE -H 'content-type: application/json' \
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| marketType | The market type of orders to cancel. Must be set if marketIndex set | Yes | |
-| marketIndex | The market index of orders to cancel. Must be set if marketType set | Yes | |
-| direction | The direction of orders to cancel. | Yes | |
+
+| Parameter   | Description                                                         | Optional | Default |
+| ----------- | ------------------------------------------------------------------- | -------- | ------- |
+| marketType  | The market type of orders to cancel. Must be set if marketIndex set | Yes      |         |
+| marketIndex | The market index of orders to cancel. Must be set if marketType set | Yes      |         |
+| direction   | The direction of orders to cancel.                                  | Yes      |         |
 
 ### Python
-| Parameter     | Description                                             | Optional | Default |
-| ------------- | ------------------------------------------------------- | -------- | ------- |
-| market_type   | The market type of orders to cancel      | Yes      | None    |
-| market_index  | The market index of orders to cancel                    | Yes      | None    |
-| direction     | The direction  of orders to cancel       | Yes      | None    |
-| sub_account_id| The sub account from which to cancel orders          | Yes      | None    |
 
+| Parameter      | Description                                 | Optional | Default |
+| -------------- | ------------------------------------------- | -------- | ------- |
+| market_type    | The market type of orders to cancel         | Yes      | None    |
+| market_index   | The market index of orders to cancel        | Yes      | None    |
+| direction      | The direction of orders to cancel           | Yes      | None    |
+| sub_account_id | The sub account from which to cancel orders | Yes      | None    |
 
 To cancel all orders, do not set any parameters.
 
 ## Cancel and Place Orders
 
 ```typescript
-
 const cancelOrderParams = {
-   marketType: MarketType.PERP,
-   marketIndex: 0,
+  marketType: MarketType.PERP,
+  marketIndex: 0,
 };
 
 const placeOrderParams = [
-	{
+  {
     orderType: OrderType.LIMIT,
     marketIndex: 0,
     direction: PositionDirection.LONG,
@@ -948,8 +958,8 @@ const placeOrderParams = [
     marketIndex: 0,
     direction: PositionDirection.SHORT,
     baseAssetAmount: driftClient.convertToPerpPrecision(100),
-    oraclePriceOffset: driftClient.convertToPricePrecision(.05).toNumber(),
-  }
+    oraclePriceOffset: driftClient.convertToPricePrecision(0.05).toNumber(),
+  },
 ];
 
 await driftClient.cancelAndPlaceOrders(cancelOrderParams, placeOrderParams);
@@ -1004,67 +1014,68 @@ localhost:8080/v2/orders/cancelAndPlace
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| cancelOrderParams | Parameters for cancel orders instruction | | |
-| placeOrderParams | Parameters for place order instructions | | |
+
+| Parameter         | Description                              | Optional | Default |
+| ----------------- | ---------------------------------------- | -------- | ------- |
+| cancelOrderParams | Parameters for cancel orders instruction |          |         |
+| placeOrderParams  | Parameters for place order instructions  |          |         |
 
 ### Python
-| Parameter          | Description                                                | Optional | Default |
-| ------------------ | ---------------------------------------------------------- | -------- | ------- |
-| cancel_params      | Tuple with optional MarketType, market index, and PositionDirection for canceling orders | Yes | None |
-| place_order_params | List of OrderParams for placing new orders                 | No       |         |
-| sub_account_id     | The sub account to use          | Yes      | None    |
 
+| Parameter          | Description                                                                              | Optional | Default |
+| ------------------ | ---------------------------------------------------------------------------------------- | -------- | ------- |
+| cancel_params      | Tuple with optional MarketType, market index, and PositionDirection for canceling orders | Yes      | None    |
+| place_order_params | List of OrderParams for placing new orders                                               | No       |         |
+| sub_account_id     | The sub account to use                                                                   | Yes      | None    |
 
 To cancel all orders, do not set any parameters.
 
 ## Modify Order Params
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| orderId | The order id of order to modify  | No | |
-| baseAssetAmount | The amount of base asset to buy or sell  | Yes | |
-| direction | The direction of order e.g. long (bid) or short (ask)  | Yes | |
-| limitPrice | The limit price for order | Yes | |
-| reduceOnly | If the order can only reduce positions| Yes | |
-| postOnly | If the order can only be a maker | Yes | |
-| triggerPrice | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders | Yes | |
-| triggerCondition | whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders | Yes | |
-| oraclePriceOffset | priceOffset for oracle derived limit price. only applicable for limit and oracle orders  | Yes | |
-| auctionDuration | how many slots the auction lasts. only applicable for market and oracle orders | Yes | |
-| auctionStartPrice | the price the auction starts at | Yes | |
-| auctionEndPrice | the price the auction ends at | Yes | |
-| maxTs | the max timestamp before the order expires | Yes | |
+
+| Parameter         | Description                                                                                                       | Optional | Default |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| orderId           | The order id of order to modify                                                                                   | No       |         |
+| baseAssetAmount   | The amount of base asset to buy or sell                                                                           | Yes      |         |
+| direction         | The direction of order e.g. long (bid) or short (ask)                                                             | Yes      |         |
+| limitPrice        | The limit price for order                                                                                         | Yes      |         |
+| reduceOnly        | If the order can only reduce positions                                                                            | Yes      |         |
+| postOnly          | If the order can only be a maker                                                                                  | Yes      |         |
+| triggerPrice      | at what price order is triggered. only applicable for triggerMarket and triggerLimit orders                       | Yes      |         |
+| triggerCondition  | whether order is triggered above or below triggerPrice. only applicable for triggerMarket and triggerLimit orders | Yes      |         |
+| oraclePriceOffset | priceOffset for oracle derived limit price. only applicable for limit and oracle orders                           | Yes      |         |
+| auctionDuration   | how many slots the auction lasts. only applicable for market and oracle orders                                    | Yes      |         |
+| auctionStartPrice | the price the auction starts at                                                                                   | Yes      |         |
+| auctionEndPrice   | the price the auction ends at                                                                                     | Yes      |         |
+| maxTs             | the max timestamp before the order expires                                                                        | Yes      |         |
 
 ### Python
-| Parameter          | Description                                                                 | Optional | Default |
-| ------------------ | --------------------------------------------------------------------------- | -------- | ------- |
-| direction          | The direction of the order                          | Yes      | None    |
-| base_asset_amount  | Amount of base asset to buy or sell                                         | Yes      | None    |
-| price              | Limit price for the order                                                   | Yes      | None    |
-| reduce_only        | If the order should only reduce positions                                  | Yes      | None    |
-| post_only          | If the order should only be a maker order                                   | Yes      | None    |
-| immediate_or_cancel| Whether the order is immediate or cancel                                    | Yes      | None    |
-| max_ts             | Max timestamp for order expiry                                              | Yes      | None    |
-| trigger_price      | Trigger price for trigger orders                     | Yes      | None    |
-| trigger_condition  | Condition for triggering the order                                          | Yes      | None    |
-| oracle_price_offset| Offset for oracle-derived limit price                                       | Yes      | None    |
-| auction_duration   | Duration of the auction in slots                                            | Yes      | None    |
-| auction_start_price| Starting price of the auction                                               | Yes      | None    |
-| auction_end_price  | Ending price of the auction                                                 | Yes      | None    |
-| policy             | Policy for modifying the order                                              | Yes      | None    |
 
+| Parameter           | Description                               | Optional | Default |
+| ------------------- | ----------------------------------------- | -------- | ------- |
+| direction           | The direction of the order                | Yes      | None    |
+| base_asset_amount   | Amount of base asset to buy or sell       | Yes      | None    |
+| price               | Limit price for the order                 | Yes      | None    |
+| reduce_only         | If the order should only reduce positions | Yes      | None    |
+| post_only           | If the order should only be a maker order | Yes      | None    |
+| immediate_or_cancel | Whether the order is immediate or cancel  | Yes      | None    |
+| max_ts              | Max timestamp for order expiry            | Yes      | None    |
+| trigger_price       | Trigger price for trigger orders          | Yes      | None    |
+| trigger_condition   | Condition for triggering the order        | Yes      | None    |
+| oracle_price_offset | Offset for oracle-derived limit price     | Yes      | None    |
+| auction_duration    | Duration of the auction in slots          | Yes      | None    |
+| auction_start_price | Starting price of the auction             | Yes      | None    |
+| auction_end_price   | Ending price of the auction               | Yes      | None    |
+| policy              | Policy for modifying the order            | Yes      | None    |
 
 ## Modifying Order
 
 ```typescript
-
 const updateParams = {
   orderId: 1,
   newBaseAssetAmount: driftClient.convertToPerpPrecision(200),
-}
+};
 
 await driftClient.modifyOrder(orderParams);
 ```
@@ -1094,18 +1105,19 @@ localhost:8080/v2/orders
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| orderId | The order id of order to modify  | No | |
-| modifyOrderParams | The modify order params  | Yes | |
+
+| Parameter         | Description                     | Optional | Default |
+| ----------------- | ------------------------------- | -------- | ------- |
+| orderId           | The order id of order to modify | No       |         |
+| modifyOrderParams | The modify order params         | Yes      |         |
 
 ### Python
-| Parameter           | Description                              | Optional | Default |
-| ------------------- | ---------------------------------------- | -------- | ------- |
-| order_id            | The order ID of the order to modify      | No       |         |
-| modify_order_params | The parameters for modifying the order   | No       |         |
-| sub_account_id      | The sub account to use       | Yes      | None    |
 
+| Parameter           | Description                            | Optional | Default |
+| ------------------- | -------------------------------------- | -------- | ------- |
+| order_id            | The order ID of the order to modify    | No       |         |
+| modify_order_params | The parameters for modifying the order | No       |         |
+| sub_account_id      | The sub account to use                 | Yes      | None    |
 
 Modify cancels and places a new order
 
@@ -1114,11 +1126,10 @@ For typescript, the orderId and modifyOrderParams are merged into a single objec
 ## Modifying Order By User Order Id
 
 ```typescript
-
 const updateParams = {
   userOrderId: 1,
   newBaseAssetAmount: driftClient.convertToPerpPrecision(200),
-}
+};
 
 await driftClient.modifyOrderByUserOrderId(orderParams);
 ```
@@ -1148,17 +1159,19 @@ localhost:8080/v2/orders
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| userOrderId | The user order id of order to modify  | No | |
-| modifyOrderParams | The modify order params  | Yes | |
+
+| Parameter         | Description                          | Optional | Default |
+| ----------------- | ------------------------------------ | -------- | ------- |
+| userOrderId       | The user order id of order to modify | No       |         |
+| modifyOrderParams | The modify order params              | Yes      |         |
 
 ### Python
-| Parameter            | Description                                        | Optional | Default |
-| -------------------- | -------------------------------------------------- | -------- | ------- |
-| user_order_id        | The user order ID of the order to modify           | No       |         |
-| modify_order_params  | The parameters for modifying the order             | No       |         |
-| sub_account_id       | The sub-account ID associated with the order       | Yes      | None    |
+
+| Parameter           | Description                                  | Optional | Default |
+| ------------------- | -------------------------------------------- | -------- | ------- |
+| user_order_id       | The user order ID of the order to modify     | No       |         |
+| modify_order_params | The parameters for modifying the order       | No       |         |
+| sub_account_id      | The sub-account ID associated with the order | Yes      | None    |
 
 Modify cancels and places a new order
 
@@ -1168,11 +1181,11 @@ For typescript, the userOrderId and modifyOrderParams are merged into a single o
 
 ```typescript
 const marketIndex = 0;
-const user =  driftClient.getUser();
+const user = driftClient.getUser();
 await driftClient.settlePNL(
-   user.userAccountPublicKey,
-   user.getUserAccount(),
-   marketIndex
+  user.userAccountPublicKey,
+  user.getUserAccount(),
+  marketIndex
 );
 ```
 
@@ -1187,18 +1200,20 @@ await drift_client.settle_pnl(
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| settleeUserAccountPublicKey | User address you're settling pnl for | No | |
-| settleeUserAccount | User account data you're settling pnl for | No | |
-| marketIndex | Market index for the perp market  | No | |
+
+| Parameter                   | Description                               | Optional | Default |
+| --------------------------- | ----------------------------------------- | -------- | ------- |
+| settleeUserAccountPublicKey | User address you're settling pnl for      | No       |         |
+| settleeUserAccount          | User account data you're settling pnl for | No       |         |
+| marketIndex                 | Market index for the perp market          | No       |         |
 
 ### Python
-| Parameter                          | Description                                     | Optional | Default |
-| ---------------------------------- | ----------------------------------------------- | -------- | ------- |
-| settlee_user_account_public_key    | Public key of the user account to settle PNL for| No       |         |
-| settlee_user_account               | User account data for PNL settlement            | No       |         |
-| market_index                       | Index of the perpetual market for PNL settlement| No       |         |
+
+| Parameter                       | Description                                      | Optional | Default |
+| ------------------------------- | ------------------------------------------------ | -------- | ------- |
+| settlee_user_account_public_key | Public key of the user account to settle PNL for | No       |         |
+| settlee_user_account            | User account data for PNL settlement             | No       |         |
+| market_index                    | Index of the perpetual market for PNL settlement | No       |         |
 
 ## Get Spot Market Account
 
@@ -1214,15 +1229,16 @@ spot_market_account = drift_client.get_spot_market_account(market_index);
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| marketIndex | The market index for the spot market | No | |
+
+| Parameter   | Description                          | Optional | Default |
+| ----------- | ------------------------------------ | -------- | ------- |
+| marketIndex | The market index for the spot market | No       |         |
 
 ### Python
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| market_index | The market index for the spot market | No | |
 
+| Parameter    | Description                          | Optional | Default |
+| ------------ | ------------------------------------ | -------- | ------- |
+| market_index | The market index for the spot market | No       |         |
 
 ## Get Perp Market Account
 
@@ -1238,22 +1254,23 @@ perp_market_account = drift_client.get_perp_market_account(market_index);
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| marketIndex | The market index for the perp market | No | |
 
+| Parameter   | Description                          | Optional | Default |
+| ----------- | ------------------------------------ | -------- | ------- |
+| marketIndex | The market index for the perp market | No       |         |
 
 ### Python
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| market_index | The market index for the perp market | No | |
+
+| Parameter    | Description                          | Optional | Default |
+| ------------ | ------------------------------------ | -------- | ------- |
+| market_index | The market index for the perp market | No       |         |
 
 # User
 
 ## Get User
 
 ```typescript
-   const user = driftClient.getUser();
+const user = driftClient.getUser();
 ```
 
 ```python
@@ -1261,24 +1278,24 @@ perp_market_account = drift_client.get_perp_market_account(market_index);
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| subAccountId | The sub account id of user to get  | Yes | active sub account |
-| authority | The authority of user to get. Only necessary if using multiple delegate accounts | Yes | current authority |
+
+| Parameter    | Description                                                                      | Optional | Default            |
+| ------------ | -------------------------------------------------------------------------------- | -------- | ------------------ |
+| subAccountId | The sub account id of user to get                                                | Yes      | active sub account |
+| authority    | The authority of user to get. Only necessary if using multiple delegate accounts | Yes      | current authority  |
 
 ### Python
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| sub_account_id | The sub account id of user to get  | Yes | active sub account |
+
+| Parameter      | Description                       | Optional | Default            |
+| -------------- | --------------------------------- | -------- | ------------------ |
+| sub_account_id | The sub account id of user to get | Yes      | active sub account |
 
 ## Getting Deposit/Borrow Amounts
 
 ```typescript
 const marketIndex = 0;
 
-const tokenAmount = user.getTokenAmount(
-  marketIndex,
-);
+const tokenAmount = user.getTokenAmount(marketIndex);
 
 const isDeposit = tokenAmount.gte(new BN(0));
 const isBorrow = tokenAmount.lt(new BN(0));
@@ -1301,24 +1318,25 @@ localhost:8080/v2/positions
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| marketIndex | Market index for the spot market  | No | |
+
+| Parameter   | Description                      | Optional | Default |
+| ----------- | -------------------------------- | -------- | ------- |
+| marketIndex | Market index for the spot market | No       |         |
 
 ### Python
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| market_index | Market index for the spot market  | No | |
+
+| Parameter    | Description                      | Optional | Default |
+| ------------ | -------------------------------- | -------- | ------- |
+| market_index | Market index for the spot market | No       |         |
 
 If token amount is greater than 0, it is a deposit. If less than zero, it is a borrow.
 
 ## Get Perp Position
+
 ```typescript
 const marketIndex = 0;
 
-const baseAssetAmount = user.getPerpPosition(
-  marketIndex,
-)?.baseAssetAmount;
+const baseAssetAmount = user.getPerpPosition(marketIndex)?.baseAssetAmount;
 
 const isLong = baseAssetAmount.gte(new BN(0));
 const isShort = baseAssetAmount.lt(new BN(0));
@@ -1343,25 +1361,25 @@ localhost:8080/v2/positions
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| marketIndex | Market index for the perp market  | No | |
 
+| Parameter   | Description                      | Optional | Default |
+| ----------- | -------------------------------- | -------- | ------- |
+| marketIndex | Market index for the perp market | No       |         |
 
 ### Python
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| market_index | Market index for the perp market  | No | |
+
+| Parameter    | Description                      | Optional | Default |
+| ------------ | -------------------------------- | -------- | ------- |
+| market_index | Market index for the perp market | No       |         |
 
 If base amount is greater than 0, it is a long. If less than zero, it is a short.
 
 ## Get Order
+
 ```typescript
 const orderId = 1;
 
-const order = user.getOrder(
-  orderId,
-);
+const order = user.getOrder(orderId);
 ```
 
 ```python
@@ -1371,22 +1389,23 @@ order = user.get_order(order_id)
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| orderId | Order id for the order you're getting | No | |
+
+| Parameter | Description                           | Optional | Default |
+| --------- | ------------------------------------- | -------- | ------- |
+| orderId   | Order id for the order you're getting | No       |         |
 
 ### Python
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| order_id | Order id for the order you're getting | No | |
+
+| Parameter | Description                           | Optional | Default |
+| --------- | ------------------------------------- | -------- | ------- |
+| order_id  | Order id for the order you're getting | No       |         |
 
 ## Get Order By User Order Id
+
 ```typescript
 const userOrderId = 1;
 
-const order = user.getOrderByUserOrderId(
-  userOrderId,
-);
+const order = user.getOrderByUserOrderId(userOrderId);
 ```
 
 ```python
@@ -1396,16 +1415,19 @@ order = user.get_order_by_user_order_id(user_order_id)
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| userOrderId | User order id for the order you're getting | No | |
+
+| Parameter   | Description                                | Optional | Default |
+| ----------- | ------------------------------------------ | -------- | ------- |
+| userOrderId | User order id for the order you're getting | No       |         |
 
 ### Python
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| user_order_id | User order id for the order you're getting | No | |
+
+| Parameter     | Description                                | Optional | Default |
+| ------------- | ------------------------------------------ | -------- | ------- |
+| user_order_id | User order id for the order you're getting | No       |         |
 
 ## Get Open Orders
+
 ```typescript
 const orders = user.getOpenOrders();
 ```
@@ -1420,186 +1442,197 @@ curl localhost:8080/v2/orders
 
 ## Get Unrealized Perp Pnl
 
-  ```typescript
-  const pnl = user.getUnrealizedPNL();
-  ```
+```typescript
+const pnl = user.getUnrealizedPNL();
+```
 
-  ```python
-  pnl = user.get_unrealized_pnl()
-  ```
+```python
+pnl = user.get_unrealized_pnl()
+```
 
 ### TypeScript
-| Parameter               | Description                                          | Optional | Default |
-| ----------------------- | ---------------------------------------------------- | -------- | ------- |
-| withFunding             | Whether to include unsettled funding payments       | Yes      | false   |
-| marketIndex             | Index of a specific market for PNL calculation       | Yes      |         |
-| withWeightMarginCategory| To include margin category weighting in PNL calculation | Yes   |         |
-| strict                  | Whether the calculation should be strict             | Yes      | false   |
 
+| Parameter                | Description                                             | Optional | Default |
+| ------------------------ | ------------------------------------------------------- | -------- | ------- |
+| withFunding              | Whether to include unsettled funding payments           | Yes      | false   |
+| marketIndex              | Index of a specific market for PNL calculation          | Yes      |         |
+| withWeightMarginCategory | To include margin category weighting in PNL calculation | Yes      |         |
+| strict                   | Whether the calculation should be strict                | Yes      | false   |
 
 ### Python
-| Parameter               | Description                                          | Optional | Default |
-| ----------------------- | ---------------------------------------------------- | -------- | ------- |
-| with_funding             | Whether to include unsettled funding payments       | Yes      | false   |
-| market_index             | Index of a specific market for PNL calculation       | Yes      |         |
-| with_weight_margin_category| To include margin category weighting in PNL calculation | Yes   |         |
-| strict                  | Whether the calculation should be strict             | Yes      | false   |
 
+| Parameter                   | Description                                             | Optional | Default |
+| --------------------------- | ------------------------------------------------------- | -------- | ------- |
+| with_funding                | Whether to include unsettled funding payments           | Yes      | false   |
+| market_index                | Index of a specific market for PNL calculation          | Yes      |         |
+| with_weight_margin_category | To include margin category weighting in PNL calculation | Yes      |         |
+| strict                      | Whether the calculation should be strict                | Yes      | false   |
 
 ## Get Unrealized Funding Pnl
 
-  ```typescript
-  const pnl = user.getUnrealizedFundingPNL();
-  ```
+```typescript
+const pnl = user.getUnrealizedFundingPNL();
+```
 
-  ```python
-  pnl = user.get_unrealized_funding_pnl()
-  ```
+```python
+pnl = user.get_unrealized_funding_pnl()
+```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| marketIndex | Whether to only return pnl for specific market  | Yes | |
+
+| Parameter   | Description                                    | Optional | Default |
+| ----------- | ---------------------------------------------- | -------- | ------- |
+| marketIndex | Whether to only return pnl for specific market | Yes      |         |
 
 ### Python
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| market_index | Whether to only return pnl for specific market  | Yes | |
+
+| Parameter    | Description                                    | Optional | Default |
+| ------------ | ---------------------------------------------- | -------- | ------- |
+| market_index | Whether to only return pnl for specific market | Yes      |         |
 
 ## Get Total Collateral
 
-  ```typescript
-  const totalCollateral = user.getTotalCollateral();
-  ```
+```typescript
+const totalCollateral = user.getTotalCollateral();
+```
 
-  ```python
-  total_collateral = user.get_total_collateral()
-  ```
+```python
+total_collateral = user.get_total_collateral()
+```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| marginCategory | Initial or Maintenance  | Yes | Initial |
-| strict                  | Whether the calculation should be strict             | Yes      | false   |
+
+| Parameter      | Description                              | Optional | Default |
+| -------------- | ---------------------------------------- | -------- | ------- |
+| marginCategory | Initial or Maintenance                   | Yes      | Initial |
+| strict         | Whether the calculation should be strict | Yes      | false   |
 
 ### Python
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| margin_category | Initial or Maintenance  | Yes | Initial |
-| strict                  | Whether the calculation should be strict             | Yes      | false   |
+
+| Parameter       | Description                              | Optional | Default |
+| --------------- | ---------------------------------------- | -------- | ------- |
+| margin_category | Initial or Maintenance                   | Yes      | Initial |
+| strict          | Whether the calculation should be strict | Yes      | false   |
 
 Asset weights vary based on whether you're checking the initial or maintenance margin requirement. Initial is used for initial leverage extension, maintenance for determining liquidations.
 
 ## Get Margin Requirement
 
-  ```typescript
-  const marginRequirement = user.getMarginRequirement();
-  ```
+```typescript
+const marginRequirement = user.getMarginRequirement();
+```
 
-  ```python
-  margin_requirement = user.get_margin_requirement()
-  ```
+```python
+margin_requirement = user.get_margin_requirement()
+```
 
 ### TypeScript
-| Parameter        | Description                            | Optional | Default |
-| ---------------- | -------------------------------------- | -------- | ------- |
-| marginCategory   | The type of margin (Initial or Maintenance) | No   |         |
-| liquidationBuffer| Buffer value for liquidation calculation | Yes     |         |
-| strict           | Whether the calculation should be strict | Yes     | false   |
+
+| Parameter         | Description                                 | Optional | Default |
+| ----------------- | ------------------------------------------- | -------- | ------- |
+| marginCategory    | The type of margin (Initial or Maintenance) | No       |         |
+| liquidationBuffer | Buffer value for liquidation calculation    | Yes      |         |
+| strict            | Whether the calculation should be strict    | Yes      | false   |
 
 ### Python
-| Parameter        | Description                                         | Optional | Default                 |
-| ---------------- | --------------------------------------------------- | -------- | ----------------------- |
-| margin_category  | Type of margin, either Initial or Maintenance       | Yes      | MarginCategory.INITIAL  |
-| liquidation_buffer| Additional buffer value for liquidation calculation| Yes      | 0                       |
-| strict           | Whether the calculation should be strict | Yes     | False   |
 
+| Parameter          | Description                                         | Optional | Default                |
+| ------------------ | --------------------------------------------------- | -------- | ---------------------- |
+| margin_category    | Type of margin, either Initial or Maintenance       | Yes      | MarginCategory.INITIAL |
+| liquidation_buffer | Additional buffer value for liquidation calculation | Yes      | 0                      |
+| strict             | Whether the calculation should be strict            | Yes      | False                  |
 
 Liability weights (for borrows) and margin ratios (for perp positions) vary based on whether you're checking the initial or maintenance margin requirement. Initial is used for initial leverage extension, maintenance for determining liquidations.
 
 ## Get Free Collateral
 
-  ```typescript
-  const freeCollateral = user.getFreeCollateral();
-  ```
+```typescript
+const freeCollateral = user.getFreeCollateral();
+```
 
-  ```python
-  free_collateral = user.get_free_collateral()
-  ```
+```python
+free_collateral = user.get_free_collateral()
+```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| marginCategory | Initial or Maintenance  | Yes | Initial |
+
+| Parameter      | Description            | Optional | Default |
+| -------------- | ---------------------- | -------- | ------- |
+| marginCategory | Initial or Maintenance | Yes      | Initial |
 
 ### Python
-| Parameter       | Description                          | Optional | Default                 |
-| --------------- | ------------------------------------ | -------- | ----------------------- |
-| marginCategory  | Type of margin, either Initial or Maintenance | Yes | MarginCategory.INITIAL  |
 
+| Parameter      | Description                                   | Optional | Default                |
+| -------------- | --------------------------------------------- | -------- | ---------------------- |
+| marginCategory | Type of margin, either Initial or Maintenance | Yes      | MarginCategory.INITIAL |
 
 Free collateral is the difference between your total collateral and your margin requirement.
 
 ## Get Leverage
 
-  ```typescript
-  const leverage = user.getLeverage();
-  ```
+```typescript
+const leverage = user.getLeverage();
+```
 
-  ```python
-  leverage = user.get_leverage()
-  ```
+```python
+leverage = user.get_leverage()
+```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| includeOpenOrders | Whether to factor in open orders in position size  | Yes | true |
+
+| Parameter         | Description                                       | Optional | Default |
+| ----------------- | ------------------------------------------------- | -------- | ------- |
+| includeOpenOrders | Whether to factor in open orders in position size | Yes      | true    |
 
 ### Python
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| include_open_orders | Whether to factor in open orders in position size  | Yes | True |
+
+| Parameter           | Description                                       | Optional | Default |
+| ------------------- | ------------------------------------------------- | -------- | ------- |
+| include_open_orders | Whether to factor in open orders in position size | Yes      | True    |
 
 Leverage is the total liability value (borrows plus total perp position) divided by net asset value (total assets plus total liabilities)
-
 
 # Events
 
 ## Event Subscription
 
 ```typescript
-import {EventSubscriber} from "@drift-labs/sdk";
+import { EventSubscriber } from "@drift-labs/sdk";
 
 const options = {
   eventTypes: [
-    'DepositRecord',
-    'FundingPaymentRecord',
-    'LiquidationRecord',
-    'OrderRecord',
-    'OrderActionRecord',
-    'FundingRateRecord',
-    'NewUserRecord',
-    'SettlePnlRecord',
-    'LPRecord',
-    'InsuranceFundRecord',
-    'SpotInterestRecord',
-    'InsuranceFundStakeRecord',
-    'CurveRecord',
+    "DepositRecord",
+    "FundingPaymentRecord",
+    "LiquidationRecord",
+    "OrderRecord",
+    "OrderActionRecord",
+    "FundingRateRecord",
+    "NewUserRecord",
+    "SettlePnlRecord",
+    "LPRecord",
+    "InsuranceFundRecord",
+    "SpotInterestRecord",
+    "InsuranceFundStakeRecord",
+    "CurveRecord",
   ],
   maxTx: 4096,
   maxEventsPerType: 4096,
-  orderBy: 'blockchain',
-  orderDir: 'asc',
-  commitment: 'confirmed',
+  orderBy: "blockchain",
+  orderDir: "asc",
+  commitment: "confirmed",
   logProviderConfig: {
-    type: 'websocket',
+    type: "websocket",
   },
-}
+};
 
-const eventSubscriber = new EventSubscriber(connection, driftClient.program, options);
+const eventSubscriber = new EventSubscriber(
+  connection,
+  driftClient.program,
+  options
+);
 await eventSubscriber.subscribe();
 
-eventSubscriber.eventEmitter.on('newEvent', (event) => {
+eventSubscriber.eventEmitter.on("newEvent", (event) => {
   console.log(event);
 });
 ```
@@ -1639,63 +1672,63 @@ event_subscriber.event_emitter.new_event += lambda event: print(event)
 ```
 
 ### TypeScript
-| Parameter   | Description | Optional | Default |
-| ----------- | ----------- | -------- | ------- |
-| connection | Connection object specifying solana rpc url   | No | |
-| program | Anchor program object used to deserialize events from transaction logs | No | |
-| options.eventTypes | Which events types to trigger event callbacks for | Yes | All events |
-| options.maxTx | Max number of transactions to keep in memory | Yes | 4096 |
-| options.maxEventsPerType | Max number of events per event type to keep in memory | Yes | 4096 |
-| options.orderBy | Whether to sort the tx in memory by the order they occurred on chain ('blockchain') or received by client ('client') | Yes | 'blockchain' |
-| options.orderDir | Whether to sort the tx in memory to be most recent ('desc') or oldest ('asc') | Yes | 'asc' |
-| options.commitment | What transaction commitment to wait for | Yes | 'confirmed' |
-| options.logProviderConfig | Whether to use websocket or polling to listen for tx logs | Yes | {type: "websocket"} |
-| options.address | Which address to listen to events for. Defaults to drift program. | Yes | dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH |
+
+| Parameter                 | Description                                                                                                          | Optional | Default                                     |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------- |
+| connection                | Connection object specifying solana rpc url                                                                          | No       |                                             |
+| program                   | Anchor program object used to deserialize events from transaction logs                                               | No       |                                             |
+| options.eventTypes        | Which events types to trigger event callbacks for                                                                    | Yes      | All events                                  |
+| options.maxTx             | Max number of transactions to keep in memory                                                                         | Yes      | 4096                                        |
+| options.maxEventsPerType  | Max number of events per event type to keep in memory                                                                | Yes      | 4096                                        |
+| options.orderBy           | Whether to sort the tx in memory by the order they occurred on chain ('blockchain') or received by client ('client') | Yes      | 'blockchain'                                |
+| options.orderDir          | Whether to sort the tx in memory to be most recent ('desc') or oldest ('asc')                                        | Yes      | 'asc'                                       |
+| options.commitment        | What transaction commitment to wait for                                                                              | Yes      | 'confirmed'                                 |
+| options.logProviderConfig | Whether to use websocket or polling to listen for tx logs                                                            | Yes      | {type: "websocket"}                         |
+| options.address           | Which address to listen to events for. Defaults to drift program.                                                    | Yes      | dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH |
 
 ### Python
-| Parameter               | Description                                                                               | Optional | Default                                            |
-| ----------------------- | ----------------------------------------------------------------------------------------- | -------- | -------------------------------------------------- |
-| connection              | AsyncClient object specifying Solana RPC URL                                               | No       |                                                    |
-| program                 | Anchor program object used to deserialize events from transaction logs                   | No       |                                                    |
-| options                 | Configuration options for event subscription                                              | Yes      | EventSubscriptionOptions.default()                 |
-| - address               | Address to listen to events for, defaults to Drift program                                | Yes      | DRIFT_PROGRAM_ID                                   |
-| - event_types           | Types of events to trigger event callbacks for                                            | Yes      | DEFAULT_EVENT_TYPES                                |
-| - max_events_per_type   | Maximum number of events per event type to keep in memory                                 | Yes      | 4096                                               |
-| - order_by              | Sort order of transactions, by 'blockchain' order or 'client' received order              | Yes      | "blockchain"                                       |
-| - order_dir             | Sorting direction, either most recent ('desc') or oldest ('asc')                           | Yes      | "asc"                                              |
-| - commitment            | Transaction commitment level to wait for                                                  | Yes      | "confirmed"                                        |
-| - max_tx                | Maximum number of transactions to keep in memory                                          | Yes      | 4096                                               |
-| - log_provider_config   | Configuration for log provider, either websocket or polling                               | Yes      | WebsocketLogProviderConfig()                       |
-| - until_tx              | Signature to listen until, used for log provider                                          | Yes      | None                                               |
 
+| Parameter             | Description                                                                  | Optional | Default                            |
+| --------------------- | ---------------------------------------------------------------------------- | -------- | ---------------------------------- |
+| connection            | AsyncClient object specifying Solana RPC URL                                 | No       |                                    |
+| program               | Anchor program object used to deserialize events from transaction logs       | No       |                                    |
+| options               | Configuration options for event subscription                                 | Yes      | EventSubscriptionOptions.default() |
+| - address             | Address to listen to events for, defaults to Drift program                   | Yes      | DRIFT_PROGRAM_ID                   |
+| - event_types         | Types of events to trigger event callbacks for                               | Yes      | DEFAULT_EVENT_TYPES                |
+| - max_events_per_type | Maximum number of events per event type to keep in memory                    | Yes      | 4096                               |
+| - order_by            | Sort order of transactions, by 'blockchain' order or 'client' received order | Yes      | "blockchain"                       |
+| - order_dir           | Sorting direction, either most recent ('desc') or oldest ('asc')             | Yes      | "asc"                              |
+| - commitment          | Transaction commitment level to wait for                                     | Yes      | "confirmed"                        |
+| - max_tx              | Maximum number of transactions to keep in memory                             | Yes      | 4096                               |
+| - log_provider_config | Configuration for log provider, either websocket or polling                  | Yes      | WebsocketLogProviderConfig()       |
+| - until_tx            | Signature to listen until, used for log provider                             | Yes      | None                               |
 
 Protocol events are recorded in transactions logs. To listen for events, one must subscribe to the drift program's transaction logs.
 
 ## Event Types
 
-| Event Type   | Description |
-| ----------- | ----------- |
-| DepositRecord | A record of a user depositing or withdrawing funds from protocol |
-| FundingPaymentRecord | A record of a user paying/receiving funding payments |
-| LiquidationRecord | A record of a user being liquidated |
-| OrderRecord | A record of a user placing an order, including all of its parameters |
-| OrderActionRecord | A record of a user action on an order, including place, cancel and fill |
-| FundingRateRecord | A record of the funding rate changing |
-| NewUserRecord | A record of a new user |
-| SettlePnlRecord | A record of a user settling their pnl |
-| LPRecord | A record of a user adding or removing passive perp liquidity |
-| InsuranceFundRecord | A record of the insurance fund changing |
-| SpotInterestRecord | A record of the spot interest changing |
-| InsuranceFundStakeRecord | A record of a user staking or unstaking from the insurance fund |
-| CurveRecord | A record of the amm curve updating |
+| Event Type               | Description                                                             |
+| ------------------------ | ----------------------------------------------------------------------- |
+| DepositRecord            | A record of a user depositing or withdrawing funds from protocol        |
+| FundingPaymentRecord     | A record of a user paying/receiving funding payments                    |
+| LiquidationRecord        | A record of a user being liquidated                                     |
+| OrderRecord              | A record of a user placing an order, including all of its parameters    |
+| OrderActionRecord        | A record of a user action on an order, including place, cancel and fill |
+| FundingRateRecord        | A record of the funding rate changing                                   |
+| NewUserRecord            | A record of a new user                                                  |
+| SettlePnlRecord          | A record of a user settling their pnl                                   |
+| LPRecord                 | A record of a user adding or removing passive perp liquidity            |
+| InsuranceFundRecord      | A record of the insurance fund changing                                 |
+| SpotInterestRecord       | A record of the spot interest changing                                  |
+| InsuranceFundStakeRecord | A record of a user staking or unstaking from the insurance fund         |
+| CurveRecord              | A record of the amm curve updating                                      |
 
 ## Listening to Perp Market Fills
 
 ```typescript
-
 const marketIndex = 0;
 const isPerpMarketFill = (event) => {
-  if (event.eventType !== 'OrderActionRecord') {
+  if (event.eventType !== "OrderActionRecord") {
     return false;
   }
 
@@ -1703,11 +1736,11 @@ const isPerpMarketFill = (event) => {
     return false;
   }
 
-  if (!isVariant(event.marketType, 'perp')) {
+  if (!isVariant(event.marketType, "perp")) {
     return false;
   }
 
-  if (!isVariant(event.action, 'fill')) {
+  if (!isVariant(event.action, "fill")) {
     return false;
   }
 
@@ -1716,14 +1749,13 @@ const isPerpMarketFill = (event) => {
 
 const fillCallback = (event) => {
   console.log(event);
-}
+};
 
-eventSubscriber.eventEmitter.on('newEvent', (event) => {
+eventSubscriber.eventEmitter.on("newEvent", (event) => {
   if (isPerpMarketFill(event)) {
     fillCallback(event);
   }
 });
-
 ```
 
 ```python
@@ -1779,8 +1811,7 @@ event_subscriber.event_emitter.new_event += fill_callback
 ## Getting Events Received By Type
 
 ```typescript
-
-const eventType = 'OrderActionRecord';
+const eventType = "OrderActionRecord";
 const events = eventSubscriber.getEventsReceived(eventType);
 ```
 
@@ -1795,7 +1826,8 @@ This returns all the events that the event subscriber currently has stored in me
 ## Getting Events By Transaction
 
 ```typescript
-const txSig = '3dq5PtQ3VnNTkQRrHhQ1nRACWZaFVvSBKs1RLXM8WvCqLHTzTuVGc7XER5awoLFLTdJ4kqZiNmo7e8b3pXaEGaoo';
+const txSig =
+  "3dq5PtQ3VnNTkQRrHhQ1nRACWZaFVvSBKs1RLXM8WvCqLHTzTuVGc7XER5awoLFLTdJ4kqZiNmo7e8b3pXaEGaoo";
 const events = eventSubscriber.getEventsByTx(txSig);
 ```
 
@@ -1820,12 +1852,12 @@ Total collateral is calculated as:
 
 Where
 
-* \\(d_i\\) is the deposit amount for spot market \\(i\\)
-* \\(p_i\\) is the price for spot market \\(i\\)
-* \\(w_i^a\\) is the asset weight for spot market \\(i\\)
-* \\(pnl_j\\) is the pnl for perp market \\(j\\)
-* \\(qp_j\\) is the quote asset price for perp market \\(j\\)
-* \\(w_j^{pnl}\\) is the pnl weight for perp market \\(j\\)
+- \\(d_i\\) is the deposit amount for spot market \\(i\\)
+- \\(p_i\\) is the price for spot market \\(i\\)
+- \\(w_i^a\\) is the asset weight for spot market \\(i\\)
+- \\(pnl_j\\) is the pnl for perp market \\(j\\)
+- \\(qp_j\\) is the quote asset price for perp market \\(j\\)
+- \\(w_j^{pnl}\\) is the pnl weight for perp market \\(j\\)
 
 Margin requirement is calculated as:
 
@@ -1833,13 +1865,13 @@ Margin requirement is calculated as:
 
 Where
 
-* \\(b_i\\) is the borrow amount for spot market \\(i\\)
-* \\(p_i\\) is the price for spot market \\(i\\)
-* \\(w_i^l\\) is the liability weight for spot market \\(i\\)
-* \\(ba_j\\) is the base amount for perp market \\(j\\)
-* \\(o_j\\) is the price for perp/prediction market \\(j\\)
-* \\(qp_j\\) is the quote asset price for perp market \\(j\\)
-* \\(m_j\\) is the margin ratio for perp market \\(j\\)
+- \\(b_i\\) is the borrow amount for spot market \\(i\\)
+- \\(p_i\\) is the price for spot market \\(i\\)
+- \\(w_i^l\\) is the liability weight for spot market \\(i\\)
+- \\(ba_j\\) is the base amount for perp market \\(j\\)
+- \\(o_j\\) is the price for perp/prediction market \\(j\\)
+- \\(qp_j\\) is the quote asset price for perp market \\(j\\)
+- \\(m_j\\) is the margin ratio for perp market \\(j\\)
 
 The weights and margin ratios depend on whether you're calculating the initial or maintenance values.
 
@@ -1863,7 +1895,6 @@ To maintain numerical precision, the on-chain program stores all values as integ
 ## Getting a Current Perp Position
 
 ```typescript
-
 const perpMarketIndex = 0; // SOL-PERP
 const perpPosition = driftClient.getPerpPosition(perpMarketIndex);
 console.log(convertToNumber(perpPosition.baseAssetAmount, BASE_PRECISION));
@@ -1880,12 +1911,15 @@ This prints the size of the current perp position in perp market index 0 (SOL-PE
 ## Getting a Current Spot Position
 
 ```typescript
-
 const spotMarketIndex = 0; // USDC
-const spotConfig = SpotMarkets['mainnet-beta'][spotMarketIndex];
+const spotConfig = SpotMarkets["mainnet-beta"][spotMarketIndex];
 const spotMarket = driftClient.getSpotMarketAccount(spotMarketIndex);
 const spotPosition = driftClient.getSpotPosition(spotMarketIndex);
-const tokenAmount = getTokenAmount(spotPosition.scaledBalance, spotMarket, spotPosition.balanceType);
+const tokenAmount = getTokenAmount(
+  spotPosition.scaledBalance,
+  spotMarket,
+  spotPosition.balanceType
+);
 console.log(convertToNumber(tokenAmount, spotConfig.precision));
 ```
 
@@ -1900,17 +1934,16 @@ print(convert_to_number(token_amount, (10 ** spot_market.decimals)))
 This prints the current spot position in spot market index 0 (USDC). This value is the same as the value shown on the UI,
 it includes any accumulated interest.
 
-
 ## Common precision values
 
-| Value   | Precision | Constant |
-| ----------- | ----------- | -------- |
-| perp base asset amount | 1e9 | `BASE_PRECISION` |
-| perp quote asset amount | 1e6 | `QUOTE_PRECISION` |
-| price | 1e6 | `PRICE_PRECISION` |
-| funding rate | 1e9 | `FUNDING_RATE_PRECISION` |
-| spot token amount | derived from token mint's decimals (USDC is 1e6, SOL is 1e9) | `SpotMarketConfig.precision` |
-| spot token balance | 1e9 | `SPOT_MARKET_BALANCE_PRECISION` |
-| margin ratio | 1e4 | `MARGIN_PRECISION` |
-| asset/liability weight | 1e4 | `SPOT_WEIGHT_PRECISION` |
-| imf weight precision | 1e6 | `SPOT_IMF_PRECISION` |
+| Value                   | Precision                                                    | Constant                        |
+| ----------------------- | ------------------------------------------------------------ | ------------------------------- |
+| perp base asset amount  | 1e9                                                          | `BASE_PRECISION`                |
+| perp quote asset amount | 1e6                                                          | `QUOTE_PRECISION`               |
+| price                   | 1e6                                                          | `PRICE_PRECISION`               |
+| funding rate            | 1e9                                                          | `FUNDING_RATE_PRECISION`        |
+| spot token amount       | derived from token mint's decimals (USDC is 1e6, SOL is 1e9) | `SpotMarketConfig.precision`    |
+| spot token balance      | 1e9                                                          | `SPOT_MARKET_BALANCE_PRECISION` |
+| margin ratio            | 1e4                                                          | `MARGIN_PRECISION`              |
+| asset/liability weight  | 1e4                                                          | `SPOT_WEIGHT_PRECISION`         |
+| imf weight precision    | 1e6                                                          | `SPOT_IMF_PRECISION`            |
