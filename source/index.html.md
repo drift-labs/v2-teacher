@@ -1567,6 +1567,10 @@ Leverage is the total liability value (borrows plus total perp position) divided
 
 ## Event Subscription
 
+Subscribing to Drift Events is a core component necessary to react to events happening in Drift. The Drift SDK has an [Event Subscriber](https://github.com/drift-labs/protocol-v2/blob/master/sdk/src/events/eventSubscriber.ts) class to help you do this.
+
+You should also note that you can Serialize and Deserialize Drift Events using the [Serializer](https://github.com/drift-labs/drift-common/blob/master/common-ts/src/serializableTypes.ts#L2131) class exported from the [Drift Common library](https://github.com/drift-labs/drift-common) (`@drift/common` on npm). There are "UI" versions of the deserialized records available where the `BN` numbers have been cast into our own `BigNum` class which makes it easier to work with the numbers inside the records.
+
 ```typescript
 import {EventSubscriber} from "@drift-labs/sdk";
 
@@ -1649,7 +1653,7 @@ event_subscriber.event_emitter.new_event += lambda event: print(event)
 | options.orderBy | Whether to sort the tx in memory by the order they occurred on chain ('blockchain') or received by client ('client') | Yes | 'blockchain' |
 | options.orderDir | Whether to sort the tx in memory to be most recent ('desc') or oldest ('asc') | Yes | 'asc' |
 | options.commitment | What transaction commitment to wait for | Yes | 'confirmed' |
-| options.logProviderConfig | Whether to use websocket or polling to listen for tx logs | Yes | {type: "websocket"} |
+| options.logProviderConfig | How to get events: RPC Polling, RPC Websocket, or the Drift Events Server                                            | Yes      | {type: polling/websocket/events-server, url?: {events_server_url}}<br><br>see [Environment Constants](https://github.com/drift-labs/drift-common/blob/master/common-ts/src/EnvironmentConstants.ts) for the Events Server URL to use |
 | options.address | Which address to listen to events for. Defaults to drift program. | Yes | dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH |
 
 ### Python
