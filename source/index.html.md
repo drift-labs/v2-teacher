@@ -98,7 +98,7 @@ Install driftpy from PyPI using pip:
 auto-generated documentation here: [https://drift-labs.github.io/driftpy/]
 
 ## HTTP
-Use the self-hosted HTTP [gateway](https://github.com/drift-labs/gateway)
+Use the self-hosted HTTP API [gateway](https://github.com/drift-labs/gateway)
 
 ## Connection
 
@@ -297,14 +297,12 @@ driftClient.switchActiveUser(
 drift_client.switch_active_user(sub_account_id=1)
 ```
 
-<<<<<<< HEAD
-### TypeScript
-=======
 ```shell
-curl http://localhost:8080/v2/resource?subAccountId=1
+curl http://localhost:8080/v2/<RESOURCE>?subAccountId=1
 ```
 
->>>>>>> upstream/main
+### TypeScript
+=======
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | subAccountId | The sub account to switch to  | No | 0 |
