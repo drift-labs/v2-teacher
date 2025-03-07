@@ -697,7 +697,7 @@
 
 <p>auto-generated documentation here: [https://drift-labs.github.io/driftpy/]</p>
 <h2 id='http'>HTTP</h2>
-<p>Use the self-hosted HTTP <a href="https://github.com/drift-labs/gateway">gateway</a></p>
+<p>Use the self-hosted HTTP API <a href="https://github.com/drift-labs/gateway">gateway</a></p>
 <h2 id='connection'>Connection</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
 
 <span class="c1">// the default RPC for devnet is `https://api.devnet.solana.com`</span>
@@ -1054,33 +1054,13 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
   <span class="mi">1</span><span class="p">,</span>
 <span class="p">);</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">drift_client</span><span class="p">.</span><span class="n">switch_active_user</span><span class="p">(</span><span class="n">sub_account_id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</code></pre></div>
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
-<h3 id='typescript-4'>TypeScript</h3>
+</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl http://localhost:8080/v2/&lt;RESOURCE&gt;?subAccountId<span class="o">=</span>1
+</code></pre></div><h3 id='typescript-4'>TypeScript</h3>
 <p>=======
-<code>shell
-curl http://localhost:8080/v2/resource?subAccountId=1
-</code></p>
-
-<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>upstream/main
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | subAccountId | The sub account to switch to  | No | 0 |
 | authority   | The authority of the sub account you&#39;re signing for. Only needed for delegate accounts | Yes | Current authority |</p>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
 <h3 id='python-4'>Python</h3>
 <table><thead>
 <tr>
@@ -3282,7 +3262,11 @@ localhost:8080/v2/positions
 </tbody></table>
 
 <p>Leverage is the total liability value (borrows plus total perp position) divided by net asset value (total assets plus total liabilities)</p>
-<h1 id='events'>Events</h1><h2 id='event-subscription'>Event Subscription</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">EventSubscriber</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
+<h1 id='events'>Events</h1><h2 id='event-subscription'>Event Subscription</h2>
+<p>Subscribing to Drift Events is a core component necessary to react to events happening in Drift. The Drift SDK has an <a href="https://github.com/drift-labs/protocol-v2/blob/master/sdk/src/events/eventSubscriber.ts">Event Subscriber</a> class to help you do this.</p>
+
+<p>You should also note that you can Serialize and Deserialize Drift Events using the <a href="https://github.com/drift-labs/drift-common/blob/master/common-ts/src/serializableTypes.ts#L2131">Serializer</a> class exported from the <a href="https://github.com/drift-labs/drift-common">Drift Common library</a> (<code>@drift/common</code> on npm). There are &quot;UI&quot; versions of the deserialized records available where the <code>BN</code> numbers have been cast into our own <code>BigNum</code> class which makes it easier to work with the numbers inside the records.</p>
+<div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">EventSubscriber</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@drift-labs/sdk</span><span class="dl">"</span><span class="p">;</span>
 
 <span class="kd">const</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
   <span class="na">eventTypes</span><span class="p">:</span> <span class="p">[</span>
@@ -3406,9 +3390,9 @@ localhost:8080/v2/positions
 </tr>
 <tr>
 <td>options.logProviderConfig</td>
-<td>Whether to use websocket or polling to listen for tx logs</td>
+<td>How to get events: RPC Polling, RPC Websocket, or the Drift Events Server</td>
 <td>Yes</td>
-<td>{type: &quot;websocket&quot;}</td>
+<td>{type: polling/websocket/events-server, url?: {events_server_url}}<br><br>see <a href="https://github.com/drift-labs/drift-common/blob/master/common-ts/src/EnvironmentConstants.ts">Environment Constants</a> for the Events Server URL to use</td>
 </tr>
 <tr>
 <td>options.address</td>
@@ -4965,8 +4949,12 @@ devnet: <a href="https://master.dlob.drift.trade/">https://master.dlob.drift.tra
 <h1 id='data-api'>Data API</h1>
 <p>The Drift Data API provides public access to various APIs that Drift uses, offering information about markets, contracts, and tokenomics. This API allows developers and users to retrieve data related to the Drift protocol.</p>
 
-<p>mainnet-beta: <a href="https://data.api.drift.trade/">https://data.api.drift.trade/</a>
-devnet: <a href="https://master-data.api.drift.trade/">https://master-data.drift.trade/</a></p>
+<ul>
+<li>mainnet-beta: <code>https://data.api.drift.trade</code></li>
+<li>devnet: <code>https://master-data.drift.trade</code></li>
+</ul>
+
+<p>See the <a href="https://data.api.drift.trade/playground">Data API Playground</a> for more information and to try the endpoints yourself.</p>
 <h2 id='rate-limiting'>Rate Limiting</h2>
 <p>To ensure fair usage and maintain system stability, the Drift Data API implements rate limiting. Users are restricted to a certain number of requests per minute. The exact limit may vary depending on the endpoint and overall system load. If you exceed the rate limit, you&#39;ll receive a 429 (Too Many Requests) response. It&#39;s recommended to implement exponential backoff in your applications to handle rate limiting gracefully.</p>
 <h2 id='caching'>Caching</h2>
