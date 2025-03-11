@@ -302,7 +302,6 @@ curl http://localhost:8080/v2/<RESOURCE>?subAccountId=1
 ```
 
 ### TypeScript
-=======
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | subAccountId | The sub account to switch to  | No | 0 |
