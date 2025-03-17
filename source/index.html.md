@@ -138,7 +138,7 @@ from driftpy.keypair import load_keypair
 
 keypair_file = os.path.expanduser('~/.config/solana/my-keypair.json')
 keypair = load_keypair(keypair_file)
-wallet = Wallet(kp)
+wallet = Wallet(keypair)
 ```
 ```shell
 # use `DRIFT_GATEWAY_KEY` environment variable to configure the gateway wallet
@@ -1313,7 +1313,7 @@ If token amount is greater than 0, it is a deposit. If less than zero, it is a b
 ```typescript
 const marketIndex = 0;
 
-const baseAssetAmount = user.getPerpPosition(
+const baseAssetAmount = user.getPerpPositions(
   marketIndex,
 )?.baseAssetAmount;
 
