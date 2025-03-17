@@ -104,6 +104,13 @@ Install driftpy from PyPI using pip:
 
 auto-generated documentation here: [https://drift-labs.github.io/driftpy/]
 
+<aside class="notice">
+  Recommended dependencies:
+  driftpy: 0.8.33, 
+  solana: 0.35.1, 
+  anchorpy: 0.20.1
+</aside>
+
 ## HTTP
 Use the self-hosted HTTP API [gateway](https://github.com/drift-labs/gateway)
 
