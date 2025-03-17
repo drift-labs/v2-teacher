@@ -88,7 +88,15 @@ Install @drift-labs/sdk from [npm](https://www.npmjs.com/package/@drift-labs/sdk
 
 `yarn add @drift-labs/sdk`
 
-auto-generated documentation here: [https://drift-labs.github.io/protocol-v2/sdk/]
+auto-generated documentation here: (https://drift-labs.github.io/protocol-v2/sdk/)
+
+<aside class="notice">
+  Recommended dependencies:
+  drift-labs/sdk: 2.111.0-beta.6, 
+  solana/web3.js: 1.92.3
+    
+</aside>
+
 
 ## Python
 Install driftpy from PyPI using pip:
@@ -1313,7 +1321,7 @@ If token amount is greater than 0, it is a deposit. If less than zero, it is a b
 ```typescript
 const marketIndex = 0;
 
-const baseAssetAmount = user.getPerpPositions(
+const baseAssetAmount = user.getPerpPosition(
   marketIndex,
 )?.baseAssetAmount;
 
