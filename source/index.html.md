@@ -234,6 +234,15 @@ await driftClient.subscribe();
 | market_lookup_table   | Public key for the market lookup table                                                          | Yes      | None                            |
 
 
+
+  When subscribing to the client for delegate accounts, you have to be explicit about the following parameters:
+```
+subAccountIds: [SUBACCOUNT_ID],
+activeSubAccountId: SUBACCOUNT_ID,
+authority: TARGET_AUTHORITY,
+```
+
+
 ## User Initialization
 
 <aside class="notice">
