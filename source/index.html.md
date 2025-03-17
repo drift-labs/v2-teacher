@@ -94,7 +94,6 @@ auto-generated documentation here: (https://drift-labs.github.io/protocol-v2/sdk
   Recommended dependencies:
   drift-labs/sdk: 2.111.0-beta.6, 
   solana/web3.js: 1.92.3
-    
 </aside>
 
 
