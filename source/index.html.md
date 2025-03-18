@@ -88,12 +88,10 @@ Install @drift-labs/sdk from [npm](https://www.npmjs.com/package/@drift-labs/sdk
 
 `yarn add @drift-labs/sdk`
 
-auto-generated documentation here: (https://drift-labs.github.io/protocol-v2/sdk/)
+Auto-generated documentation <a href="https://drift-labs.github.io/protocol-v2/sdk/">here</a>
 
 <aside class="notice">
-  Recommended dependencies:
-  drift-labs/sdk: 2.111.0-beta.6, 
-  solana/web3.js: 1.92.3
+  Latest TS dependencies can be found on GitHub <a href="https://github.com/drift-labs/protocol-v2/blob/master/sdk/package.json">here</a>
 </aside>
 
 
@@ -102,13 +100,11 @@ Install driftpy from PyPI using pip:
 
 `pip install driftpy`
 
-auto-generated documentation here: [https://drift-labs.github.io/driftpy/]
+Auto-generated documentation <a href="https://drift-labs.github.io/driftpy/">here</a>
 
 <aside class="notice">
-  Recommended dependencies:
-  driftpy: 0.8.33, 
-  solana: 0.35.1, 
-  anchorpy: 0.20.1
+  Latest Python dependencies can be found on GitHub <a href="https://github.com/drift-labs/driftpy/blob/master/pyproject.toml">here</a>
+
 </aside>
 
 ## HTTP
