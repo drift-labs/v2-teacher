@@ -1192,7 +1192,7 @@ await driftClient.settlePNL(
 );
 ```
 
-```python
+```python    
 market_index = 0
 user =  drift_client.get_user()
 await drift_client.settle_pnl(
@@ -1263,6 +1263,94 @@ perp_market_account = drift_client.get_perp_market_account(market_index);
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | market_index | The market index for the perp market | No | |
+
+# Swift
+Swift is an extension to Drift which enables users to place orders without needing to submit a transaction to the Solana network. 
+Instead of having users submit transactions to the Solana network, users sign a message containing their order parameters and submit it to keepers and market makers offchain. Keepers and market makers then bundle the message with their transaction to fill user orders.
+
+Orders have to be submitted to the Swift API: [https://swift.drift.trade]
+
+## Order setup
+Similar to normal orders, order parameters need to be defined. Order parameters <a href="https://drift-labs.github.io/v2-teacher/#order-params">overview</a>
+
+To pass an order to Swift, the following steps are required:
+1. Define order parameters
+2. Generate and Sign order
+3. Submit to Swift API
+
+## Order example(market taker)
+```typescript
+const MarketIndex = 0; // 0 = SOL-PERP market
+const direction = PositionDirection.LONG;
+
+const oracleInfo = driftClient.getOracleDataForPerpMarket(MarketIndex);
+
+const marketOrderParams = {
+    marketIndex: MarketIndex,
+    marketType: MarketType.PERP,
+    direction,
+    baseAssetAmount: driftClient.getPerpMarketAccount(MarketIndex)!.amm.minOrderSize.muln(2),
+    auctionStartPrice: oracleInfo.price.muln(99).divn(100), // 1% lower than oracle price
+    auctionEndPrice: oracleInfo.price.muln(101).divn(100), // 1% higher than oracle price
+    auctionDuration: 50, // Duration of auction in slots (~5s)
+};
+```
+
+## Order example(limit taker)
+```typescript
+const MarketIndex = 0; // 0 = SOL-PERP market
+const direction = PositionDirection.LONG;
+
+const limitOrderParams = {
+    orderType: OrderType.LIMIT,
+    marketIndex: perpMarketIndex,
+    marketType: MarketType.PERP,
+    direction,
+    baseAssetAmount: driftClient.convertToPerpPrecision(1), // Size 1 Sol
+    price: driftClient.convertToPricePrecision(100), // At price 100
+};
+```
+
+## Order example(limit maker)
+```typescript
+WIP
+```
+
+## Sign order
+```typescript
+const slot = await driftClient.connection.getSlot();
+
+const orderMessage = {
+    signedMsgOrderParams: marketOrderParams,
+    subAccountId: driftClient.activeSubAccountId,
+    slot: new BN(slot),
+    uuid: generateSignedMsgUuid(),
+    stopLossOrderParams: null,
+    takeProfitOrderParams: null,
+};
+
+// Sign the message
+const signedOrder = driftClient.signSignedMsgOrderParamsMessage(orderMessage);
+const message = Buffer.from(signedOrder.orderParams).toString('hex');
+const signature = Buffer.from(signedOrder.signature).toString('base64');
+```
+
+## Submit order to Swift API
+```typescript
+const swiftUrl = 'https://swift.drift.trade/orders';
+
+const response = await axios.default.post(swiftUrl, {
+    market_index: perpMarketIndex,
+    market_type: 'perp',
+    message: message,
+    signature: signature,
+    taker_pubkey: driftClient.wallet.publicKey.toBase58(),
+}, {
+    headers: { 'Content-Type': 'application/json' }
+});
+
+console.log("Order response:", response.data);
+```
 
 # User
 
