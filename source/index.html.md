@@ -1280,23 +1280,25 @@ To pass an order to Swift, the following steps are required:
 
 ## Order example(market taker)
 ```typescript
-const MarketIndex = 0; // 0 = SOL-PERP market
-const direction = PositionDirection.LONG;
+const marketIndex = 0;
+const direction = PositionDirection.LONG
 
-const oracleInfo = driftClient.getOracleDataForPerpMarket(MarketIndex);
+const oracleInfo = driftClient.getOracleDataForPerpMarket(marketIndex);
+const highPrice = oracleInfo.price.muln(101).divn(100);
+const lowPrice = oracleInfo.price;
 
-const marketOrderParams = {
-    marketIndex: MarketIndex,
+const makerOrderParams = getMarketOrderParams({
+    marketIndex: marketIndex,
     marketType: MarketType.PERP,
-    direction,
-    baseAssetAmount: driftClient.getPerpMarketAccount(MarketIndex)!.amm.minOrderSize.muln(2),
-    auctionStartPrice: oracleInfo.price.muln(99).divn(100), // 1% lower than oracle price
-    auctionEndPrice: oracleInfo.price.muln(101).divn(100), // 1% higher than oracle price
-    auctionDuration: 50, // Duration of auction in slots (~5s)
-};
+    direction: direction,
+    baseAssetAmount: driftClient.convertToPerpPrecision(0.1), // 0.1 SOL,
+    auctionStartPrice: isVariant(direction, 'long') ? lowPrice : highPrice,
+		auctionEndPrice: isVariant(direction, 'long') ? highPrice : lowPrice,
+		auctionDuration: 50,
+});
 ```
 
-## Order example(limit taker)
+## Order example(limit taker) WIP
 For a limit taker order, make sure your order price is above the oracle price.
 The current parameters will result in an order 1% above oracle price.
 
@@ -1316,7 +1318,7 @@ const limitOrderParams = {
 };
 ```
 
-## Order example(limit maker)
+## Order example(limit maker) WIP
 ```typescript
 const MarketIndex = 0; // 0 = SOL-PERP market
 const direction = PositionDirection.LONG;
@@ -1337,7 +1339,7 @@ const limitOrderParams = {
 const slot = await driftClient.connection.getSlot();
 
 const orderMessage = {
-    signedMsgOrderParams: marketOrderParams,
+    signedMsgOrderParams: orderParams,
     subAccountId: driftClient.activeSubAccountId,
     slot: new BN(slot),
     uuid: generateSignedMsgUuid(),
@@ -1356,7 +1358,7 @@ const signature = Buffer.from(signedOrder.signature).toString('base64');
 const swiftUrl = 'https://swift.drift.trade/orders';
 
 const response = await axios.default.post(swiftUrl, {
-    market_index: perpMarketIndex,
+    market_index: marketIndex,
     market_type: 'perp',
     message: message,
     signature: signature,
