@@ -1297,6 +1297,26 @@ const marketOrderParams = {
 ```
 
 ## Order example(limit taker)
+For a limit taker order, make sure your order price is above the oracle price.
+The current parameters will result in an order 1% above oracle price.
+
+```typescript
+const MarketIndex = 0; // 0 = SOL-PERP market
+const direction = PositionDirection.LONG;
+
+const oracleInfo = driftClient.getOracleDataForPerpMarket(MarketIndex);
+
+const limitOrderParams = {
+    orderType: OrderType.LIMIT,
+    marketIndex: perpMarketIndex,
+    marketType: MarketType.PERP,
+    direction,
+    baseAssetAmount: driftClient.convertToPerpPrecision(1), // Size 1 Sol
+    price: oracleInfo.price.muln(101).divn(100), // 1% higher than oracle price
+};
+```
+
+## Order example(limit maker)
 ```typescript
 const MarketIndex = 0; // 0 = SOL-PERP market
 const direction = PositionDirection.LONG;
@@ -1308,12 +1328,8 @@ const limitOrderParams = {
     direction,
     baseAssetAmount: driftClient.convertToPerpPrecision(1), // Size 1 Sol
     price: driftClient.convertToPricePrecision(100), // At price 100
+    postOnly: true // Ensures maker only
 };
-```
-
-## Order example(limit maker)
-```typescript
-WIP
 ```
 
 ## Sign order
