@@ -1280,58 +1280,21 @@ To pass an order to Swift, the following steps are required:
 
 ## Order example(market taker)
 ```typescript
-const marketIndex = 0;
-const direction = PositionDirection.LONG
+const marketIndex = 0; // 0 = SOL-PERP market
 
 const oracleInfo = driftClient.getOracleDataForPerpMarket(marketIndex);
 const highPrice = oracleInfo.price.muln(101).divn(100);
 const lowPrice = oracleInfo.price;
 
-const makerOrderParams = getMarketOrderParams({
+const orderParams = getMarketOrderParams({
     marketIndex: marketIndex,
     marketType: MarketType.PERP,
-    direction: direction,
+    direction: PositionDirection.LONG,
     baseAssetAmount: driftClient.convertToPerpPrecision(0.1), // 0.1 SOL,
     auctionStartPrice: isVariant(direction, 'long') ? lowPrice : highPrice,
 		auctionEndPrice: isVariant(direction, 'long') ? highPrice : lowPrice,
 		auctionDuration: 50,
 });
-```
-
-## Order example(limit taker) WIP
-For a limit taker order, make sure your order price is above the oracle price.
-The current parameters will result in an order 1% above oracle price.
-
-```typescript
-const MarketIndex = 0; // 0 = SOL-PERP market
-const direction = PositionDirection.LONG;
-
-const oracleInfo = driftClient.getOracleDataForPerpMarket(MarketIndex);
-
-const limitOrderParams = {
-    orderType: OrderType.LIMIT,
-    marketIndex: perpMarketIndex,
-    marketType: MarketType.PERP,
-    direction,
-    baseAssetAmount: driftClient.convertToPerpPrecision(1), // Size 1 Sol
-    price: oracleInfo.price.muln(101).divn(100), // 1% higher than oracle price
-};
-```
-
-## Order example(limit maker) WIP
-```typescript
-const MarketIndex = 0; // 0 = SOL-PERP market
-const direction = PositionDirection.LONG;
-
-const limitOrderParams = {
-    orderType: OrderType.LIMIT,
-    marketIndex: perpMarketIndex,
-    marketType: MarketType.PERP,
-    direction,
-    baseAssetAmount: driftClient.convertToPerpPrecision(1), // Size 1 Sol
-    price: driftClient.convertToPricePrecision(100), // At price 100
-    postOnly: true // Ensures maker only
-};
 ```
 
 ## Sign order
