@@ -21,7 +21,7 @@ Example: [https://data.api.drift.trade/contracts](https://data.api.drift.trade/c
 
 ## `GET /fundingRates`
 
-Returns the last 30 days of funding rates by marketName or marketIndex.
+Returns the last 30 days of funding rates by marketName or marketIndex. Note `fundingRate` is in `quote/base` units, so you must divide by `oraclePriceTwap` to convert to a percentage. (see [`GET /fundingRates`](#get-fundingrates))
 
 ```python
 import requests
@@ -39,9 +39,10 @@ rates = get_funding_rates(market_symbol)
 
 print(f"Funding Rates for {market_symbol}:")
 for rate in rates:
-    funding_rate = float(rate['fundingRate']) / 1e9
+    funding_rate_pct = (float(rate['fundingRate']) / 1e9) / float(rate['oraclePriceTwap']) / 1e6
+    funding_rate_pct_apr = funding_rate_pct * 24 * 365 * 100
     # ... any logic here, for example...
-    print(f"Slot: {rate['slot']}, Funding Rate: {funding_rate:.9f}")
+    print(f"Slot: {rate['slot']}, Funding Rate: {funding_rate_ct:.9f}%/hour ({funding_rate_pct_apr:.2f}% APR)")
 
 ```
 ```typescript
@@ -73,9 +74,10 @@ async function main() {
 
   console.log(`Funding Rates for ${marketSymbol}:`);
   rates.forEach(rate => {
-    const fundingRate = parseFloat(rate.fundingRate) / 1e9;
+    const fundingRatePct = (parseFloat(rate.fundingRate) / 1e9) / (parseFloat(rate.oraclePriceTwap) / 1e6);
+    const fundingRatePctApr = fundingRatePct * 24 * 365 * 100;
     // ... any logic here, for example...
-    console.log(`Slot: ${rate.slot}, Funding Rate: ${fundingRate.toFixed(9)}`);
+    console.log(`Slot: ${rate.slot}, Funding Rate: ${fundingRatePct.toFixed(9)}%/hour (${fundingRatePctApr.toFixed(2)}% APR)`);
   });
 }
 
@@ -103,17 +105,23 @@ The response is a json object with a `fundingRates` array. Each funding rate ent
 | `ts` | string | Timestamp |
 | `recordId` | string | Record identifier |
 | `marketIndex` | integer | Market index |
-| `fundingRate` | string | Funding rate (divide by 1e9 for actual rate) |
+| `fundingRate` | string | Funding rate in quote/base. Divide by `oracleTwap` to get rate in percent (1e9 precision) |
 | `cumulativeFundingRateLong` | string | Cumulative funding rate for long positions |
 | `cumulativeFundingRateShort` | string | Cumulative funding rate for short positions |
-| `oraclePriceTwap` | string | Oracle price time-weighted average price |
-| `markPriceTwap` | string | Mark price time-weighted average price |
-| `fundingRateLong` | string | Funding rate for long positions |
-| `fundingRateShort` | string | Funding rate for short positions |
+| `oraclePriceTwap` | string | Oracle price time-weighted average price (1e6 precision) |
+| `markPriceTwap` | string | Mark price time-weighted average price (1e6 precision) |
+| `fundingRateLong` | string | Funding rate for long positions (may differ from `fundingRate` when there is a position imbalance) |
+| `fundingRateShort` | string | Funding rate for short positions (may differ from `fundingRate` when there is a position imbalance) |
 | `periodRevenue` | string | Revenue for the period |
 | `baseAssetAmountWithAmm` | string | Base asset amount with AMM |
 | `baseAssetAmountWithUnsettledLp` | string | Base asset amount with unsettled LP |
 
+In order to calculate `fundingRate` in percentage:
+
+```
+fundingRatePct = (fundingRate / 1e9) / (oraclePriceTwap / 1e6)
+fundingRatePctApr = fundingRatePct * 24 * 365
+```
 
 
 ## `GET /DRIFT/`
