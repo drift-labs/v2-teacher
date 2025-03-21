@@ -599,6 +599,9 @@
             <a href="#historical-data" class="toc-h1 toc-link" data-title="Historical Data">Historical Data</a>
               <ul class="toc-list-h2">
                   <li>
+                    <a href="#note-s3-flat-files-are-deprecated-and-have-stopped-updating-in-january-2025-please-use-the-data-api-going-forward" class="toc-h2 toc-link" data-title="NOTE: S3 flat files are deprecated and have stopped updating in January 2025. Please use the Data API going forward.">NOTE: S3 flat files are deprecated and have stopped updating in January 2025. Please use the <a href="./_data_api.md">Data API</a> going forward.</a>
+                  </li>
+                  <li>
                     <a href="#url-prefix" class="toc-h2 toc-link" data-title="URL Prefix">URL Prefix</a>
                   </li>
                   <li>
@@ -4980,7 +4983,7 @@ devnet: <a href="https://master.dlob.drift.trade/">https://master.dlob.drift.tra
 
 <p>Example: <a href="https://data.api.drift.trade/contracts">https://data.api.drift.trade/contracts</a></p>
 <h2 id='get-fundingrates'><code>GET /fundingRates</code></h2>
-<p>Returns the last 30 days of funding rates by marketName or marketIndex.</p>
+<p>Returns the last 30 days of funding rates by marketName or marketIndex. Note <code>fundingRate</code> is in <code>quote/base</code> units, so you must divide by <code>oraclePriceTwap</code> to convert to a percentage. (see <a href="#get-fundingrates"><code>GET /fundingRates</code></a>)</p>
 <div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">requests</span>
 
 <span class="k">def</span> <span class="nf">get_funding_rates</span><span class="p">(</span><span class="n">market_symbol</span><span class="o">=</span><span class="s">'SOL-PERP'</span><span class="p">):</span>
@@ -4996,9 +4999,10 @@ devnet: <a href="https://master.dlob.drift.trade/">https://master.dlob.drift.tra
 
 <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Funding Rates for </span><span class="si">{</span><span class="n">market_symbol</span><span class="si">}</span><span class="s">:"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">rate</span> <span class="ow">in</span> <span class="n">rates</span><span class="p">:</span>
-    <span class="n">funding_rate</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">rate</span><span class="p">[</span><span class="s">'fundingRate'</span><span class="p">])</span> <span class="o">/</span> <span class="mf">1e9</span>
+    <span class="n">funding_rate_pct</span> <span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">rate</span><span class="p">[</span><span class="s">'fundingRate'</span><span class="p">])</span> <span class="o">/</span> <span class="mf">1e9</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">rate</span><span class="p">[</span><span class="s">'oraclePriceTwap'</span><span class="p">])</span> <span class="o">/</span> <span class="mf">1e6</span>
+    <span class="n">funding_rate_pct_apr</span> <span class="o">=</span> <span class="n">funding_rate_pct</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">365</span> <span class="o">*</span> <span class="mi">100</span>
     <span class="c1"># ... any logic here, for example...
-</span>    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Slot: </span><span class="si">{</span><span class="n">rate</span><span class="p">[</span><span class="s">'slot'</span><span class="p">]</span><span class="si">}</span><span class="s">, Funding Rate: </span><span class="si">{</span><span class="n">funding_rate</span><span class="si">:</span><span class="p">.</span><span class="mi">9</span><span class="n">f</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</span>    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Slot: </span><span class="si">{</span><span class="n">rate</span><span class="p">[</span><span class="s">'slot'</span><span class="p">]</span><span class="si">}</span><span class="s">, Funding Rate: </span><span class="si">{</span><span class="n">funding_rate_ct</span><span class="si">:</span><span class="p">.</span><span class="mi">9</span><span class="n">f</span><span class="si">}</span><span class="s">%/hour (</span><span class="si">{</span><span class="n">funding_rate_pct_apr</span><span class="si">:</span><span class="p">.</span><span class="mi">2</span><span class="n">f</span><span class="si">}</span><span class="s">% APR)"</span><span class="p">)</span>
 
 </code></pre></div><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kr">interface</span> <span class="nx">FundingRate</span> <span class="p">{</span>
   <span class="nl">slot</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
@@ -5028,9 +5032,10 @@ devnet: <a href="https://master.dlob.drift.trade/">https://master.dlob.drift.tra
 
   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`Funding Rates for </span><span class="p">${</span><span class="nx">marketSymbol</span><span class="p">}</span><span class="s2">:`</span><span class="p">);</span>
   <span class="nx">rates</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">rate</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="kd">const</span> <span class="nx">fundingRate</span> <span class="o">=</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">rate</span><span class="p">.</span><span class="nx">fundingRate</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1</span><span class="nx">e9</span><span class="p">;</span>
+    <span class="kd">const</span> <span class="nx">fundingRatePct</span> <span class="o">=</span> <span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">rate</span><span class="p">.</span><span class="nx">fundingRate</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1</span><span class="nx">e9</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">rate</span><span class="p">.</span><span class="nx">oraclePriceTwap</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1</span><span class="nx">e6</span><span class="p">);</span>
+    <span class="kd">const</span> <span class="nx">fundingRatePctApr</span> <span class="o">=</span> <span class="nx">fundingRatePct</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">365</span> <span class="o">*</span> <span class="mi">100</span><span class="p">;</span>
     <span class="c1">// ... any logic here, for example...</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`Slot: </span><span class="p">${</span><span class="nx">rate</span><span class="p">.</span><span class="nx">slot</span><span class="p">}</span><span class="s2">, Funding Rate: </span><span class="p">${</span><span class="nx">fundingRate</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">9</span><span class="p">)}</span><span class="s2">`</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`Slot: </span><span class="p">${</span><span class="nx">rate</span><span class="p">.</span><span class="nx">slot</span><span class="p">}</span><span class="s2">, Funding Rate: </span><span class="p">${</span><span class="nx">fundingRatePct</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">9</span><span class="p">)}</span><span class="s2">%/hour (</span><span class="p">${</span><span class="nx">fundingRatePctApr</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">)}</span><span class="s2">% APR)`</span><span class="p">);</span>
   <span class="p">});</span>
 <span class="p">}</span>
 
@@ -5095,7 +5100,7 @@ The funding rate is returned as a string and needs to be divided by 1e9 to get t
 <tr>
 <td><code>fundingRate</code></td>
 <td>string</td>
-<td>Funding rate (divide by 1e9 for actual rate)</td>
+<td>Funding rate in quote/base. Divide by <code>oracleTwap</code> to get rate in percent (1e9 precision)</td>
 </tr>
 <tr>
 <td><code>cumulativeFundingRateLong</code></td>
@@ -5110,22 +5115,22 @@ The funding rate is returned as a string and needs to be divided by 1e9 to get t
 <tr>
 <td><code>oraclePriceTwap</code></td>
 <td>string</td>
-<td>Oracle price time-weighted average price</td>
+<td>Oracle price time-weighted average price (1e6 precision)</td>
 </tr>
 <tr>
 <td><code>markPriceTwap</code></td>
 <td>string</td>
-<td>Mark price time-weighted average price</td>
+<td>Mark price time-weighted average price (1e6 precision)</td>
 </tr>
 <tr>
 <td><code>fundingRateLong</code></td>
 <td>string</td>
-<td>Funding rate for long positions</td>
+<td>Funding rate for long positions (may differ from <code>fundingRate</code> when there is a position imbalance)</td>
 </tr>
 <tr>
 <td><code>fundingRateShort</code></td>
 <td>string</td>
-<td>Funding rate for short positions</td>
+<td>Funding rate for short positions (may differ from <code>fundingRate</code> when there is a position imbalance)</td>
 </tr>
 <tr>
 <td><code>periodRevenue</code></td>
@@ -5143,7 +5148,11 @@ The funding rate is returned as a string and needs to be divided by 1e9 to get t
 <td>Base asset amount with unsettled LP</td>
 </tr>
 </tbody></table>
-<h2 id='get-drift'><code>GET /DRIFT/</code></h2>
+
+<p>In order to calculate <code>fundingRate</code> in percentage:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>fundingRatePct = (fundingRate / 1e9) / (oraclePriceTwap / 1e6)
+fundingRatePctApr = fundingRatePct * 24 * 365
+</code></pre></div><h2 id='get-drift'><code>GET /DRIFT/</code></h2>
 <p>Returns the tokenomics information about the Drift token.</p>
 
 <table><thead>
@@ -5189,7 +5198,7 @@ The funding rate is returned as a string and needs to be divided by 1e9 to get t
 </tbody></table>
 
 <p>Example: <a href="https://data.api.drift.trade/rateHistory?marketIndex=0">https://data.api.drift.trade/rateHistory?marketIndex=0</a></p>
-<h1 id='historical-data'>Historical Data</h1>
+<h1 id='historical-data'>Historical Data</h1><h2 id='note-s3-flat-files-are-deprecated-and-have-stopped-updating-in-january-2025-please-use-the-data-api-going-forward'>NOTE: S3 flat files are deprecated and have stopped updating in January 2025. Please use the <a href="./_data_api.md">Data API</a> going forward.</h2>
 <p>Snapshots are collected by parsing on-chain transaction logs. For convience the below are parsed logs collected, stored as a CSV, and stored off-chain (~99% of records). Records are updated once per day.</p>
 
 <p>Please share any transaction signatures or time ranges you believe might be missing in Drift Protocol Discord.</p>
