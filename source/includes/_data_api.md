@@ -21,7 +21,6 @@ Example: [https://data.api.drift.trade/contracts](https://data.api.drift.trade/c
 
 ## `GET /fundingRates`
 
-Returns the last 30 days of funding rates by marketName or marketIndex. Note `fundingRate` is in `quote/base` units, so you must divide by `oraclePriceTwap` to convert to a percentage. (see [`GET /fundingRates`](#get-fundingrates))
 
 ```python
 import requests
@@ -84,16 +83,23 @@ async function main() {
 main().catch(error => console.error('An error occurred:', error));
 ```
 
-<aside class="notice">
-The funding rate is returned as a string and needs to be divided by 1e9 to get the actual rate.
-</aside>
+### Funding Rate Percentage Calculation
 
+Returns the last 30 days of funding rates by marketName or marketIndex. Note `fundingRate` is in `quote/base` units, so you must divide by `oraclePriceTwap` to convert to a percentage
+
+```
+fundingRatePct = (fundingRate / 1e9) / (oraclePriceTwap / 1e6)
+fundingRatePctApr = fundingRatePct * 24 * 365
+```
+
+### Parameters
 
 | Parameter        | Description                                      | Optional | Values                                              |
 | ---------------- | ------------------------------------------------ | -------- | --------------------------------------------------- |
 | marketName or marketIndex               | The market name or index for the perp market	         | NO       |  |
 
 Example: [https://data.api.drift.trade/fundingRates?marketName=SOL-PERP](https://data.api.drift.trade/fundingRates?marketName=SOL-PERP)
+
 
 ### Response
 The response is a json object with a `fundingRates` array. Each funding rate entry contains the following fields:
@@ -116,12 +122,6 @@ The response is a json object with a `fundingRates` array. Each funding rate ent
 | `baseAssetAmountWithAmm` | string | Base asset amount with AMM |
 | `baseAssetAmountWithUnsettledLp` | string | Base asset amount with unsettled LP |
 
-In order to calculate `fundingRate` in percentage:
-
-```
-fundingRatePct = (fundingRate / 1e9) / (oraclePriceTwap / 1e6)
-fundingRatePctApr = fundingRatePct * 24 * 365
-```
 
 
 ## `GET /DRIFT/`
