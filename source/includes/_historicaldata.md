@@ -1,6 +1,8 @@
-# Historical Data
+# Historical Data (Deprecated)
 
-## NOTE: S3 flat files are deprecated and have stopped updating in January 2025. Please use the [Data API](./_data_api.md) going forward.
+<aside class="warning">
+NOTE: These S3 flat files are deprecated and have stopped updating in January 2025. Please use the [Data API](#data-api) going forward.
+</aside>
 
 Snapshots are collected by parsing on-chain transaction logs. For convience the below are parsed logs collected, stored as a CSV, and stored off-chain (~99% of records). Records are updated once per day.
 
