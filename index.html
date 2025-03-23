@@ -427,6 +427,23 @@
               </ul>
           </li>
           <li>
+            <a href="#swift" class="toc-h1 toc-link" data-title="Swift">Swift</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#order-setup" class="toc-h2 toc-link" data-title="Order setup">Order setup</a>
+                  </li>
+                  <li>
+                    <a href="#order-example-market-taker" class="toc-h2 toc-link" data-title="Order example(market taker)">Order example(market taker)</a>
+                  </li>
+                  <li>
+                    <a href="#sign-order" class="toc-h2 toc-link" data-title="Sign order">Sign order</a>
+                  </li>
+                  <li>
+                    <a href="#submit-order-to-swift-api" class="toc-h2 toc-link" data-title="Submit order to Swift API">Submit order to Swift API</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#user" class="toc-h1 toc-link" data-title="User">User</a>
               <ul class="toc-list-h2">
                   <li>
@@ -692,13 +709,22 @@
 
 <p><code>yarn add @drift-labs/sdk</code></p>
 
-<p>auto-generated documentation here: [https://drift-labs.github.io/protocol-v2/sdk/]</p>
+<p>Auto-generated documentation <a href="https://drift-labs.github.io/protocol-v2/sdk/">here</a></p>
+
+<aside class="notice">
+  Latest TS dependencies can be found on GitHub <a href="https://github.com/drift-labs/protocol-v2/blob/master/sdk/package.json">here</a>
+</aside>
 <h2 id='python'>Python</h2>
 <p>Install driftpy from PyPI using pip:</p>
 
 <p><code>pip install driftpy</code></p>
 
-<p>auto-generated documentation here: [https://drift-labs.github.io/driftpy/]</p>
+<p>Auto-generated documentation <a href="https://drift-labs.github.io/driftpy/">here</a></p>
+
+<aside class="notice">
+  Latest Python dependencies can be found on GitHub <a href="https://github.com/drift-labs/driftpy/blob/master/pyproject.toml">here</a>
+
+</aside>
 <h2 id='http'>HTTP</h2>
 <p>Use the self-hosted HTTP API <a href="https://github.com/drift-labs/gateway">gateway</a></p>
 <h2 id='connection'>Connection</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">Connection</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@solana/web3.js</span><span class="dl">"</span><span class="p">;</span>
@@ -722,7 +748,7 @@
 
 <span class="n">keypair_file</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">'~/.config/solana/my-keypair.json'</span><span class="p">)</span>
 <span class="n">keypair</span> <span class="o">=</span> <span class="n">load_keypair</span><span class="p">(</span><span class="n">keypair_file</span><span class="p">)</span>
-<span class="n">wallet</span> <span class="o">=</span> <span class="n">Wallet</span><span class="p">(</span><span class="n">kp</span><span class="p">)</span>
+<span class="n">wallet</span> <span class="o">=</span> <span class="n">Wallet</span><span class="p">(</span><span class="n">keypair</span><span class="p">)</span>
 </code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code><span class="c"># use `DRIFT_GATEWAY_KEY` environment variable to configure the gateway wallet</span>
 <span class="c"># either path to .json keypair or base58 seed string</span>
 <span class="nb">export </span><span class="nv">DRIFT_GATEWAY_KEY</span><span class="o">=</span><span class="s2">"&lt;/path/to/my-keypair.json|&lt;KEYPAIR_BASE58_SEED&gt;"</span>
@@ -958,6 +984,13 @@
 <td>None</td>
 </tr>
 </tbody></table>
+
+<p>When subscribing to the client for delegate accounts, you have to be explicit about the following parameters:
+<code>
+subAccountIds: [SUBACCOUNT_ID],
+activeSubAccountId: SUBACCOUNT_ID,
+authority: TARGET_AUTHORITY,
+</code></p>
 <h2 id='user-initialization'>User Initialization</h2>
 <aside class="notice">
   initializing a new drift user account requires some rent (~.035 SOL). this can be reclaimed upon deletion.
@@ -2768,7 +2801,62 @@ localhost:8080/v2/orders
 <td></td>
 </tr>
 </tbody></table>
-<h1 id='user'>User</h1><h2 id='get-user'>Get User</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>   <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getUser</span><span class="p">();</span>
+<h1 id='swift'>Swift</h1>
+<p>Swift is an extension to Drift which enables users to place orders without needing to submit a transaction to the Solana network. 
+Instead of having users submit transactions to the Solana network, users sign a message containing their order parameters and submit it to keepers and market makers offchain. Keepers and market makers then bundle the message with their transaction to fill user orders.</p>
+
+<p>Orders have to be submitted to the Swift API: [https://swift.drift.trade]</p>
+<h2 id='order-setup'>Order setup</h2>
+<p>Similar to normal orders, order parameters need to be defined. Order parameters <a href="https://drift-labs.github.io/v2-teacher/#order-params">overview</a></p>
+
+<p>To pass an order to Swift, the following steps are required:
+1. Define order parameters
+2. Generate and Sign order
+3. Submit to Swift API</p>
+<h2 id='order-example-market-taker'>Order example(market taker)</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// 0 = SOL-PERP market</span>
+
+<span class="kd">const</span> <span class="nx">oracleInfo</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getOracleDataForPerpMarket</span><span class="p">(</span><span class="nx">marketIndex</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">highPrice</span> <span class="o">=</span> <span class="nx">oracleInfo</span><span class="p">.</span><span class="nx">price</span><span class="p">.</span><span class="nx">muln</span><span class="p">(</span><span class="mi">101</span><span class="p">).</span><span class="nx">divn</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">lowPrice</span> <span class="o">=</span> <span class="nx">oracleInfo</span><span class="p">.</span><span class="nx">price</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">orderParams</span> <span class="o">=</span> <span class="nx">getMarketOrderParams</span><span class="p">({</span>
+    <span class="na">marketIndex</span><span class="p">:</span> <span class="nx">marketIndex</span><span class="p">,</span>
+    <span class="na">marketType</span><span class="p">:</span> <span class="nx">MarketType</span><span class="p">.</span><span class="nx">PERP</span><span class="p">,</span>
+    <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
+    <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span> <span class="c1">// 0.1 SOL,</span>
+    <span class="na">auctionStartPrice</span><span class="p">:</span> <span class="nx">isVariant</span><span class="p">(</span><span class="nx">direction</span><span class="p">,</span> <span class="dl">'</span><span class="s1">long</span><span class="dl">'</span><span class="p">)</span> <span class="p">?</span> <span class="nx">lowPrice</span> <span class="p">:</span> <span class="nx">highPrice</span><span class="p">,</span>
+        <span class="na">auctionEndPrice</span><span class="p">:</span> <span class="nx">isVariant</span><span class="p">(</span><span class="nx">direction</span><span class="p">,</span> <span class="dl">'</span><span class="s1">long</span><span class="dl">'</span><span class="p">)</span> <span class="p">?</span> <span class="nx">highPrice</span> <span class="p">:</span> <span class="nx">lowPrice</span><span class="p">,</span>
+        <span class="na">auctionDuration</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+<span class="p">});</span>
+</code></pre></div><h2 id='sign-order'>Sign order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">slot</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">connection</span><span class="p">.</span><span class="nx">getSlot</span><span class="p">();</span>
+
+<span class="kd">const</span> <span class="nx">orderMessage</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">signedMsgOrderParams</span><span class="p">:</span> <span class="nx">orderParams</span><span class="p">,</span>
+    <span class="na">subAccountId</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">activeSubAccountId</span><span class="p">,</span>
+    <span class="na">slot</span><span class="p">:</span> <span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="nx">slot</span><span class="p">),</span>
+    <span class="na">uuid</span><span class="p">:</span> <span class="nx">generateSignedMsgUuid</span><span class="p">(),</span>
+    <span class="na">stopLossOrderParams</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+    <span class="na">takeProfitOrderParams</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="c1">// Sign the message</span>
+<span class="kd">const</span> <span class="nx">signedOrder</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">signSignedMsgOrderParamsMessage</span><span class="p">(</span><span class="nx">orderMessage</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">message</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="k">from</span><span class="p">(</span><span class="nx">signedOrder</span><span class="p">.</span><span class="nx">orderParams</span><span class="p">).</span><span class="nx">toString</span><span class="p">(</span><span class="dl">'</span><span class="s1">hex</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">signature</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="k">from</span><span class="p">(</span><span class="nx">signedOrder</span><span class="p">.</span><span class="nx">signature</span><span class="p">).</span><span class="nx">toString</span><span class="p">(</span><span class="dl">'</span><span class="s1">base64</span><span class="dl">'</span><span class="p">);</span>
+</code></pre></div><h2 id='submit-order-to-swift-api'>Submit order to Swift API</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">swiftUrl</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">https://swift.drift.trade/orders</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">response</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">axios</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">swiftUrl</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">market_index</span><span class="p">:</span> <span class="nx">marketIndex</span><span class="p">,</span>
+    <span class="na">market_type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">perp</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">message</span><span class="p">:</span> <span class="nx">message</span><span class="p">,</span>
+    <span class="na">signature</span><span class="p">:</span> <span class="nx">signature</span><span class="p">,</span>
+    <span class="na">taker_pubkey</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">publicKey</span><span class="p">.</span><span class="nx">toBase58</span><span class="p">(),</span>
+<span class="p">},</span> <span class="p">{</span>
+    <span class="na">headers</span><span class="p">:</span> <span class="p">{</span> <span class="dl">'</span><span class="s1">Content-Type</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">application/json</span><span class="dl">'</span> <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Order response:</span><span class="dl">"</span><span class="p">,</span> <span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
+</code></pre></div><h1 id='user'>User</h1><h2 id='get-user'>Get User</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>   <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getUser</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">user</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_user</span><span class="p">();</span>
 </code></pre></div><h3 id='typescript-23'>TypeScript</h3>
 <table><thead>
