@@ -88,14 +88,24 @@ Install @drift-labs/sdk from [npm](https://www.npmjs.com/package/@drift-labs/sdk
 
 `yarn add @drift-labs/sdk`
 
-auto-generated documentation here: [https://drift-labs.github.io/protocol-v2/sdk/]
+Auto-generated documentation <a href="https://drift-labs.github.io/protocol-v2/sdk/">here</a>
+
+<aside class="notice">
+  Latest TS dependencies can be found on GitHub <a href="https://github.com/drift-labs/protocol-v2/blob/master/sdk/package.json">here</a>
+</aside>
+
 
 ## Python
 Install driftpy from PyPI using pip:
 
 `pip install driftpy`
 
-auto-generated documentation here: [https://drift-labs.github.io/driftpy/]
+Auto-generated documentation <a href="https://drift-labs.github.io/driftpy/">here</a>
+
+<aside class="notice">
+  Latest Python dependencies can be found on GitHub <a href="https://github.com/drift-labs/driftpy/blob/master/pyproject.toml">here</a>
+
+</aside>
 
 ## HTTP
 Use the self-hosted HTTP API [gateway](https://github.com/drift-labs/gateway)
@@ -138,7 +148,7 @@ from driftpy.keypair import load_keypair
 
 keypair_file = os.path.expanduser('~/.config/solana/my-keypair.json')
 keypair = load_keypair(keypair_file)
-wallet = Wallet(kp)
+wallet = Wallet(keypair)
 ```
 ```shell
 # use `DRIFT_GATEWAY_KEY` environment variable to configure the gateway wallet
@@ -218,6 +228,15 @@ await driftClient.subscribe();
 | active_sub_account_id | ID of the initially active sub-account                                                          | Yes      | None                            |
 | sub_account_ids       | List of sub-account IDs to subscribe to                                                         | Yes      | None                            |
 | market_lookup_table   | Public key for the market lookup table                                                          | Yes      | None                            |
+
+
+
+  When subscribing to the client for delegate accounts, you have to be explicit about the following parameters:
+```
+subAccountIds: [SUBACCOUNT_ID],
+activeSubAccountId: SUBACCOUNT_ID,
+authority: TARGET_AUTHORITY,
+```
 
 
 ## User Initialization
@@ -1173,7 +1192,7 @@ await driftClient.settlePNL(
 );
 ```
 
-```python
+```python    
 market_index = 0
 user =  drift_client.get_user()
 await drift_client.settle_pnl(
@@ -1244,6 +1263,75 @@ perp_market_account = drift_client.get_perp_market_account(market_index);
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
 | market_index | The market index for the perp market | No | |
+
+# Swift
+Swift is an extension to Drift which enables users to place orders without needing to submit a transaction to the Solana network. 
+Instead of having users submit transactions to the Solana network, users sign a message containing their order parameters and submit it to keepers and market makers offchain. Keepers and market makers then bundle the message with their transaction to fill user orders.
+
+Orders have to be submitted to the Swift API: [https://swift.drift.trade]
+
+## Order setup
+Similar to normal orders, order parameters need to be defined. Order parameters <a href="https://drift-labs.github.io/v2-teacher/#order-params">overview</a>
+
+To pass an order to Swift, the following steps are required:
+1. Define order parameters
+2. Generate and Sign order
+3. Submit to Swift API
+
+## Order example(market taker)
+```typescript
+const marketIndex = 0; // 0 = SOL-PERP market
+
+const oracleInfo = driftClient.getOracleDataForPerpMarket(marketIndex);
+const highPrice = oracleInfo.price.muln(101).divn(100);
+const lowPrice = oracleInfo.price;
+
+const orderParams = getMarketOrderParams({
+    marketIndex: marketIndex,
+    marketType: MarketType.PERP,
+    direction: PositionDirection.LONG,
+    baseAssetAmount: driftClient.convertToPerpPrecision(0.1), // 0.1 SOL,
+    auctionStartPrice: isVariant(direction, 'long') ? lowPrice : highPrice,
+		auctionEndPrice: isVariant(direction, 'long') ? highPrice : lowPrice,
+		auctionDuration: 50,
+});
+```
+
+## Sign order
+```typescript
+const slot = await driftClient.connection.getSlot();
+
+const orderMessage = {
+    signedMsgOrderParams: orderParams,
+    subAccountId: driftClient.activeSubAccountId,
+    slot: new BN(slot),
+    uuid: generateSignedMsgUuid(),
+    stopLossOrderParams: null,
+    takeProfitOrderParams: null,
+};
+
+// Sign the message
+const signedOrder = driftClient.signSignedMsgOrderParamsMessage(orderMessage);
+const message = Buffer.from(signedOrder.orderParams).toString('hex');
+const signature = Buffer.from(signedOrder.signature).toString('base64');
+```
+
+## Submit order to Swift API
+```typescript
+const swiftUrl = 'https://swift.drift.trade/orders';
+
+const response = await axios.default.post(swiftUrl, {
+    market_index: marketIndex,
+    market_type: 'perp',
+    message: message,
+    signature: signature,
+    taker_pubkey: driftClient.wallet.publicKey.toBase58(),
+}, {
+    headers: { 'Content-Type': 'application/json' }
+});
+
+console.log("Order response:", response.data);
+```
 
 # User
 
