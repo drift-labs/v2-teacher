@@ -2114,7 +2114,7 @@ yarn cli manager-withdraw --vault-address=<VAULT_ADDRESS>
 Permissioned vaults require the __manager__ to initialize the `VaultDepositor` account before a depositor can deposit.
 
 Initialize a `VaultDepositor` account for `AUTHORITY_TO_ALLOW_DEPOSIT` to deposit:
-```
+```bash
 yarn cli init-vault-depositor --vault-address=<VAULT_ADDRESS> --deposit-authority=<AUTHORITY_TO_ALLOW_DEPOSIT>
 ```
 
@@ -2124,36 +2124,36 @@ yarn cli init-vault-depositor --vault-address=<VAULT_ADDRESS> --deposit-authorit
 Permissionless vaults allow anyone to deposit. The `deposit` instruction will initialize a `VaultDepositor` account if one does not exist.
 `DEPOSIT_AMOUNT` in human precision of the deposit token (e.g. 5 for 5 USDC).
 
-```
+```bash
 yarn cli deposit --vault-address=<VAULT_ADDRESS> --deposit-authority=<DEPOSIT_AUTHORITY> --amount=<DEPOSIT_AMOUNT>
 ```
 
 Alternatively, you can pass in the `VaultDepositor` address directly:
-```
+```bash
 yarn cli deposit --vault-depositor-address=<VAULT_DEPOSITOR_ADDRESS> --amount=<DEPOSIT_AMOUNT>
 ```
 
 ### Withdraw from a vault
 
 Request a withdraw from a vault:
-```
+```bash
 yarn cli request-withdraw --vault-address=<VAULT_ADDRESS> --authority=<AUTHORITY> --amount=<WITHDRAW_AMOUNT>
 ```
 
 After the redeem period has passed, the depositor can complete the withdraw:
-```
+```bash
 yarn cli withdraw --vault-address=<VAULT_ADDRESS> --authority=<AUTHORITY>
 ```
 
 ## View only commands
 
 To print out the current state of a `Vault`:
-```
+```bash
 yarn cli view-vault --vault-address=<VAULT_ADDRESS>
 ```
 
 To print out the current state of a `VaultDepositor`:
-```
+```bash
 yarn cli view-vault-depositor --vault-depositor-address=<VAULT_DEPOSITOR_ADDRESS>
 ```
 
