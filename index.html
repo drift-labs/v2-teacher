@@ -525,6 +525,23 @@
               </ul>
           </li>
           <li>
+            <a href="#drift-vaults" class="toc-h1 toc-link" data-title="Drift Vaults">Drift Vaults</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#vault-cli" class="toc-h2 toc-link" data-title="Vault cli">Vault cli</a>
+                  </li>
+                  <li>
+                    <a href="#manager-commands" class="toc-h2 toc-link" data-title="Manager commands">Manager commands</a>
+                  </li>
+                  <li>
+                    <a href="#depositor-commands" class="toc-h2 toc-link" data-title="Depositor Commands">Depositor Commands</a>
+                  </li>
+                  <li>
+                    <a href="#view-only-commands" class="toc-h2 toc-link" data-title="View only commands">View only commands</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#examples-bots" class="toc-h1 toc-link" data-title="Examples: Bots">Examples: Bots</a>
               <ul class="toc-list-h2">
                   <li>
@@ -3872,6 +3889,219 @@ it includes any accumulated interest.</p>
 <td><code>SPOT_IMF_PRECISION</code></td>
 </tr>
 </tbody></table>
+<h1 id='drift-vaults'>Drift Vaults</h1>
+<p>Drift Vaults are permissionless programs that let users deposit and withdraw tokens from a shared pool managed by a single delegate. The delegate can only place or cancel orders on behalf of the vault, with no access to user funds.</p>
+
+<p>A more indepth explanation of vaults can be found on the <a href="https://github.com/drift-labs/drift-vaults/wiki">wiki</a>.</p>
+<h2 id='vault-cli'>Vault cli</h2>
+<p>Anyone can setup their own vault with desired configuration. The cli utility to aid in the creation of vaults, can be found <a href="https://github.com/drift-labs/drift-vaults/tree/master/ts/sdk">here</a>.</p>
+<h3 id='clone-and-install-dependencies-for-the-cli'>Clone and install dependencies for the cli</h3><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="nx">git</span> <span class="nx">clone</span> <span class="nx">git</span><span class="p">@</span><span class="nd">github</span><span class="p">.</span><span class="nx">com</span><span class="p">:</span><span class="nx">drift</span><span class="o">-</span><span class="nx">labs</span><span class="o">/</span><span class="nx">drift</span><span class="o">-</span><span class="nx">vaults</span><span class="p">.</span><span class="nx">git</span>
+<span class="nx">cd</span> <span class="nx">ts</span><span class="o">/</span><span class="nx">sdk</span>
+<span class="nx">yarn</span>
+<span class="nx">yarn</span> <span class="nx">cli</span> <span class="o">--</span><span class="nx">help</span>
+</code></pre></div><h2 id='manager-commands'>Manager commands</h2>
+<p>The following commands are meant to be run by Vault Managers.</p>
+<h3 id='initialize-a-new-vault'>Initialize a new vault</h3>
+<p>This will initialize a new vault and update the manager as the delegate, unless --delegate is specified.
+Note that vault name must be unique.</p>
+
+<table><thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code>-n</code>, <code>--name</code></td>
+<td><code>&lt;string&gt;</code></td>
+<td>Name of the vault to create</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>-i</code>, <code>--market-index</code></td>
+<td><code>&lt;number&gt;</code></td>
+<td>Spot market index to accept for deposits (0 = USDC)</td>
+<td><code>&quot;0&quot;</code></td>
+</tr>
+<tr>
+<td><code>-r</code>, <code>--redeem-period</code></td>
+<td><code>&lt;number&gt;</code></td>
+<td>Period (in seconds) depositors must wait after requesting a withdrawal</td>
+<td><code>&quot;604800&quot;</code> (7 days)</td>
+</tr>
+<tr>
+<td><code>-x</code>, <code>--max-tokens</code></td>
+<td><code>&lt;number&gt;</code></td>
+<td>Maximum number of tokens (by market index) the vault can accept (0 = unlimited)</td>
+<td><code>&quot;0&quot;</code></td>
+</tr>
+<tr>
+<td><code>-m</code>, <code>--management-fee</code></td>
+<td><code>&lt;percent&gt;</code></td>
+<td>Annualized management fee charged to depositors</td>
+<td><code>&quot;0&quot;</code></td>
+</tr>
+<tr>
+<td><code>-s</code>, <code>--profit-share</code></td>
+<td><code>&lt;percent&gt;</code></td>
+<td>Percentage of profits charged by the manager</td>
+<td><code>&quot;0&quot;</code></td>
+</tr>
+<tr>
+<td><code>-p</code>, <code>--permissioned</code></td>
+<td><em>flag</em></td>
+<td>Makes the vault permissioned; depositors must be initialized by the manager</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>-a</code>, <code>--min-deposit-amount</code></td>
+<td><code>&lt;number&gt;</code></td>
+<td>Minimum token amount allowed for deposit</td>
+<td><code>&quot;0&quot;</code></td>
+</tr>
+<tr>
+<td><code>-d</code>, <code>--delegate</code></td>
+<td><code>&lt;publicKey&gt;</code></td>
+<td>Address to be set as the delegate of the vault</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>-h</code>, <code>--help</code></td>
+<td><em>flag</em></td>
+<td>Display help information for this command</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<div class="highlight"><pre class="highlight shell"><code>//This creates a new vault that takes SOL, with a redeem-period of 3600 seconds, max vault capacity of 10000 SOL, 2% management fee, 20% //profit share fee, is permissioned <span class="o">(</span>whitelist required<span class="o">)</span>, and has a min deposit of 1 SOL.
+
+yarn cli init-vault <span class="se">\</span>
+<span class="nt">--name</span> <span class="s2">"test vault"</span> <span class="se">\</span>
+<span class="nt">--market-index</span> 1 <span class="se">\</span>
+<span class="nt">--redeem-period</span> 3600 <span class="se">\</span>
+<span class="nt">--max-tokens</span> 10000 <span class="se">\</span>
+<span class="nt">--management-fee</span> 2 <span class="se">\</span>
+<span class="nt">--profit-share</span> 20 <span class="se">\</span>
+<span class="nt">--permissioned</span> <span class="se">\</span>
+<span class="nt">--min-deposit-amount</span> 1 <span class="se">\</span>
+<span class="nt">--url</span> &lt;your RPC url&gt; <span class="se">\</span>
+<span class="nt">--keypair</span> ~/.config/solana/keypair.json
+</code></pre></div><h3 id='update-vault'>Update vault</h3>
+<p>To update params in a vault:</p>
+
+<table><thead>
+<tr>
+<th>Option / Flag</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code>--vault-address</code></td>
+<td><code>&lt;address&gt;</code></td>
+<td>Address of the vault to update</td>
+</tr>
+<tr>
+<td><code>-r</code>, <code>--redeem-period</code></td>
+<td><code>&lt;number&gt;</code></td>
+<td>New redeem period in seconds (can only be lowered)</td>
+</tr>
+<tr>
+<td><code>-x</code>, <code>--max-tokens</code></td>
+<td><code>&lt;number&gt;</code></td>
+<td>Max tokens the vault can accept</td>
+</tr>
+<tr>
+<td><code>-a</code>, <code>--min-deposit-amount</code></td>
+<td><code>&lt;number&gt;</code></td>
+<td>Minimum token amount allowed to deposit</td>
+</tr>
+<tr>
+<td><code>-m</code>, <code>--management-fee</code></td>
+<td><code>&lt;percent&gt;</code></td>
+<td>New management fee (can only be lowered)</td>
+</tr>
+<tr>
+<td><code>-s</code>, <code>--profit-share</code></td>
+<td><code>&lt;percent&gt;</code></td>
+<td>New profit share percentage (can only be lowered)</td>
+</tr>
+<tr>
+<td><code>-p</code>, <code>--permissioned</code></td>
+<td><code>&lt;boolean&gt;</code></td>
+<td>Set the vault as permissioned (<code>true</code>) or open (<code>false</code>)(default)</td>
+</tr>
+<tr>
+<td><code>-h</code>, <code>--help</code></td>
+<td><em>flag</em></td>
+<td>Display help information for this command</td>
+</tr>
+</tbody></table>
+<div class="highlight"><pre class="highlight shell"><code>yarn cli manager-update-vault <span class="se">\</span>
+<span class="nt">--vault-address</span> &lt;vault_address&gt; <span class="se">\</span>
+<span class="nt">--redeem-period</span> 1000 <span class="se">\</span>
+<span class="nt">--max-tokens</span> 200000 <span class="se">\</span>
+<span class="nt">--management-fee</span> 0 <span class="se">\</span>
+<span class="nt">--profit-share</span> 0 <span class="se">\</span>
+<span class="nt">--url</span> &lt;your RPC url&gt; <span class="se">\</span>
+<span class="nt">--keypair</span> ~/.config/solana/keypair.json
+</code></pre></div><h3 id='update-margin-trading'>Update margin trading</h3>
+<p>If you wish to trade with spot margin on the vault, you must enable margin trading:
+<code>bash
+yarn cli manager-update-margin-trading-enabled --vault-address=&lt;VAULT_ADDRESS&gt; --enabled=&lt;true|false&gt;
+</code></p>
+<h3 id='manager-deposit'>Manager Deposit</h3>
+<p>Make a deposit into a vault as the manager (<code>DEPOSIT_AMOUNT</code> in human precision, e.g. 5 for 5 USDC):
+<code>bash
+yarn cli manager-deposit --vault-address=&lt;VAULT_ADDRESS&gt; --amount=&lt;DEPOSIT_AMOUNT&gt;
+</code></p>
+<h3 id='manager-withdraw'>Manager Withdraw</h3>
+<p>Make a withdraw request from a vault as the manager (<code>SHARES</code> in raw precision):
+<code>bash
+yarn cli manager-request-withdraw --vault-address=&lt;VAULT_ADDRESS&gt; --amount=&lt;SHARES&gt;
+</code></p>
+
+<p>After the redeem period has passed, the manager can complete the withdraw:
+<code>bash
+yarn cli manager-withdraw --vault-address=&lt;VAULT_ADDRESS&gt;
+</code></p>
+<h2 id='depositor-commands'>Depositor Commands</h2><h3 id='deposit-into-a-vault'>Deposit into a vault</h3><h4 id='permissioned-vaults'>Permissioned Vaults</h4>
+<p>Permissioned vaults require the <strong>manager</strong> to initialize the <code>VaultDepositor</code> account before a depositor can deposit.</p>
+
+<p>Initialize a <code>VaultDepositor</code> account for <code>AUTHORITY_TO_ALLOW_DEPOSIT</code> to deposit:
+<code>bash
+yarn cli init-vault-depositor --vault-address=&lt;VAULT_ADDRESS&gt; --deposit-authority=&lt;AUTHORITY_TO_ALLOW_DEPOSIT&gt;
+</code></p>
+<h4 id='permissioneless-vaults'>Permissioneless Vaults</h4>
+<p>Permissionless vaults allow anyone to deposit. The <code>deposit</code> instruction will initialize a <code>VaultDepositor</code> account if one does not exist.
+<code>DEPOSIT_AMOUNT</code> in human precision of the deposit token (e.g. 5 for 5 USDC).</p>
+<div class="highlight"><pre class="highlight shell"><code>yarn cli deposit <span class="nt">--vault-address</span><span class="o">=</span>&lt;VAULT_ADDRESS&gt; <span class="nt">--deposit-authority</span><span class="o">=</span>&lt;DEPOSIT_AUTHORITY&gt; <span class="nt">--amount</span><span class="o">=</span>&lt;DEPOSIT_AMOUNT&gt;
+</code></pre></div>
+<p>Alternatively, you can pass in the <code>VaultDepositor</code> address directly:
+<code>bash
+yarn cli deposit --vault-depositor-address=&lt;VAULT_DEPOSITOR_ADDRESS&gt; --amount=&lt;DEPOSIT_AMOUNT&gt;
+</code></p>
+<h3 id='withdraw-from-a-vault'>Withdraw from a vault</h3>
+<p>Request a withdraw from a vault:
+<code>bash
+yarn cli request-withdraw --vault-address=&lt;VAULT_ADDRESS&gt; --authority=&lt;AUTHORITY&gt; --amount=&lt;WITHDRAW_AMOUNT&gt;
+</code></p>
+
+<p>After the redeem period has passed, the depositor can complete the withdraw:
+<code>bash
+yarn cli withdraw --vault-address=&lt;VAULT_ADDRESS&gt; --authority=&lt;AUTHORITY&gt;
+</code></p>
+<h2 id='view-only-commands'>View only commands</h2>
+<p>To print out the current state of a <code>Vault</code>:
+<code>bash
+yarn cli view-vault --vault-address=&lt;VAULT_ADDRESS&gt;
+</code></p>
+
+<p>To print out the current state of a <code>VaultDepositor</code>:
+<code>bash
+yarn cli view-vault-depositor --vault-depositor-address=&lt;VAULT_DEPOSITOR_ADDRESS&gt;
+</code></p>
 <h1 id='examples-bots'>Examples: Bots</h1>
 <aside class="notice">
 This examples should be used as code reference only. Be cautious running any unreviewed code, especially if not on devnet.
