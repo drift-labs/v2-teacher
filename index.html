@@ -3894,8 +3894,12 @@ it includes any accumulated interest.</p>
 <p>Drift Vaults are permissionless programs that let users deposit and withdraw tokens from a shared pool managed by a single delegate. The delegate can only place or cancel orders on behalf of the vault, with no access to user funds.</p>
 
 <p>A more indepth explanation of vaults can be found on the <a href="https://github.com/drift-labs/drift-vaults/wiki">wiki</a>.</p>
+
+<p>There is also an intuitive vault manager page to help with vault creation <a href="https://vaults-ui-template.vercel.app/vault-manager/create-vault">here</a>.</p>
 <h2 id='vault-cli'>Vault cli</h2>
-<p>Anyone can setup their own vault with desired configuration. The cli utility to aid in the creation of vaults, can be found <a href="https://github.com/drift-labs/drift-vaults/tree/master/ts/sdk">here</a>.</p>
+<p>Anyone can setup their own vault with desired configuration. </p>
+
+<p>The cli utility to aid in the creation of vaults, can be found <a href="https://github.com/drift-labs/drift-vaults/tree/master/ts/sdk">here</a>.</p>
 <h3 id='clone-and-install-dependencies-for-the-cli'>Clone and install dependencies for the cli</h3><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="nx">git</span> <span class="nx">clone</span> <span class="nx">git</span><span class="p">@</span><span class="nd">github</span><span class="p">.</span><span class="nx">com</span><span class="p">:</span><span class="nx">drift</span><span class="o">-</span><span class="nx">labs</span><span class="o">/</span><span class="nx">drift</span><span class="o">-</span><span class="nx">vaults</span><span class="p">.</span><span class="nx">git</span>
 <span class="nx">cd</span> <span class="nx">ts</span><span class="o">/</span><span class="nx">sdk</span>
 <span class="nx">yarn</span>
@@ -3905,7 +3909,20 @@ it includes any accumulated interest.</p>
 <h3 id='initialize-a-new-vault'>Initialize a new vault</h3>
 <p>This will initialize a new vault and update the manager as the delegate, unless --delegate is specified.
 Note that vault name must be unique.</p>
+<div class="highlight"><pre class="highlight shell"><code>//This creates a new vault that takes SOL, with a redeem-period of 3600 seconds, max vault capacity of 10000 SOL, 2% management fee, 20% //profit share fee, is permissioned <span class="o">(</span>whitelist required<span class="o">)</span>, and has a min deposit of 1 SOL.
 
+yarn cli init-vault <span class="se">\</span>
+<span class="nt">--name</span> <span class="s2">"test vault"</span> <span class="se">\</span>
+<span class="nt">--market-index</span> 1 <span class="se">\</span>
+<span class="nt">--redeem-period</span> 3600 <span class="se">\</span>
+<span class="nt">--max-tokens</span> 10000 <span class="se">\</span>
+<span class="nt">--management-fee</span> 2 <span class="se">\</span>
+<span class="nt">--profit-share</span> 20 <span class="se">\</span>
+<span class="nt">--permissioned</span> <span class="se">\</span>
+<span class="nt">--min-deposit-amount</span> 1 <span class="se">\</span>
+<span class="nt">--url</span> &lt;your RPC url&gt; <span class="se">\</span>
+<span class="nt">--keypair</span> ~/.config/solana/keypair.json
+</code></pre></div>
 <table><thead>
 <tr>
 <th>Option</th>
@@ -3975,22 +3992,17 @@ Note that vault name must be unique.</p>
 <td>—</td>
 </tr>
 </tbody></table>
-<div class="highlight"><pre class="highlight shell"><code>//This creates a new vault that takes SOL, with a redeem-period of 3600 seconds, max vault capacity of 10000 SOL, 2% management fee, 20% //profit share fee, is permissioned <span class="o">(</span>whitelist required<span class="o">)</span>, and has a min deposit of 1 SOL.
-
-yarn cli init-vault <span class="se">\</span>
-<span class="nt">--name</span> <span class="s2">"test vault"</span> <span class="se">\</span>
-<span class="nt">--market-index</span> 1 <span class="se">\</span>
-<span class="nt">--redeem-period</span> 3600 <span class="se">\</span>
-<span class="nt">--max-tokens</span> 10000 <span class="se">\</span>
-<span class="nt">--management-fee</span> 2 <span class="se">\</span>
-<span class="nt">--profit-share</span> 20 <span class="se">\</span>
-<span class="nt">--permissioned</span> <span class="se">\</span>
-<span class="nt">--min-deposit-amount</span> 1 <span class="se">\</span>
+<h3 id='update-vault'>Update vault</h3>
+<p>To update params in a vault:</p>
+<div class="highlight"><pre class="highlight shell"><code>yarn cli manager-update-vault <span class="se">\</span>
+<span class="nt">--vault-address</span> &lt;vault_address&gt; <span class="se">\</span>
+<span class="nt">--redeem-period</span> 1000 <span class="se">\</span>
+<span class="nt">--max-tokens</span> 200000 <span class="se">\</span>
+<span class="nt">--management-fee</span> 0 <span class="se">\</span>
+<span class="nt">--profit-share</span> 0 <span class="se">\</span>
 <span class="nt">--url</span> &lt;your RPC url&gt; <span class="se">\</span>
 <span class="nt">--keypair</span> ~/.config/solana/keypair.json
-</code></pre></div><h3 id='update-vault'>Update vault</h3>
-<p>To update params in a vault:</p>
-
+</code></pre></div>
 <table><thead>
 <tr>
 <th>Option / Flag</th>
@@ -4039,71 +4051,43 @@ yarn cli init-vault <span class="se">\</span>
 <td>Display help information for this command</td>
 </tr>
 </tbody></table>
-<div class="highlight"><pre class="highlight shell"><code>yarn cli manager-update-vault <span class="se">\</span>
-<span class="nt">--vault-address</span> &lt;vault_address&gt; <span class="se">\</span>
-<span class="nt">--redeem-period</span> 1000 <span class="se">\</span>
-<span class="nt">--max-tokens</span> 200000 <span class="se">\</span>
-<span class="nt">--management-fee</span> 0 <span class="se">\</span>
-<span class="nt">--profit-share</span> 0 <span class="se">\</span>
-<span class="nt">--url</span> &lt;your RPC url&gt; <span class="se">\</span>
-<span class="nt">--keypair</span> ~/.config/solana/keypair.json
-</code></pre></div><h3 id='update-margin-trading'>Update margin trading</h3>
-<p>If you wish to trade with spot margin on the vault, you must enable margin trading:
-<code>bash
-yarn cli manager-update-margin-trading-enabled --vault-address=&lt;VAULT_ADDRESS&gt; --enabled=&lt;true|false&gt;
-</code></p>
-<h3 id='manager-deposit'>Manager Deposit</h3>
-<p>Make a deposit into a vault as the manager (<code>DEPOSIT_AMOUNT</code> in human precision, e.g. 5 for 5 USDC):
-<code>bash
-yarn cli manager-deposit --vault-address=&lt;VAULT_ADDRESS&gt; --amount=&lt;DEPOSIT_AMOUNT&gt;
-</code></p>
-<h3 id='manager-withdraw'>Manager Withdraw</h3>
-<p>Make a withdraw request from a vault as the manager (<code>SHARES</code> in raw precision):
-<code>bash
-yarn cli manager-request-withdraw --vault-address=&lt;VAULT_ADDRESS&gt; --amount=&lt;SHARES&gt;
-</code></p>
-
-<p>After the redeem period has passed, the manager can complete the withdraw:
-<code>bash
-yarn cli manager-withdraw --vault-address=&lt;VAULT_ADDRESS&gt;
-</code></p>
-<h2 id='depositor-commands'>Depositor Commands</h2><h3 id='deposit-into-a-vault'>Deposit into a vault</h3><h4 id='permissioned-vaults'>Permissioned Vaults</h4>
+<h3 id='update-margin-trading'>Update margin trading</h3>
+<p>If you wish to trade with spot margin on the vault, you must enable margin trading:</p>
+<div class="highlight"><pre class="highlight shell"><code>yarn cli manager-update-margin-trading-enabled <span class="nt">--vault-address</span><span class="o">=</span>&lt;VAULT_ADDRESS&gt; <span class="nt">--enabled</span><span class="o">=</span>&lt;<span class="nb">true</span>|false&gt;
+</code></pre></div><h3 id='manager-deposit'>Manager Deposit</h3>
+<p>Make a deposit into a vault as the manager (<code>DEPOSIT_AMOUNT</code> in human precision, e.g. 5 for 5 USDC):</p>
+<div class="highlight"><pre class="highlight shell"><code>yarn cli manager-deposit <span class="nt">--vault-address</span><span class="o">=</span>&lt;VAULT_ADDRESS&gt; <span class="nt">--amount</span><span class="o">=</span>&lt;DEPOSIT_AMOUNT&gt;
+</code></pre></div><h3 id='manager-withdraw'>Manager Withdraw</h3>
+<p>Make a withdraw request from a vault as the manager (<code>SHARES</code> in raw precision):</p>
+<div class="highlight"><pre class="highlight shell"><code>yarn cli manager-request-withdraw <span class="nt">--vault-address</span><span class="o">=</span>&lt;VAULT_ADDRESS&gt; <span class="nt">--amount</span><span class="o">=</span>&lt;SHARES&gt;
+</code></pre></div>
+<p>After the redeem period has passed, the manager can complete the withdraw:</p>
+<div class="highlight"><pre class="highlight shell"><code>yarn cli manager-withdraw <span class="nt">--vault-address</span><span class="o">=</span>&lt;VAULT_ADDRESS&gt;
+</code></pre></div><h2 id='depositor-commands'>Depositor Commands</h2><h3 id='deposit-into-a-vault'>Deposit into a vault</h3><h4 id='permissioned-vaults'>Permissioned Vaults</h4>
 <p>Permissioned vaults require the <strong>manager</strong> to initialize the <code>VaultDepositor</code> account before a depositor can deposit.</p>
 
-<p>Initialize a <code>VaultDepositor</code> account for <code>AUTHORITY_TO_ALLOW_DEPOSIT</code> to deposit:
-<code>bash
-yarn cli init-vault-depositor --vault-address=&lt;VAULT_ADDRESS&gt; --deposit-authority=&lt;AUTHORITY_TO_ALLOW_DEPOSIT&gt;
-</code></p>
-<h4 id='permissioneless-vaults'>Permissioneless Vaults</h4>
+<p>Initialize a <code>VaultDepositor</code> account for <code>AUTHORITY_TO_ALLOW_DEPOSIT</code> to deposit:</p>
+<div class="highlight"><pre class="highlight shell"><code>yarn cli init-vault-depositor <span class="nt">--vault-address</span><span class="o">=</span>&lt;VAULT_ADDRESS&gt; <span class="nt">--deposit-authority</span><span class="o">=</span>&lt;AUTHORITY_TO_ALLOW_DEPOSIT&gt;
+</code></pre></div><h4 id='permissioneless-vaults'>Permissioneless Vaults</h4>
 <p>Permissionless vaults allow anyone to deposit. The <code>deposit</code> instruction will initialize a <code>VaultDepositor</code> account if one does not exist.
 <code>DEPOSIT_AMOUNT</code> in human precision of the deposit token (e.g. 5 for 5 USDC).</p>
 <div class="highlight"><pre class="highlight shell"><code>yarn cli deposit <span class="nt">--vault-address</span><span class="o">=</span>&lt;VAULT_ADDRESS&gt; <span class="nt">--deposit-authority</span><span class="o">=</span>&lt;DEPOSIT_AUTHORITY&gt; <span class="nt">--amount</span><span class="o">=</span>&lt;DEPOSIT_AMOUNT&gt;
 </code></pre></div>
-<p>Alternatively, you can pass in the <code>VaultDepositor</code> address directly:
-<code>bash
-yarn cli deposit --vault-depositor-address=&lt;VAULT_DEPOSITOR_ADDRESS&gt; --amount=&lt;DEPOSIT_AMOUNT&gt;
-</code></p>
-<h3 id='withdraw-from-a-vault'>Withdraw from a vault</h3>
-<p>Request a withdraw from a vault:
-<code>bash
-yarn cli request-withdraw --vault-address=&lt;VAULT_ADDRESS&gt; --authority=&lt;AUTHORITY&gt; --amount=&lt;WITHDRAW_AMOUNT&gt;
-</code></p>
-
-<p>After the redeem period has passed, the depositor can complete the withdraw:
-<code>bash
-yarn cli withdraw --vault-address=&lt;VAULT_ADDRESS&gt; --authority=&lt;AUTHORITY&gt;
-</code></p>
-<h2 id='view-only-commands'>View only commands</h2>
-<p>To print out the current state of a <code>Vault</code>:
-<code>bash
-yarn cli view-vault --vault-address=&lt;VAULT_ADDRESS&gt;
-</code></p>
-
-<p>To print out the current state of a <code>VaultDepositor</code>:
-<code>bash
-yarn cli view-vault-depositor --vault-depositor-address=&lt;VAULT_DEPOSITOR_ADDRESS&gt;
-</code></p>
-<h1 id='examples-bots'>Examples: Bots</h1>
+<p>Alternatively, you can pass in the <code>VaultDepositor</code> address directly:</p>
+<div class="highlight"><pre class="highlight shell"><code>yarn cli deposit <span class="nt">--vault-depositor-address</span><span class="o">=</span>&lt;VAULT_DEPOSITOR_ADDRESS&gt; <span class="nt">--amount</span><span class="o">=</span>&lt;DEPOSIT_AMOUNT&gt;
+</code></pre></div><h3 id='withdraw-from-a-vault'>Withdraw from a vault</h3>
+<p>Request a withdraw from a vault:</p>
+<div class="highlight"><pre class="highlight shell"><code>yarn cli request-withdraw <span class="nt">--vault-address</span><span class="o">=</span>&lt;VAULT_ADDRESS&gt; <span class="nt">--authority</span><span class="o">=</span>&lt;AUTHORITY&gt; <span class="nt">--amount</span><span class="o">=</span>&lt;WITHDRAW_AMOUNT&gt;
+</code></pre></div>
+<p>After the redeem period has passed, the depositor can complete the withdraw:</p>
+<div class="highlight"><pre class="highlight shell"><code>yarn cli withdraw <span class="nt">--vault-address</span><span class="o">=</span>&lt;VAULT_ADDRESS&gt; <span class="nt">--authority</span><span class="o">=</span>&lt;AUTHORITY&gt;
+</code></pre></div><h2 id='view-only-commands'>View only commands</h2>
+<p>To print out the current state of a <code>Vault</code>:</p>
+<div class="highlight"><pre class="highlight shell"><code>yarn cli view-vault <span class="nt">--vault-address</span><span class="o">=</span>&lt;VAULT_ADDRESS&gt;
+</code></pre></div>
+<p>To print out the current state of a <code>VaultDepositor</code>:</p>
+<div class="highlight"><pre class="highlight shell"><code>yarn cli view-vault-depositor <span class="nt">--vault-depositor-address</span><span class="o">=</span>&lt;VAULT_DEPOSITOR_ADDRESS&gt;
+</code></pre></div><h1 id='examples-bots'>Examples: Bots</h1>
 <aside class="notice">
 This examples should be used as code reference only. Be cautious running any unreviewed code, especially if not on devnet.
 </aside>
