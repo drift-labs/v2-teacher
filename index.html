@@ -795,7 +795,10 @@
   <span class="c1"># set connection and wallet
 </span>  <span class="c1"># ...
 </span>  <span class="n">drift_client</span> <span class="o">=</span> <span class="n">DriftClient</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">wallet</span><span class="p">,</span> <span class="s">"mainnet"</span><span class="p">)</span>
-</code></pre></div><h3 id='typescript-2'>TypeScript</h3>
+</code></pre></div>
+<p><code>DriftClient</code> can be initialized with a dummy wallet for read-only or testing purposes.
+A valid private key is only required when signing transactions.</p>
+<h3 id='typescript-2'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1002,13 +1005,11 @@
 </tr>
 </tbody></table>
 
-<p>When subscribing to the client for delegate accounts, you have to be explicit about the following parameters:
-<code>
-subAccountIds: [SUBACCOUNT_ID],
+<p>When subscribing to the client for delegate accounts, you have to be explicit about the following parameters:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>subAccountIds: [SUBACCOUNT_ID],
 activeSubAccountId: SUBACCOUNT_ID,
 authority: TARGET_AUTHORITY,
-</code></p>
-<h2 id='user-initialization'>User Initialization</h2>
+</code></pre></div><h2 id='user-initialization'>User Initialization</h2>
 <aside class="notice">
   initializing a new drift user account requires some rent (~.035 SOL). this can be reclaimed upon deletion.
 </aside>
