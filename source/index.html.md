@@ -189,6 +189,9 @@ await driftClient.subscribe();
   drift_client = DriftClient(connection, wallet, "mainnet")
 ```
 
+```DriftClient``` can be initialized with a dummy wallet for read-only or testing purposes.
+A valid private key is only required when signing transactions.
+
 ### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
@@ -232,6 +235,7 @@ await driftClient.subscribe();
 
 
   When subscribing to the client for delegate accounts, you have to be explicit about the following parameters:
+  
 ```
 subAccountIds: [SUBACCOUNT_ID],
 activeSubAccountId: SUBACCOUNT_ID,
