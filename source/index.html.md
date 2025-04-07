@@ -234,13 +234,13 @@ A valid private key is only required when signing transactions.
 
 ### Client Initialization for Delegate accounts
 
-When subscribing to the client for delegate accounts, you have to be explicit about the following parameters:  
-```
-subAccountIds: [SUBACCOUNT_ID],
-activeSubAccountId: SUBACCOUNT_ID,
-authority: TARGET_AUTHORITY,
-```
+When subscribing to the client for delegate accounts, you have to be explicit about the following parameters:
 
+```
+subAccountIds: [SUBACCOUNT_ID],  
+activeSubAccountId: SUBACCOUNT_ID,  
+authority: TARGET_AUTHORITY,  
+```
 
 ## User Initialization
 
@@ -1276,10 +1276,10 @@ Orders have to be submitted to the Swift API: [https://swift.drift.trade]
 ## Order setup
 Similar to normal orders, order parameters need to be defined. Order parameters <a href="https://drift-labs.github.io/v2-teacher/#order-params">overview</a>
 
-To pass an order to Swift, the following steps are required:
-1. Define order parameters
-2. Generate and Sign order
-3. Submit to Swift API
+To pass an order to Swift, the following steps are required:  
+1. Define order parameters  
+2. Generate and Sign order  
+3. Submit to Swift API  
 
 ## Order example(market taker)
 ```typescript
@@ -1348,9 +1348,11 @@ console.log("Order response:", response.data);
 | signing_authority | Public key of the signing authority (delegate) that signs the order message | Yes       |
 
 <aside class="notice">
-When signing as a delegate, make sure to:
-  1. Initialize the client as delegate
-  2. Double check that taker_pubkey and signing_authority are passed in correctly
+  
+When signing as a delegate, make sure to:  
+  1. Initialize the client as delegate  
+  2. Double check that taker_pubkey and signing_authority are passed in correctly  
+  
 </aside>
 
 # User
