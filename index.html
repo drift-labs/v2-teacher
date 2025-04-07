@@ -2917,11 +2917,11 @@ Instead of having users submit transactions to the Solana network, users sign a 
 </tbody></table>
 
 <aside class="notice">
-  
-When signing as a delegate, make sure to:  
-  1. Initialize the client as delegate  
-  2. Double check that taker_pubkey and signing_authority are passed in correctly  
-  
+  <p>When signing as a delegate, make sure to:</p>
+  <ol>
+    <li>Initialize the client as a delegate</li>
+    <li>Double check that <code>taker_pubkey</code> and <code>signing_authority</code> are passed in correctly</li>
+  </ol>
 </aside>
 <h1 id='user'>User</h1><h2 id='get-user'>Get User</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>   <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getUser</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">user</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_user</span><span class="p">();</span>
