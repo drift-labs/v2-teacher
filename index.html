@@ -1005,13 +1005,11 @@ A valid private key is only required when signing transactions.</p>
 </tr>
 </tbody></table>
 <h3 id='client-initialization-for-delegate-accounts'>Client Initialization for Delegate accounts</h3>
-<p>When subscribing to the client for delegate accounts, you have to be explicit about the following parameters:<br>
-<code>
-subAccountIds: [SUBACCOUNT_ID],
-activeSubAccountId: SUBACCOUNT_ID,
-authority: TARGET_AUTHORITY,
-</code></p>
-<h2 id='user-initialization'>User Initialization</h2>
+<p>When subscribing to the client for delegate accounts, you have to be explicit about the following parameters:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>subAccountIds: [SUBACCOUNT_ID],  
+activeSubAccountId: SUBACCOUNT_ID,  
+authority: TARGET_AUTHORITY,  
+</code></pre></div><h2 id='user-initialization'>User Initialization</h2>
 <aside class="notice">
   initializing a new drift user account requires some rent (~.035 SOL). this can be reclaimed upon deletion.
 </aside>
@@ -2829,10 +2827,10 @@ Instead of having users submit transactions to the Solana network, users sign a 
 <h2 id='order-setup'>Order setup</h2>
 <p>Similar to normal orders, order parameters need to be defined. Order parameters <a href="https://drift-labs.github.io/v2-teacher/#order-params">overview</a></p>
 
-<p>To pass an order to Swift, the following steps are required:
-1. Define order parameters
-2. Generate and Sign order
-3. Submit to Swift API</p>
+<p>To pass an order to Swift, the following steps are required:<br>
+1. Define order parameters<br>
+2. Generate and Sign order<br>
+3. Submit to Swift API  </p>
 <h2 id='order-example-market-taker'>Order example(market taker)</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// 0 = SOL-PERP market</span>
 
 <span class="kd">const</span> <span class="nx">oracleInfo</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getOracleDataForPerpMarket</span><span class="p">(</span><span class="nx">marketIndex</span><span class="p">);</span>
@@ -2919,9 +2917,11 @@ Instead of having users submit transactions to the Solana network, users sign a 
 </tbody></table>
 
 <aside class="notice">
-When signing as a delegate, make sure to:
-  1. Initialize the client as delegate
-  2. Double check that taker_pubkey and signing_authority are passed in correctly
+  
+When signing as a delegate, make sure to:  
+  1. Initialize the client as delegate  
+  2. Double check that taker_pubkey and signing_authority are passed in correctly  
+  
 </aside>
 <h1 id='user'>User</h1><h2 id='get-user'>Get User</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>   <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getUser</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">user</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_user</span><span class="p">();</span>
