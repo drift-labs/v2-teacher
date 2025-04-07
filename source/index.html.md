@@ -1348,11 +1348,11 @@ console.log("Order response:", response.data);
 | signing_authority | Public key of the signing authority (delegate) that signs the order message | Yes       |
 
 <aside class="notice">
-  
-When signing as a delegate, make sure to:  
-  1. Initialize the client as delegate  
-  2. Double check that taker_pubkey and signing_authority are passed in correctly  
-  
+  <p>When signing as a delegate, make sure to:</p>
+  <ol>
+    <li>Initialize the client as a delegate</li>
+    <li>Double check that <code>taker_pubkey</code> and <code>signing_authority</code> are passed in correctly</li>
+  </ol>
 </aside>
 
 # User
