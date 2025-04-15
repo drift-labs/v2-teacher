@@ -539,6 +539,9 @@
                   <li>
                     <a href="#view-only-commands" class="toc-h2 toc-link" data-title="View only commands">View only commands</a>
                   </li>
+                  <li>
+                    <a href="#vault-manager-ui-template" class="toc-h2 toc-link" data-title="Vault Manager UI template">Vault Manager UI template</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -3989,8 +3992,6 @@ it includes any accumulated interest.</p>
 <p>Drift Vaults are permissionless programs that let users deposit and withdraw tokens from a shared pool managed by a single delegate. The delegate can only place or cancel orders on behalf of the vault, with no access to user funds.</p>
 
 <p>A more indepth explanation of vaults can be found on the <a href="https://github.com/drift-labs/drift-vaults/wiki">wiki</a>.</p>
-
-<p>There is also an intuitive vault manager page to help with vault creation <a href="https://vaults-ui-template.vercel.app/vault-manager/create-vault">here</a>.</p>
 <h2 id='vault-cli'>Vault cli</h2>
 <p>Anyone can setup their own vault with desired configuration. </p>
 
@@ -4182,7 +4183,16 @@ yarn cli init-vault <span class="se">\</span>
 </code></pre></div>
 <p>To print out the current state of a <code>VaultDepositor</code>:</p>
 <div class="highlight"><pre class="highlight shell"><code>yarn cli view-vault-depositor <span class="nt">--vault-depositor-address</span><span class="o">=</span>&lt;VAULT_DEPOSITOR_ADDRESS&gt;
-</code></pre></div><h1 id='examples-bots'>Examples: Bots</h1>
+</code></pre></div><h2 id='vault-manager-ui-template'>Vault Manager UI template</h2>
+<p>The <a href="https://github.com/drift-labs/vaults-ui-template">Vaults UI Template</a> is a fullstack Next.js interface for managing and interacting with Drift Vaults.</p>
+
+<ul>
+<li><strong>Manager tools</strong>: create vaults, update parameters, manage delegate settings<br></li>
+<li><strong>User interface</strong>: deposit/withdraw, view vault and depositor history</li>
+</ul>
+
+<p>Includes built-in API routes for vault creation, snapshot indexing, and analytics.</p>
+<h1 id='examples-bots'>Examples: Bots</h1>
 <aside class="notice">
 This examples should be used as code reference only. Be cautious running any unreviewed code, especially if not on devnet.
 </aside>
