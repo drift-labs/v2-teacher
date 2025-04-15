@@ -2086,8 +2086,6 @@ Drift Vaults are permissionless programs that let users deposit and withdraw tok
 
 A more indepth explanation of vaults can be found on the [wiki](https://github.com/drift-labs/drift-vaults/wiki).
 
-There is also an intuitive vault manager page to help with vault creation [here](https://vaults-ui-template.vercel.app/vault-manager/create-vault).
-
 ## Vault cli
 Anyone can setup their own vault with desired configuration. 
 
@@ -2204,7 +2202,6 @@ Initialize a `VaultDepositor` account for `AUTHORITY_TO_ALLOW_DEPOSIT` to deposi
 yarn cli init-vault-depositor --vault-address=<VAULT_ADDRESS> --deposit-authority=<AUTHORITY_TO_ALLOW_DEPOSIT>
 ```
 
-
 #### Permissioneless Vaults
 
 Permissionless vaults allow anyone to deposit. The `deposit` instruction will initialize a `VaultDepositor` account if one does not exist.
@@ -2247,4 +2244,13 @@ To print out the current state of a `VaultDepositor`:
 ```bash
 yarn cli view-vault-depositor --vault-depositor-address=<VAULT_DEPOSITOR_ADDRESS>
 ```
+
+## Vault Manager UI template
+
+The [Vaults UI Template](https://github.com/drift-labs/vaults-ui-template) is a fullstack Next.js interface for managing and interacting with Drift Vaults.
+
+- **Manager tools**: create vaults, update parameters, manage delegate settings  
+- **User interface**: deposit/withdraw, view vault and depositor history
+
+Includes built-in API routes for vault creation, snapshot indexing, and analytics.
 
