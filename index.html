@@ -2905,7 +2905,7 @@ Instead of having users submit transactions to the Solana network, users sign a 
     <span class="na">market_type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">perp</span><span class="dl">'</span><span class="p">,</span>
     <span class="na">message</span><span class="p">:</span> <span class="nx">message</span><span class="p">,</span>
     <span class="na">signature</span><span class="p">:</span> <span class="nx">signature</span><span class="p">,</span>
-    <span class="na">taker_pubkey</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">publicKey</span><span class="p">.</span><span class="nx">toBase58</span><span class="p">(),</span>
+    <span class="na">taker_authority</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">wallet</span><span class="p">.</span><span class="nx">publicKey</span><span class="p">.</span><span class="nx">toBase58</span><span class="p">(),</span>
 <span class="p">},</span> <span class="p">{</span>
     <span class="na">headers</span><span class="p">:</span> <span class="p">{</span> <span class="dl">'</span><span class="s1">Content-Type</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">application/json</span><span class="dl">'</span> <span class="p">}</span>
 <span class="p">});</span>
@@ -2916,7 +2916,7 @@ Instead of having users submit transactions to the Solana network, users sign a 
     <span class="s">"market_type"</span><span class="p">:</span> <span class="s">"perp"</span><span class="p">,</span>
     <span class="s">"message"</span><span class="p">:</span> <span class="n">message</span><span class="p">.</span><span class="n">decode</span><span class="p">(</span><span class="s">"utf-8"</span><span class="p">),</span>
     <span class="s">"signature"</span><span class="p">:</span> <span class="n">base64</span><span class="p">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">signature</span><span class="p">).</span><span class="n">decode</span><span class="p">(</span><span class="s">"utf-8"</span><span class="p">),</span>
-    <span class="s">"taker_pubkey"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">drift_client</span><span class="p">.</span><span class="n">wallet</span><span class="p">.</span><span class="n">public_key</span><span class="p">),</span>
+    <span class="s">"taker_authority"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">drift_client</span><span class="p">.</span><span class="n">wallet</span><span class="p">.</span><span class="n">public_key</span><span class="p">),</span>
 <span class="p">}</span>
 
 <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">post</span><span class="p">(</span>
@@ -2954,8 +2954,8 @@ Instead of having users submit transactions to the Solana network, users sign a 
 <td>No</td>
 </tr>
 <tr>
-<td>taker_pubkey</td>
-<td>Public key of the user account for which the order is being placed</td>
+<td>taker_authority</td>
+<td>Public key of the user account for which the order is being placed(authority).</td>
 <td>No</td>
 </tr>
 <tr>
