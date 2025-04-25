@@ -1167,8 +1167,9 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>
 <span class="n">spot_market_index</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># USDC
 </span><span class="n">amount</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_spot_precision</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">spot_market_index</span><span class="p">)</span> <span class="c1"># $100
-</span>
-<span class="n">tx_sig</span> <span class="o">=</span> <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">deposit</span><span class="p">(</span><span class="n">amount</span><span class="p">,</span> <span class="n">spot_market_index</span><span class="p">)</span>
+</span><span class="n">user_token_account</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_associated_token_account_public_key</span><span class="p">(</span><span class="n">spot_market_index</span><span class="p">)</span>
+
+<span class="n">tx_sig</span> <span class="o">=</span> <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">deposit</span><span class="p">(</span><span class="n">amount</span><span class="p">,</span> <span class="n">spot_market_index</span><span class="p">,</span> <span class="n">user_token_account</span><span class="p">)</span>
 </code></pre></div><h3 id='typescript-5'>TypeScript</h3>
 <table><thead>
 <tr>
@@ -1194,7 +1195,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td>associatedTokenAccount</td>
 <td>The public key of the token account you&#39;re depositing from. For sol, it can be the wallet&#39;s public key</td>
 <td>No</td>
-<td></td>
+<td>None (will derive ATA)</td>
 </tr>
 <tr>
 <td>subAccountId</td>
@@ -1232,8 +1233,8 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 </tr>
 <tr>
 <td>user_token_account</td>
-<td>The public key of the token account from which you are depositing</td>
-<td>Yes</td>
+<td>The public key of the token account you&#39;re depositing from. For sol, it can be the wallet&#39;s public key</td>
+<td>No</td>
 <td>None (will derive ATA)</td>
 </tr>
 <tr>
