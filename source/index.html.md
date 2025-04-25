@@ -362,8 +362,9 @@ await driftClient.deposit(
 
 spot_market_index = 0 # USDC
 amount = drift_client.convert_to_spot_precision(100, spot_market_index) # $100
+user_token_account = drift_client.get_associated_token_account_public_key(spot_market_index)
 
-tx_sig = await drift_client.deposit(amount, spot_market_index)
+tx_sig = await drift_client.deposit(amount, spot_market_index, user_token_account)
 ```
 
 ### TypeScript
@@ -371,7 +372,7 @@ tx_sig = await drift_client.deposit(amount, spot_market_index)
 | ----------- | ----------- | -------- | ------- |
 | amount | The amount to deposit in spot market's token mint precision  | No | |
 | marketIndex   | The spot market index you're depositing into | No | |
-| associatedTokenAccount   | The public key of the token account you're depositing from. For sol, it can be the wallet's public key | No | |
+| associatedTokenAccount   | The public key of the token account you're depositing from. For sol, it can be the wallet's public key | No | None (will derive ATA) |
 | subAccountId | The sub account you're depositing to  | Yes | active sub account |
 | reduceOnly | Whether the deposit should only reduce borrow  | Yes | false |
 
@@ -381,7 +382,7 @@ tx_sig = await drift_client.deposit(amount, spot_market_index)
 | ------------------- | --------------------------------------------------------------------------- | -------- | --------------------- |
 | amount              | The amount to deposit in the spot market's token mint precision             | No       |                       |
 | spot_market_index   | The index of the spot market where the deposit is made                      | No       |                       |
-| user_token_account  | The public key of the token account from which you are depositing           | Yes      | None (will derive ATA)|
+| user_token_account  | The public key of the token account you're depositing from. For sol, it can be the wallet's public key           | No      | None (will derive ATA)|
 | sub_account_id      | The sub account to which the deposit is being made                          | Yes      | Active sub-account    |
 | reduce_only         | Whether the deposit should only reduce borrow                               | Yes      | false                 |
 | user_initialized    | Indicates if the user is already initialized (used internally, typically)   | Yes      | true                  |
