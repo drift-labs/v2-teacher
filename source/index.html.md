@@ -358,15 +358,6 @@ await driftClient.deposit(
 );
 ```
 
-```python
-
-spot_market_index = 0 # USDC
-amount = drift_client.convert_to_spot_precision(100, spot_market_index) # $100
-user_token_account = drift_client.get_associated_token_account_public_key(spot_market_index)
-
-tx_sig = await drift_client.deposit(amount, spot_market_index, user_token_account)
-```
-
 ### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
@@ -376,6 +367,14 @@ tx_sig = await drift_client.deposit(amount, spot_market_index, user_token_accoun
 | subAccountId | The sub account you're depositing to  | Yes | active sub account |
 | reduceOnly | Whether the deposit should only reduce borrow  | Yes | false |
 
+```python
+
+spot_market_index = 0 # USDC
+amount = drift_client.convert_to_spot_precision(100, spot_market_index) # $100
+user_token_account = drift_client.get_associated_token_account_public_key(spot_market_index)
+
+tx_sig = await drift_client.deposit(amount, spot_market_index, user_token_account)
+```
 
 ### Python
 | Parameter           | Description                                                                 | Optional | Default               |
