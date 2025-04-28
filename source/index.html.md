@@ -523,6 +523,7 @@ Market(), Limit(), Oracle() orders all support auction parameters.
 | auctionStartPrice | the price the auction starts at | Yes | |
 | auctionEndPrice | the price the auction ends at | Yes | |
 | maxTs | the max timestamp (on-chain unix timestamp) before the order expires | Yes | |
+| bitFlags | add additional order hooks (e.g. enter high leverage mode) | Yes | |
 
 ### Python
 | Parameter           | Description                                           | Optional | Default                         |
