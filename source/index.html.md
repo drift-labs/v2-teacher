@@ -482,14 +482,14 @@ await drift_client.transfer_deposit(
 This function allows users to transfer a perpetual position from one sub account to another. 
 Both accounts must belong to the same authority.
 
-``` Typescript
+```typescript
 //This example transfers a 1 sol position from subaccount 0 to subaccount 1
 await driftClient.transferPerpPosition(  
-      fromSubAccountId: 0,  
-      toSubAccountId: 1,  
-      marketIndex: 0,  
-      amount: driftClient.convertToPerpPrecision(1),
-    );  
+  fromSubAccountId: 0,  
+  toSubAccountId: 1,  
+  marketIndex: 0,  
+  amount: driftClient.convertToPerpPrecision(1),
+);  
 ```
 
 ### Typescript
