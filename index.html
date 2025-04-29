@@ -374,6 +374,9 @@
                     <a href="#transferring-deposits" class="toc-h2 toc-link" data-title="Transferring Deposits">Transferring Deposits</a>
                   </li>
                   <li>
+                    <a href="#transferring-positions" class="toc-h2 toc-link" data-title="Transferring positions">Transferring positions</a>
+                  </li>
+                  <li>
                     <a href="#order-types" class="toc-h2 toc-link" data-title="Order Types">Order Types</a>
                   </li>
                   <li>
@@ -1439,7 +1442,46 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td></td>
 </tr>
 </tbody></table>
-<h2 id='order-types'>Order Types</h2><h3 id='typescript-8'>TypeScript</h3>
+<h2 id='transferring-positions'>Transferring positions</h2>
+<p>This function allows users to transfer a perpetual position from one sub account to another. 
+Both accounts must belong to the same authority.</p>
+<div class="highlight"><pre class="highlight plaintext"><code>//This example transfers a 1 sol position from subaccount 0 to subaccount 1
+await driftClient.transferPerpPosition(  
+      fromSubAccountId: 0,  
+      toSubAccountId: 1,  
+      marketIndex: 0,  
+      amount: driftClient.convertToPerpPrecision(1),
+    );  
+</code></pre></div><h3 id='typescript-8'>Typescript</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>fromSubAccountId</td>
+<td>The sub-account ID from which the position will be transferred.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>toSubAccountId</td>
+<td>The destination sub-account ID to which the position will be transferred.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>marketIndex</td>
+<td>The index of the market where the position exists.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>The amount of the position to transfer between sub-accounts.</td>
+<td>No</td>
+</tr>
+</tbody></table>
+<h2 id='order-types'>Order Types</h2><h3 id='typescript-9'>TypeScript</h3>
 <p>MARKET, LIMIT, ORACLE orders all support auction parameters.</p>
 
 <table><thead>
@@ -1499,7 +1541,7 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <td>Market order using oracle offset for auction parameters.</td>
 </tr>
 </tbody></table>
-<h2 id='order-params'>Order Params</h2><h3 id='typescript-9'>TypeScript</h3>
+<h2 id='order-params'>Order Params</h2><h3 id='typescript-10'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1816,7 +1858,7 @@ If the post only is not used, a limit order can end up being a taker or maker.</
     }]
    }'</span> <span class="se">\</span>
 localhost:8080/v2/orders
-</code></pre></div><h3 id='typescript-10'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-11'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1886,7 +1928,7 @@ localhost:8080/v2/orders
     }]
    }'</span> <span class="se">\</span>
 localhost:8080/v2/orders
-</code></pre></div><h3 id='typescript-11'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-12'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1983,7 +2025,7 @@ localhost:8080/v2/orders
       }]
     }'</span> <span class="se">\</span>
 localhost:8080/v2/orders
-</code></pre></div><h3 id='typescript-12'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-13'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2057,7 +2099,7 @@ localhost:8080/v2/orders
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>
 <span class="n">order_dd</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">cancel_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">);</span>
-</code></pre></div><h3 id='typescript-13'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-14'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2107,7 +2149,7 @@ localhost:8080/v2/orders
 </code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> DELETE <span class="nt">-H</span> <span class="s1">'content-type: application/json'</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{ "userIds": [1] }'</span> <span class="se">\</span>
   localhost:8080/v2/orders
-</code></pre></div><h3 id='typescript-14'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-15'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2159,7 +2201,7 @@ localhost:8080/v2/orders
 </span></code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> DELETE <span class="nt">-H</span> <span class="s1">'content-type: application/json'</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{ "marketIndex": 1, "marketType": "spot" }'</span> <span class="se">\</span>
   localhost:8080/v2/orders
-</code></pre></div><h3 id='typescript-15'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-16'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2289,7 +2331,7 @@ localhost:8080/v2/orders
       }
    }'</span> <span class="se">\</span>
 localhost:8080/v2/orders/cancelAndPlace
-</code></pre></div><h3 id='typescript-16'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-17'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2341,7 +2383,7 @@ localhost:8080/v2/orders/cancelAndPlace
 </tbody></table>
 
 <p>To cancel all orders, do not set any parameters.</p>
-<h2 id='modify-order-params'>Modify Order Params</h2><h3 id='typescript-17'>TypeScript</h3>
+<h2 id='modify-order-params'>Modify Order Params</h2><h3 id='typescript-18'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2548,7 +2590,7 @@ localhost:8080/v2/orders/cancelAndPlace
     }]
    }'</span> <span class="se">\</span>
 localhost:8080/v2/orders
-</code></pre></div><h3 id='typescript-18'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-19'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2627,7 +2669,7 @@ localhost:8080/v2/orders
     }]
    }'</span> <span class="se">\</span>
 localhost:8080/v2/orders
-</code></pre></div><h3 id='typescript-19'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-20'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2695,7 +2737,7 @@ localhost:8080/v2/orders
    <span class="n">user</span><span class="p">.</span><span class="n">get_user_account</span><span class="p">(),</span>
    <span class="n">market_index</span>
 <span class="p">)</span>
-</code></pre></div><h3 id='typescript-20'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-21'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2756,7 +2798,7 @@ localhost:8080/v2/orders
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
 <span class="n">spot_market_account</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_spot_market_account</span><span class="p">(</span><span class="n">market_index</span><span class="p">);</span>
-</code></pre></div><h3 id='typescript-21'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-22'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2793,7 +2835,7 @@ localhost:8080/v2/orders
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
 <span class="n">perp_market_account</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_perp_market_account</span><span class="p">(</span><span class="n">market_index</span><span class="p">);</span>
-</code></pre></div><h3 id='typescript-22'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-23'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2977,7 +3019,7 @@ Instead of having users submit transactions to the Solana network, users sign a 
 </aside>
 <h1 id='user'>User</h1><h2 id='get-user'>Get User</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>   <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getUser</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">user</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_user</span><span class="p">();</span>
-</code></pre></div><h3 id='typescript-23'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-24'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3033,7 +3075,7 @@ Instead of having users submit transactions to the Solana network, users sign a 
   <span class="nt">-H</span> <span class="s1">'content-type: application/json'</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{"marketIndex":0,"marketType":"spot"}'</span> <span class="se">\</span>
 localhost:8080/v2/positions
-</code></pre></div><h3 id='typescript-24'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-25'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3087,7 +3129,7 @@ localhost:8080/v2/positions
   <span class="nt">-H</span> <span class="s1">'content-type: application/json'</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{"marketIndex":0,"marketType":"perp"}'</span> <span class="se">\</span>
 localhost:8080/v2/positions
-</code></pre></div><h3 id='typescript-25'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-26'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3129,7 +3171,7 @@ localhost:8080/v2/positions
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">order_id</span> <span class="o">=</span> <span class="mi">1</span>
 
 <span class="n">order</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">)</span>
-</code></pre></div><h3 id='typescript-26'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-27'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3169,7 +3211,7 @@ localhost:8080/v2/positions
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">user_order_id</span> <span class="o">=</span> <span class="mi">1</span>
 
 <span class="n">order</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_order_by_user_order_id</span><span class="p">(</span><span class="n">user_order_id</span><span class="p">)</span>
-</code></pre></div><h3 id='typescript-27'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-28'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3206,7 +3248,7 @@ localhost:8080/v2/positions
 </code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl localhost:8080/v2/orders
 </code></pre></div><h2 id='get-unrealized-perp-pnl'>Get Unrealized Perp Pnl</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">pnl</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getUnrealizedPNL</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">pnl</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_unrealized_pnl</span><span class="p">()</span>
-</code></pre></div><h3 id='typescript-28'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-29'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3276,7 +3318,7 @@ localhost:8080/v2/positions
 </tbody></table>
 <h2 id='get-unrealized-funding-pnl'>Get Unrealized Funding Pnl</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">pnl</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getUnrealizedFundingPNL</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">pnl</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_unrealized_funding_pnl</span><span class="p">()</span>
-</code></pre></div><h3 id='typescript-29'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-30'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3310,7 +3352,7 @@ localhost:8080/v2/positions
 </tbody></table>
 <h2 id='get-total-collateral'>Get Total Collateral</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">totalCollateral</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getTotalCollateral</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">total_collateral</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_total_collateral</span><span class="p">()</span>
-</code></pre></div><h3 id='typescript-30'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-31'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3358,7 +3400,7 @@ localhost:8080/v2/positions
 <p>Asset weights vary based on whether you&#39;re checking the initial or maintenance margin requirement. Initial is used for initial leverage extension, maintenance for determining liquidations.</p>
 <h2 id='get-margin-requirement'>Get Margin Requirement</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">marginRequirement</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getMarginRequirement</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">margin_requirement</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_margin_requirement</span><span class="p">()</span>
-</code></pre></div><h3 id='typescript-31'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-32'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3418,7 +3460,7 @@ localhost:8080/v2/positions
 <p>Liability weights (for borrows) and margin ratios (for perp positions) vary based on whether you&#39;re checking the initial or maintenance margin requirement. Initial is used for initial leverage extension, maintenance for determining liquidations.</p>
 <h2 id='get-free-collateral'>Get Free Collateral</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">freeCollateral</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getFreeCollateral</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">free_collateral</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_free_collateral</span><span class="p">()</span>
-</code></pre></div><h3 id='typescript-32'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-33'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3454,7 +3496,7 @@ localhost:8080/v2/positions
 <p>Free collateral is the difference between your total collateral and your margin requirement.</p>
 <h2 id='get-leverage'>Get Leverage</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">leverage</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getLeverage</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">leverage</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_leverage</span><span class="p">()</span>
-</code></pre></div><h3 id='typescript-33'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-34'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3557,7 +3599,7 @@ localhost:8080/v2/positions
 <span class="n">event_subscriber</span><span class="p">.</span><span class="n">subscribe</span><span class="p">()</span>
 
 <span class="n">event_subscriber</span><span class="p">.</span><span class="n">event_emitter</span><span class="p">.</span><span class="n">new_event</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
-</code></pre></div><h3 id='typescript-34'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-35'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
