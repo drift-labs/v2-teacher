@@ -1445,13 +1445,13 @@ The next sub account id can be found by calling <code>driftClient.getNextSubAcco
 <h2 id='transferring-positions'>Transferring Positions</h2>
 <p>This function allows users to transfer a perpetual position from one sub account to another. 
 Both accounts must belong to the same authority.</p>
-<div class="highlight"><pre class="highlight plaintext"><code>//This example transfers a 1 sol position from subaccount 0 to subaccount 1
-await driftClient.transferPerpPosition(  
-      fromSubAccountId: 0,  
-      toSubAccountId: 1,  
-      marketIndex: 0,  
-      amount: driftClient.convertToPerpPrecision(1),
-    );  
+<div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="c1">//This example transfers a 1 sol position from subaccount 0 to subaccount 1</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">transferPerpPosition</span><span class="p">(</span>  
+  <span class="nx">fromSubAccountId</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  
+  <span class="nx">toSubAccountId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  
+  <span class="nx">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  
+  <span class="nx">amount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+<span class="p">);</span>  
 </code></pre></div><h3 id='typescript-8'>Typescript</h3>
 <table><thead>
 <tr>
