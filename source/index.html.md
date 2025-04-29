@@ -478,7 +478,7 @@ await drift_client.transfer_deposit(
 | from_sub_account_id | The sub account from which the funds are withdrawn    | No | |
 | to_sub_account_id   | The sub account to which the funds are deposited      | No | |
 
-## Transferring positions 
+## Transferring Positions 
 This function allows users to transfer a perpetual position from one sub account to another. 
 Both accounts must belong to the same authority.
 
