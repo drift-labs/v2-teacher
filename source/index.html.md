@@ -478,6 +478,28 @@ await drift_client.transfer_deposit(
 | from_sub_account_id | The sub account from which the funds are withdrawn    | No | |
 | to_sub_account_id   | The sub account to which the funds are deposited      | No | |
 
+## Transferring positions 
+This function allows users to transfer a perpetual position from one sub account to another. 
+Both accounts must belong to the same authority.
+
+``` Typescript
+//This example transfers a 1 sol position from subaccount 0 to subaccount 1
+await driftClient.transferPerpPosition(  
+      fromSubAccountId: 0,  
+      toSubAccountId: 1,  
+      marketIndex: 0,  
+      amount: driftClient.convertToPerpPrecision(1),
+    );  
+```
+
+### Typescript
+| Parameter         | Description                                                                  | Optional |
+| ----------------- | ---------------------------------------------------------------------------- | -------- |
+| fromSubAccountId  | The sub-account ID from which the position will be transferred. | No       |         
+| toSubAccountId    | The destination sub-account ID to which the position will be transferred. | No       |         
+| marketIndex       | The index of the market where the position exists.                | No       |         
+| amount            | The amount of the position to transfer between sub-accounts.                 | No       |         
+
 ## Order Types
 
 ### TypeScript
