@@ -180,13 +180,16 @@ const driftClient = new DriftClient({
 await driftClient.subscribe();
 ```
 ```python
-  from anchorpy import Wallet
-  from driftpy.drift_client import DriftClient
-  from solana.rpc.async_api import AsyncClient
+from anchorpy import Wallet
+from driftpy.drift_client import DriftClient
+from solana.rpc.async_api import AsyncClient
 
-  # set connection and wallet
-  # ...
-  drift_client = DriftClient(connection, wallet, "mainnet")
+# set connection and wallet
+# ...
+drift_client = DriftClient(connection, wallet, "mainnet")
+
+await drift_client.add_user(0) # Assuming a Drift account has already been created for the Keypair with which you created your DriftClient
+await drift_client.subscribe() 
 ```
 
 ```DriftClient``` can be initialized with a dummy wallet for read-only or testing purposes.
