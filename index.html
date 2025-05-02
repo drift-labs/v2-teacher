@@ -802,7 +802,7 @@
 # ...
 </span><span class="n">drift_client</span> <span class="o">=</span> <span class="n">DriftClient</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">wallet</span><span class="p">,</span> <span class="s">"mainnet"</span><span class="p">)</span>
 
-<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">add_user</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># Assuming a Drift account has already been created for the Keypair with which you created your DriftClient
+<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">add_user</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># Assuming a Drift account has already been created
 </span><span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">subscribe</span><span class="p">()</span> 
 </code></pre></div>
 <p><code>DriftClient</code> can be initialized with a dummy wallet for read-only or testing purposes.
