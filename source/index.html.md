@@ -188,7 +188,7 @@ from solana.rpc.async_api import AsyncClient
 # ...
 drift_client = DriftClient(connection, wallet, "mainnet")
 
-await drift_client.add_user(0) # Assuming a Drift account has already been created for the Keypair with which you created your DriftClient
+await drift_client.add_user(0) # Assuming a Drift account has already been created
 await drift_client.subscribe() 
 ```
 
