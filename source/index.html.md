@@ -1304,7 +1304,7 @@ To pass an order to Swift, the following steps are required:
 3. Submit to Swift API  
 
 ## Order example(market taker)
-```Typescript
+```typescript
 const marketIndex = 0; // 0 = SOL-PERP market
 
 const oracleInfo = driftClient.getOracleDataForPerpMarket(marketIndex);
@@ -1322,7 +1322,7 @@ const orderParams = getMarketOrderParams({
 });
 ```
 
-```Python
+```python
 market_index = 0
 oracle_info = drift_client.get_oracle_price_data_for_perp_market(market_index)
 
@@ -1360,7 +1360,7 @@ const message = Buffer.from(signedOrder.orderParams).toString('hex');
 const signature = Buffer.from(signedOrder.signature).toString('base64');
 ```
 
-```Python
+```python
 slot_response = json.loads((await drift_client.connection.get_slot()).to_json())
 slot = slot_response["result"]
 
@@ -1398,7 +1398,7 @@ const response = await axios.default.post(swiftUrl, {
 
 console.log("Order response:", response.data);
 ```
-```Python
+```python
 payload = {
     "market_index": market_index,
     "market_type": "perp",
