@@ -2882,37 +2882,37 @@ Instead of having users submit transactions to the Solana network, users sign a 
 1. Define order parameters<br>
 2. Generate and Sign order<br>
 3. Submit to Swift API  </p>
-<h2 id='order-example-market-taker'>Order example(market taker)</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// 0 = SOL-PERP market</span>
+<h2 id='order-example-market-taker'>Order example(market taker)</h2><div class="highlight"><pre class="highlight plaintext"><code>const marketIndex = 0; // 0 = SOL-PERP market
 
-<span class="kd">const</span> <span class="nx">oracleInfo</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getOracleDataForPerpMarket</span><span class="p">(</span><span class="nx">marketIndex</span><span class="p">);</span>
-<span class="kd">const</span> <span class="nx">highPrice</span> <span class="o">=</span> <span class="nx">oracleInfo</span><span class="p">.</span><span class="nx">price</span><span class="p">.</span><span class="nx">muln</span><span class="p">(</span><span class="mi">101</span><span class="p">).</span><span class="nx">divn</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
-<span class="kd">const</span> <span class="nx">lowPrice</span> <span class="o">=</span> <span class="nx">oracleInfo</span><span class="p">.</span><span class="nx">price</span><span class="p">;</span>
+const oracleInfo = driftClient.getOracleDataForPerpMarket(marketIndex);
+const highPrice = oracleInfo.price.muln(101).divn(100);
+const lowPrice = oracleInfo.price;
 
-<span class="kd">const</span> <span class="nx">orderParams</span> <span class="o">=</span> <span class="nx">getMarketOrderParams</span><span class="p">({</span>
-    <span class="na">marketIndex</span><span class="p">:</span> <span class="nx">marketIndex</span><span class="p">,</span>
-    <span class="na">marketType</span><span class="p">:</span> <span class="nx">MarketType</span><span class="p">.</span><span class="nx">PERP</span><span class="p">,</span>
-    <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">LONG</span><span class="p">,</span>
-    <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span> <span class="c1">// 0.1 SOL,</span>
-    <span class="na">auctionStartPrice</span><span class="p">:</span> <span class="nx">isVariant</span><span class="p">(</span><span class="nx">direction</span><span class="p">,</span> <span class="dl">'</span><span class="s1">long</span><span class="dl">'</span><span class="p">)</span> <span class="p">?</span> <span class="nx">lowPrice</span> <span class="p">:</span> <span class="nx">highPrice</span><span class="p">,</span>
-        <span class="na">auctionEndPrice</span><span class="p">:</span> <span class="nx">isVariant</span><span class="p">(</span><span class="nx">direction</span><span class="p">,</span> <span class="dl">'</span><span class="s1">long</span><span class="dl">'</span><span class="p">)</span> <span class="p">?</span> <span class="nx">highPrice</span> <span class="p">:</span> <span class="nx">lowPrice</span><span class="p">,</span>
-        <span class="na">auctionDuration</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
-<span class="p">});</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">oracle_info</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_oracle_price_data_for_perp_market</span><span class="p">(</span><span class="n">market_index</span><span class="p">)</span>
+const orderParams = getMarketOrderParams({
+    marketIndex: marketIndex,
+    marketType: MarketType.PERP,
+    direction: PositionDirection.LONG,
+    baseAssetAmount: driftClient.convertToPerpPrecision(0.1), // 0.1 SOL,
+    auctionStartPrice: isVariant(direction, 'long') ? lowPrice : highPrice,
+        auctionEndPrice: isVariant(direction, 'long') ? highPrice : lowPrice,
+        auctionDuration: 50,
+});
+</code></pre></div><div class="highlight"><pre class="highlight plaintext"><code>market_index = 0
+oracle_info = drift_client.get_oracle_price_data_for_perp_market(market_index)
 
-<span class="n">high_price</span> <span class="o">=</span> <span class="n">oracle_info</span><span class="p">.</span><span class="n">price</span> <span class="o">*</span> <span class="mi">101</span> <span class="o">//</span> <span class="mi">100</span>
-<span class="n">low_price</span> <span class="o">=</span> <span class="n">oracle_info</span><span class="p">.</span><span class="n">price</span>
+high_price = oracle_info.price * 101 // 100
+low_price = oracle_info.price
 
-<span class="n">order_params</span> <span class="o">=</span> <span class="n">OrderParams</span><span class="p">(</span>
-    <span class="n">market_index</span><span class="o">=</span><span class="n">market_index</span><span class="p">,</span>
-    <span class="n">order_type</span><span class="o">=</span><span class="n">OrderType</span><span class="p">.</span><span class="n">Market</span><span class="p">(),</span>
-    <span class="n">market_type</span><span class="o">=</span><span class="n">MarketType</span><span class="p">.</span><span class="n">Perp</span><span class="p">(),</span>
-    <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">,</span>
-    <span class="n">base_asset_amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span>
-    <span class="n">auction_start_price</span><span class="o">=</span><span class="n">low_price</span> <span class="k">if</span> <span class="n">is_variant</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="s">"short"</span><span class="p">)</span> <span class="k">else</span> <span class="n">high_price</span><span class="p">,</span>
-    <span class="n">auction_end_price</span><span class="o">=</span><span class="n">high_price</span> <span class="k">if</span> <span class="n">is_variant</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="s">"short"</span><span class="p">)</span> <span class="k">else</span> <span class="n">low_price</span><span class="p">,</span>
-    <span class="n">auction_duration</span><span class="o">=</span><span class="mi">50</span>
-<span class="p">)</span>
+order_params = OrderParams(
+    market_index = market_index,
+    order_type = OrderType.Market(),
+    market_type = MarketType.Perp(),
+    direction = direction,
+    base_asset_amount = drift_client.convert_to_perp_precision(0.1),
+    auction_start_price = low_price if is_variant(direction, "short") else high_price,
+    auction_end_price = high_price if is_variant(direction, "short") else low_price,
+    auction_duration = 50
+)
 </code></pre></div><h2 id='sign-order'>Sign order</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">slot</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">connection</span><span class="p">.</span><span class="nx">getSlot</span><span class="p">();</span>
 
 <span class="kd">const</span> <span class="nx">orderMessage</span> <span class="o">=</span> <span class="p">{</span>
@@ -2928,22 +2928,22 @@ Instead of having users submit transactions to the Solana network, users sign a 
 <span class="kd">const</span> <span class="nx">signedOrder</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">signSignedMsgOrderParamsMessage</span><span class="p">(</span><span class="nx">orderMessage</span><span class="p">);</span>
 <span class="kd">const</span> <span class="nx">message</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="k">from</span><span class="p">(</span><span class="nx">signedOrder</span><span class="p">.</span><span class="nx">orderParams</span><span class="p">).</span><span class="nx">toString</span><span class="p">(</span><span class="dl">'</span><span class="s1">hex</span><span class="dl">'</span><span class="p">);</span>
 <span class="kd">const</span> <span class="nx">signature</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="k">from</span><span class="p">(</span><span class="nx">signedOrder</span><span class="p">.</span><span class="nx">signature</span><span class="p">).</span><span class="nx">toString</span><span class="p">(</span><span class="dl">'</span><span class="s1">base64</span><span class="dl">'</span><span class="p">);</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">slot_response</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">((</span><span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">connection</span><span class="p">.</span><span class="n">get_slot</span><span class="p">()).</span><span class="n">to_json</span><span class="p">())</span>
-<span class="n">slot</span> <span class="o">=</span> <span class="n">slot_response</span><span class="p">[</span><span class="s">"result"</span><span class="p">]</span>
+</code></pre></div><div class="highlight"><pre class="highlight plaintext"><code>slot_response = json.loads((await drift_client.connection.get_slot()).to_json())
+slot = slot_response["result"]
 
-<span class="n">order_message</span> <span class="o">=</span> <span class="n">SignedMsgOrderParamsMessage</span><span class="p">(</span>
-    <span class="n">signed_msg_order_params</span><span class="o">=</span><span class="n">order_params</span><span class="p">,</span>
-    <span class="n">sub_account_id</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">active_sub_account_id</span><span class="p">,</span>
-    <span class="n">slot</span><span class="o">=</span><span class="n">slot</span><span class="p">,</span>
-    <span class="n">uuid</span><span class="o">=</span><span class="n">generate_signed_msg_uuid</span><span class="p">(),</span>
-    <span class="n">stop_loss_order_params</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-    <span class="n">take_profit_order_params</span><span class="o">=</span><span class="bp">None</span>
-<span class="p">)</span>
+order_message = SignedMsgOrderParamsMessage(
+    signed_msg_order_params = order_params,
+    sub_account_id = drift_client.active_sub_account_id,
+    slot = slot,
+    uuid = generate_signed_msg_uuid(),
+    stop_loss_order_params = None,
+    take_profit_order_params = None
+)
 
-<span class="c1"># Sign the message
-</span><span class="n">signed_msg</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">sign_signed_msg_order_params_message</span><span class="p">(</span><span class="n">swift_message</span><span class="p">)</span>
-<span class="n">message</span> <span class="o">=</span> <span class="n">signed_msg</span><span class="p">.</span><span class="n">order_params</span>
-<span class="n">signature</span> <span class="o">=</span> <span class="n">signed_msg</span><span class="p">.</span><span class="n">signature</span>
+# Sign the message
+signed_msg = drift_client.sign_signed_msg_order_params_message(swift_message)
+message = signed_msg.order_params
+signature = signed_msg.signature
 </code></pre></div><h2 id='submit-order-to-swift-api'>Submit order to Swift API</h2>
 <p>When submitting an order, the POST request to the Swift API (/orders) must include the following parameters:</p>
 <div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">swiftUrl</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">https://swift.drift.trade/orders</span><span class="dl">'</span><span class="p">;</span>
@@ -2959,20 +2959,20 @@ Instead of having users submit transactions to the Solana network, users sign a 
 <span class="p">});</span>
 
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Order response:</span><span class="dl">"</span><span class="p">,</span> <span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s">"market_index"</span><span class="p">:</span> <span class="n">market_index</span><span class="p">,</span>
-    <span class="s">"market_type"</span><span class="p">:</span> <span class="s">"perp"</span><span class="p">,</span>
-    <span class="s">"message"</span><span class="p">:</span> <span class="n">message</span><span class="p">.</span><span class="n">decode</span><span class="p">(</span><span class="s">"utf-8"</span><span class="p">),</span>
-    <span class="s">"signature"</span><span class="p">:</span> <span class="n">base64</span><span class="p">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">signature</span><span class="p">).</span><span class="n">decode</span><span class="p">(</span><span class="s">"utf-8"</span><span class="p">),</span>
-    <span class="s">"taker_authority"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">drift_client</span><span class="p">.</span><span class="n">wallet</span><span class="p">.</span><span class="n">public_key</span><span class="p">),</span>
-<span class="p">}</span>
+</code></pre></div><div class="highlight"><pre class="highlight plaintext"><code>payload = {
+    "market_index": market_index,
+    "market_type": "perp",
+    "message": message.decode("utf-8"),
+    "signature": base64.b64encode(signature).decode("utf-8"),
+    "taker_authority": str(drift_client.wallet.public_key),
+}
 
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">post</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">swift_url</span><span class="si">}</span><span class="s">/orders"</span><span class="p">,</span>
-    <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span>
-    <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s">"Content-Type"</span><span class="p">:</span> <span class="s">"application/json"</span><span class="p">},</span>
-<span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Order response: </span><span class="si">{</span><span class="n">response</span><span class="p">.</span><span class="n">text</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+response = requests.post(
+    f"{swift_url}/orders",
+    json = payload,
+    headers = {"Content-Type": "application/json"},
+)
+print(f"Order response: {response.text}")
 </code></pre></div>
 <table><thead>
 <tr>
