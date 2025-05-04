@@ -1304,7 +1304,7 @@ To pass an order to Swift, the following steps are required:
 3. Submit to Swift API  
 
 ## Order example(market taker)
-```typescript
+```Typescript
 const marketIndex = 0; // 0 = SOL-PERP market
 
 const oracleInfo = driftClient.getOracleDataForPerpMarket(marketIndex);
@@ -1322,7 +1322,7 @@ const orderParams = getMarketOrderParams({
 });
 ```
 
-```python
+```Python
 market_index = 0
 oracle_info = drift_client.get_oracle_price_data_for_perp_market(market_index)
 
@@ -1330,14 +1330,14 @@ high_price = oracle_info.price * 101 // 100
 low_price = oracle_info.price
 
 order_params = OrderParams(
-    market_index=market_index,
-    order_type=OrderType.Market(),
-    market_type=MarketType.Perp(),
-    direction=direction,
-    base_asset_amount=drift_client.convert_to_perp_precision(0.1),
-    auction_start_price=low_price if is_variant(direction, "short") else high_price,
-    auction_end_price=high_price if is_variant(direction, "short") else low_price,
-    auction_duration=50
+    market_index = market_index,
+    order_type = OrderType.Market(),
+    market_type = MarketType.Perp(),
+    direction = direction,
+    base_asset_amount = drift_client.convert_to_perp_precision(0.1),
+    auction_start_price = low_price if is_variant(direction, "short") else high_price,
+    auction_end_price = high_price if is_variant(direction, "short") else low_price,
+    auction_duration = 50
 )
 ```
 
@@ -1360,17 +1360,17 @@ const message = Buffer.from(signedOrder.orderParams).toString('hex');
 const signature = Buffer.from(signedOrder.signature).toString('base64');
 ```
 
-```python
+```Python
 slot_response = json.loads((await drift_client.connection.get_slot()).to_json())
 slot = slot_response["result"]
 
 order_message = SignedMsgOrderParamsMessage(
-    signed_msg_order_params=order_params,
-    sub_account_id=drift_client.active_sub_account_id,
-    slot=slot,
-    uuid=generate_signed_msg_uuid(),
-    stop_loss_order_params=None,
-    take_profit_order_params=None
+    signed_msg_order_params = order_params,
+    sub_account_id = drift_client.active_sub_account_id,
+    slot = slot,
+    uuid = generate_signed_msg_uuid(),
+    stop_loss_order_params = None,
+    take_profit_order_params = None
 )
 
 # Sign the message
@@ -1398,7 +1398,7 @@ const response = await axios.default.post(swiftUrl, {
 
 console.log("Order response:", response.data);
 ```
-```python
+```Python
 payload = {
     "market_index": market_index,
     "market_type": "perp",
@@ -1409,8 +1409,8 @@ payload = {
 
 response = requests.post(
     f"{swift_url}/orders",
-    json=payload,
-    headers={"Content-Type": "application/json"},
+    json = payload,
+    headers = {"Content-Type": "application/json"},
 )
 print(f"Order response: {response.text}")
 ```
