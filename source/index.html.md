@@ -702,7 +702,7 @@ order_params = OrderParams(
             price=drift_client.convert_to_price_precision(100),
         )
 
-await driftClient.place_spot_order(order_params);
+await driftClient.place_spot_order(order_params)
 ```
 
 ```shell
@@ -781,7 +781,7 @@ place_order_params = [
   )
 ]
 
-await drift_client.place_orders(place_order_params);
+await drift_client.place_orders(place_order_params)
 ```
 
 ```shell
@@ -872,8 +872,8 @@ await driftClient.cancelOrder(orderId);
 
 ```python
 
-order_dd = 1;
-await drift_client.cancel_order(order_id);
+order_id = 1;
+await drift_client.cancel_order(order_id)
 ```
 
 ### TypeScript
@@ -903,8 +903,8 @@ await driftClient.cancelOrderByUserOrderId(userOrderId);
 
 ```python
 
-const user_order_id = 1;
-await drift_client.cancel_order_by_user_order_id(user_order_id);
+const user_order_id = 1
+await drift_client.cancel_order_by_user_order_id(user_order_id)
 ```
 
 ```shell
@@ -1018,7 +1018,7 @@ place_order_params = [
   )
 ]
 
-await drift_client.cancel_and_place_orders(canel_order_params, place_order_params);
+await drift_client.cancel_and_place_orders(canel_order_params, place_order_params)
 ```
 
 ```shell
@@ -1119,7 +1119,7 @@ modify_order_params = ModifyOrderParams(
   price=drift_client.convert_to_price_precision(20),
 )
 
-await drift_client.modify_order(order_id, modify_order_params);
+await drift_client.modify_order(order_id, modify_order_params)
 ```
 
 ```shell
@@ -1161,7 +1161,7 @@ const updateParams = {
   newBaseAssetAmount: driftClient.convertToPerpPrecision(200),
 }
 
-await driftClient.modifyOrderByUserOrderId(orderParams);
+await driftClient.modifyOrderByUserOrderId(orderParams)
 ```
 
 ```python
@@ -1249,9 +1249,9 @@ const spotMarketAccount = driftClient.getSpotMarketAccount(marketIndex);
 ```
 
 ```python
-market_index = 0;
+market_index = 0
 
-spot_market_account = drift_client.get_spot_market_account(market_index);
+spot_market_account = drift_client.get_spot_market_account(market_index)
 ```
 
 ### TypeScript
@@ -1273,9 +1273,9 @@ const perpMarketAccount = driftClient.getPerpMarketAccount(marketIndex);
 ```
 
 ```python
-market_index = 0;
+market_index = 0
 
-perp_market_account = drift_client.get_perp_market_account(market_index);
+perp_market_account = drift_client.get_perp_market_account(market_index)
 ```
 
 ### TypeScript
@@ -1441,7 +1441,7 @@ print(f"Order response: {response.text}")
 ```
 
 ```python
-  user = drift_client.get_user();
+  user = drift_client.get_user()
 ```
 
 ### TypeScript
