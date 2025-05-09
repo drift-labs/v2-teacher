@@ -1916,7 +1916,7 @@ localhost:8080/v2/orders
             <span class="n">price</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
         <span class="p">)</span>
 
-<span class="k">await</span> <span class="n">driftClient</span><span class="p">.</span><span class="n">place_spot_order</span><span class="p">(</span><span class="n">order_params</span><span class="p">);</span>
+<span class="k">await</span> <span class="n">driftClient</span><span class="p">.</span><span class="n">place_spot_order</span><span class="p">(</span><span class="n">order_params</span><span class="p">)</span>
 </code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> POST <span class="nt">-H</span> <span class="s1">'content-type: application/json'</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{
     "orders": [{
@@ -2006,7 +2006,7 @@ localhost:8080/v2/orders
   <span class="p">)</span>
 <span class="p">]</span>
 
-<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">place_orders</span><span class="p">(</span><span class="n">place_order_params</span><span class="p">);</span>
+<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">place_orders</span><span class="p">(</span><span class="n">place_order_params</span><span class="p">)</span>
 </code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> POST <span class="nt">-H</span> <span class="s1">'content-type: application/json'</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{
       "orders": [{
@@ -2100,8 +2100,8 @@ localhost:8080/v2/orders
 <span class="kd">const</span> <span class="nx">orderId</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">cancelOrder</span><span class="p">(</span><span class="nx">orderId</span><span class="p">);</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>
-<span class="n">order_dd</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">cancel_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">);</span>
+<span class="n">order_id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">cancel_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">)</span>
 </code></pre></div><h3 id='typescript-14'>TypeScript</h3>
 <table><thead>
 <tr>
@@ -2147,8 +2147,8 @@ localhost:8080/v2/orders
 <span class="kd">const</span> <span class="nx">userOrderId</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">cancelOrderByUserOrderId</span><span class="p">(</span><span class="nx">userOrderId</span><span class="p">);</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>
-<span class="n">const</span> <span class="n">user_order_id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">cancel_order_by_user_order_id</span><span class="p">(</span><span class="n">user_order_id</span><span class="p">);</span>
+<span class="n">const</span> <span class="n">user_order_id</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">cancel_order_by_user_order_id</span><span class="p">(</span><span class="n">user_order_id</span><span class="p">)</span>
 </code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> DELETE <span class="nt">-H</span> <span class="s1">'content-type: application/json'</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{ "userIds": [1] }'</span> <span class="se">\</span>
   localhost:8080/v2/orders
@@ -2313,7 +2313,7 @@ localhost:8080/v2/orders
   <span class="p">)</span>
 <span class="p">]</span>
 
-<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">cancel_and_place_orders</span><span class="p">(</span><span class="n">canel_order_params</span><span class="p">,</span> <span class="n">place_order_params</span><span class="p">);</span>
+<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">cancel_and_place_orders</span><span class="p">(</span><span class="n">canel_order_params</span><span class="p">,</span> <span class="n">place_order_params</span><span class="p">)</span>
 </code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> POST <span class="nt">-H</span> <span class="s1">'content-type: application/json'</span> <span class="se">\</span>
 <span class="nt">-d</span> <span class="s1">'{
       "cancel": {
@@ -2583,7 +2583,7 @@ localhost:8080/v2/orders/cancelAndPlace
   <span class="n">price</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
 <span class="p">)</span>
 
-<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">modify_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">,</span> <span class="n">modify_order_params</span><span class="p">);</span>
+<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">modify_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">,</span> <span class="n">modify_order_params</span><span class="p">)</span>
 </code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> PATCH <span class="nt">-H</span> <span class="s1">'content-type: application/json'</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{
     "orders": [{
@@ -2653,7 +2653,7 @@ localhost:8080/v2/orders
   <span class="na">newBaseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
 <span class="p">}</span>
 
-<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">modifyOrderByUserOrderId</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">);</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">modifyOrderByUserOrderId</span><span class="p">(</span><span class="nx">orderParams</span><span class="p">)</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>
 <span class="n">user_order_id</span> <span class="o">=</span> <span class="mi">1</span>
 
@@ -2798,9 +2798,9 @@ localhost:8080/v2/orders
 </tbody></table>
 <h2 id='get-spot-market-account'>Get Spot Market Account</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">spotMarketAccount</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getSpotMarketAccount</span><span class="p">(</span><span class="nx">marketIndex</span><span class="p">);</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span>
 
-<span class="n">spot_market_account</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_spot_market_account</span><span class="p">(</span><span class="n">market_index</span><span class="p">);</span>
+<span class="n">spot_market_account</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_spot_market_account</span><span class="p">(</span><span class="n">market_index</span><span class="p">)</span>
 </code></pre></div><h3 id='typescript-22'>TypeScript</h3>
 <table><thead>
 <tr>
@@ -2835,9 +2835,9 @@ localhost:8080/v2/orders
 </tbody></table>
 <h2 id='get-perp-market-account'>Get Perp Market Account</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">marketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">perpMarketAccount</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getPerpMarketAccount</span><span class="p">(</span><span class="nx">marketIndex</span><span class="p">);</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span>
 
-<span class="n">perp_market_account</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_perp_market_account</span><span class="p">(</span><span class="n">market_index</span><span class="p">);</span>
+<span class="n">perp_market_account</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_perp_market_account</span><span class="p">(</span><span class="n">market_index</span><span class="p">)</span>
 </code></pre></div><h3 id='typescript-23'>TypeScript</h3>
 <table><thead>
 <tr>
@@ -3021,7 +3021,7 @@ Instead of having users submit transactions to the Solana network, users sign a 
   </ol>
 </aside>
 <h1 id='user'>User</h1><h2 id='get-user'>Get User</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>   <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getUser</span><span class="p">();</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">user</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_user</span><span class="p">();</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">user</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_user</span><span class="p">()</span>
 </code></pre></div><h3 id='typescript-24'>TypeScript</h3>
 <table><thead>
 <tr>
