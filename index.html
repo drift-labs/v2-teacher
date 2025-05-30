@@ -548,6 +548,17 @@
               </ul>
           </li>
           <li>
+            <a href="#jupiter-spot-swaps" class="toc-h1 toc-link" data-title="Jupiter Spot Swaps">Jupiter Spot Swaps</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#typescript-36" class="toc-h2 toc-link" data-title="TypeScript">TypeScript</a>
+                  </li>
+                  <li>
+                    <a href="#python-35" class="toc-h2 toc-link" data-title="Python">Python</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#examples-bots" class="toc-h1 toc-link" data-title="Examples: Bots">Examples: Bots</a>
               <ul class="toc-list-h2">
                   <li>
@@ -4240,7 +4251,186 @@ yarn cli init-vault <span class="se">\</span>
 </ul>
 
 <p>Includes built-in API routes for vault creation, snapshot indexing, and analytics.</p>
-<h1 id='examples-bots'>Examples: Bots</h1>
+<h1 id='jupiter-spot-swaps'>Jupiter Spot Swaps</h1>
+<p>You can perform Jupiter swaps directly from DriftClient, which fetches quotes from Jupiter and routes the transaction for the optimal rates.</p>
+<h3 id='typescript-36'>TypeScript</h3>
+<p>To preview the quote before swapping, use <code>jupiterClient.getQuote(...)</code>.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code>jupiterClient</code></td>
+<td>Instance of JupiterClient used to get quotes and swap instructions</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td><code>inMarketIndex</code></td>
+<td>Drift spot market index for the input token</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td><code>outMarketIndex</code></td>
+<td>Drift spot market index for the output token</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td><code>amount</code></td>
+<td>Amount to swap, as a BN in spot market precision</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td><code>slippageBps</code></td>
+<td>Maximum allowed slippage in basis points</td>
+<td>Yes</td>
+<td>50</td>
+</tr>
+<tr>
+<td><code>onlyDirectRoutes</code></td>
+<td>If true, restricts swap to direct token pairs only</td>
+<td>Yes</td>
+<td>false</td>
+</tr>
+<tr>
+<td><code>computeUnits</code></td>
+<td>Override for compute budget</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td><code>prioritizationFeeMicroLamports</code></td>
+<td>Priority fee in micro lamports</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td><code>userPublicKey</code></td>
+<td>Override of user wallet</td>
+<td>Yes</td>
+<td><code>wallet.publicKey</code></td>
+</tr>
+</tbody></table>
+<div class="highlight"><pre class="highlight typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">JupiterClient</span><span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@drift-labs/sdk</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">"</span><span class="s2">RPCurl</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">confirmed</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">jupiterClient</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">JupiterClient</span><span class="p">({</span><span class="nx">connection</span><span class="p">});</span>
+
+<span class="kd">const</span> <span class="nx">txSig</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">swap</span><span class="p">({</span>
+  <span class="nx">jupiterClient</span><span class="p">,</span>
+  <span class="na">inMarketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="c1">// USDC</span>
+  <span class="na">outMarketIndex</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">// SOL</span>
+  <span class="na">amount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToSpotPrecision</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="c1">//This swaps 10 USDC into SOL</span>
+  <span class="na">slippageBps</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+  <span class="na">onlyDirectRoutes</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+<span class="p">});</span>
+</code></pre></div><h3 id='python-35'>Python</h3>
+<p>Unlike the Typescript SDK, DriftPy makes direct HTTP calls to Jupiter. The function returns a tuple of (instructions, address_lookup_tables) that can be sent using <code>drift_client.send_ixs()</code>. The Jupiter API URL is configurable via the <code>JUPITER_URL</code> environment variable</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Optional</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code>out_market_idx</code></td>
+<td>Drift spot market index for the output token</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td><code>in_market_idx</code></td>
+<td>Drift spot market index for the input token</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td><code>amount</code></td>
+<td>Amount to swap, in spot market precision</td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td><code>slippage_bps</code></td>
+<td>Maximum allowed slippage in basis points</td>
+<td>Yes</td>
+<td>50</td>
+</tr>
+<tr>
+<td><code>only_direct_routes</code></td>
+<td>If true, restricts swap to direct token pairs only</td>
+<td>Yes</td>
+<td>False</td>
+</tr>
+<tr>
+<td><code>quote</code></td>
+<td>Pre-fetched Jupiter quote</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>reduce_only</code></td>
+<td>SwapReduceOnly parameter</td>
+<td>Yes</td>
+<td>False</td>
+</tr>
+<tr>
+<td><code>user_account_public_key</code></td>
+<td>Override of user wallet</td>
+<td>Yes</td>
+<td>wallet.public_key</td>
+</tr>
+<tr>
+<td><code>swap_mode</code></td>
+<td>Swap mode</td>
+<td>Yes</td>
+<td>&quot;ExactIn&quot;</td>
+</tr>
+<tr>
+<td><code>fee_account</code></td>
+<td>Optional fee account</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>platform_fee_bps</code></td>
+<td>Platform fee in basis points</td>
+<td>Yes</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>max_accounts</code></td>
+<td>Maximum number of accounts</td>
+<td>Yes</td>
+<td>50</td>
+</tr>
+</tbody></table>
+<div class="highlight"><pre class="highlight python tab-python"><code><span class="c1"># Get Jupiter swap instructions
+</span><span class="n">swap_ixs</span><span class="p">,</span> <span class="n">lookup_tables</span> <span class="o">=</span> <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_jupiter_swap_ix_v6</span><span class="p">(</span>
+    <span class="n">out_market_idx</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># SOL
+</span>    <span class="n">in_market_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>   <span class="c1"># USDC
+</span>    <span class="n">amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_spot_precision</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="c1"># 10 USDC
+</span>    <span class="n">slippage_bps</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">only_direct_routes</span><span class="o">=</span><span class="bp">False</span>
+<span class="p">)</span>
+
+<span class="c1"># Send transaction
+</span><span class="n">tx_sig</span> <span class="o">=</span> <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">send_ixs</span><span class="p">(</span>
+    <span class="n">swap_ixs</span><span class="p">,</span>
+    <span class="n">address_lookup_table_accounts</span><span class="o">=</span><span class="n">lookup_tables</span>
+<span class="p">)</span>
+</code></pre></div><h1 id='examples-bots'>Examples: Bots</h1>
 <aside class="notice">
 This examples should be used as code reference only. Be cautious running any unreviewed code, especially if not on devnet.
 </aside>
