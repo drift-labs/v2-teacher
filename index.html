@@ -4255,7 +4255,20 @@ yarn cli init-vault <span class="se">\</span>
 <p>You can perform Jupiter swaps directly from DriftClient, which fetches quotes from Jupiter and routes the transaction for the optimal rates.</p>
 <h3 id='typescript-36'>TypeScript</h3>
 <p>To preview the quote before swapping, use <code>jupiterClient.getQuote(...)</code>.</p>
+<div class="highlight"><pre class="highlight typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">JupiterClient</span><span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@drift-labs/sdk</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">"</span><span class="s2">RPCurl</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">confirmed</span><span class="dl">"</span><span class="p">);</span>
 
+<span class="kd">const</span> <span class="nx">jupiterClient</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">JupiterClient</span><span class="p">({</span><span class="nx">connection</span><span class="p">});</span>
+
+<span class="kd">const</span> <span class="nx">txSig</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">swap</span><span class="p">({</span>
+  <span class="nx">jupiterClient</span><span class="p">,</span>
+  <span class="na">inMarketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="c1">// USDC</span>
+  <span class="na">outMarketIndex</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">// SOL</span>
+  <span class="na">amount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToSpotPrecision</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="c1">//This swaps 10 USDC into SOL</span>
+  <span class="na">slippageBps</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+  <span class="na">onlyDirectRoutes</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+<span class="p">});</span>
+</code></pre></div>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -4319,22 +4332,23 @@ yarn cli init-vault <span class="se">\</span>
 <td><code>wallet.publicKey</code></td>
 </tr>
 </tbody></table>
-<div class="highlight"><pre class="highlight typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">JupiterClient</span><span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@drift-labs/sdk</span><span class="dl">'</span><span class="p">;</span>
-<span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">"</span><span class="s2">RPCurl</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">confirmed</span><span class="dl">"</span><span class="p">);</span>
+<h3 id='python-35'>Python</h3>
+<p>Unlike the Typescript SDK, DriftPy makes direct HTTP calls to Jupiter. The function returns a tuple of (instructions, address_lookup_tables) that can be sent using <code>drift_client.send_ixs()</code>. The Jupiter API URL is configurable via the <code>JUPITER_URL</code> environment variable.</p>
+<div class="highlight"><pre class="highlight python tab-python"><code><span class="c1"># Get Jupiter swap instructions
+</span><span class="n">swap_ixs</span><span class="p">,</span> <span class="n">lookup_tables</span> <span class="o">=</span> <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_jupiter_swap_ix_v6</span><span class="p">(</span>
+    <span class="n">out_market_idx</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># SOL
+</span>    <span class="n">in_market_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>   <span class="c1"># USDC
+</span>    <span class="n">amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_spot_precision</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="c1"># 10 USDC
+</span>    <span class="n">slippage_bps</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">only_direct_routes</span><span class="o">=</span><span class="bp">False</span>
+<span class="p">)</span>
 
-<span class="kd">const</span> <span class="nx">jupiterClient</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">JupiterClient</span><span class="p">({</span><span class="nx">connection</span><span class="p">});</span>
-
-<span class="kd">const</span> <span class="nx">txSig</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">swap</span><span class="p">({</span>
-  <span class="nx">jupiterClient</span><span class="p">,</span>
-  <span class="na">inMarketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="c1">// USDC</span>
-  <span class="na">outMarketIndex</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">// SOL</span>
-  <span class="na">amount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToSpotPrecision</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="c1">//This swaps 10 USDC into SOL</span>
-  <span class="na">slippageBps</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
-  <span class="na">onlyDirectRoutes</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-<span class="p">});</span>
-</code></pre></div><h3 id='python-35'>Python</h3>
-<p>Unlike the Typescript SDK, DriftPy makes direct HTTP calls to Jupiter. The function returns a tuple of (instructions, address_lookup_tables) that can be sent using <code>drift_client.send_ixs()</code>. The Jupiter API URL is configurable via the <code>JUPITER_URL</code> environment variable</p>
-
+<span class="c1"># Send transaction
+</span><span class="n">tx_sig</span> <span class="o">=</span> <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">send_ixs</span><span class="p">(</span>
+    <span class="n">swap_ixs</span><span class="p">,</span>
+    <span class="n">address_lookup_table_accounts</span><span class="o">=</span><span class="n">lookup_tables</span>
+<span class="p">)</span>
+</code></pre></div>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -4416,21 +4430,7 @@ yarn cli init-vault <span class="se">\</span>
 <td>50</td>
 </tr>
 </tbody></table>
-<div class="highlight"><pre class="highlight python tab-python"><code><span class="c1"># Get Jupiter swap instructions
-</span><span class="n">swap_ixs</span><span class="p">,</span> <span class="n">lookup_tables</span> <span class="o">=</span> <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_jupiter_swap_ix_v6</span><span class="p">(</span>
-    <span class="n">out_market_idx</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># SOL
-</span>    <span class="n">in_market_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>   <span class="c1"># USDC
-</span>    <span class="n">amount</span><span class="o">=</span><span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_spot_precision</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="c1"># 10 USDC
-</span>    <span class="n">slippage_bps</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-    <span class="n">only_direct_routes</span><span class="o">=</span><span class="bp">False</span>
-<span class="p">)</span>
-
-<span class="c1"># Send transaction
-</span><span class="n">tx_sig</span> <span class="o">=</span> <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">send_ixs</span><span class="p">(</span>
-    <span class="n">swap_ixs</span><span class="p">,</span>
-    <span class="n">address_lookup_table_accounts</span><span class="o">=</span><span class="n">lookup_tables</span>
-<span class="p">)</span>
-</code></pre></div><h1 id='examples-bots'>Examples: Bots</h1>
+<h1 id='examples-bots'>Examples: Bots</h1>
 <aside class="notice">
 This examples should be used as code reference only. Be cautious running any unreviewed code, especially if not on devnet.
 </aside>
