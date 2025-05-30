@@ -2276,3 +2276,73 @@ The [Vaults UI Template](https://github.com/drift-labs/vaults-ui-template) is a 
 
 Includes built-in API routes for vault creation, snapshot indexing, and analytics.
 
+# Jupiter Spot Swaps
+
+You can perform Jupiter swaps directly from DriftClient, which fetches quotes from Jupiter and routes the transaction for the optimal rates.
+
+### TypeScript
+To preview the quote before swapping, use `jupiterClient.getQuote(...)`.
+
+| Parameter         | Description                                                                                          | Optional | Default |
+|------------------|------------------------------------------------------------------------------------------------------|----------|---------|
+| `jupiterClient`  | Instance of JupiterClient used to get quotes and swap instructions                                   | No       |         |
+| `inMarketIndex`  | Drift spot market index for the input token                                    | No       |         |
+| `outMarketIndex` | Drift spot market index for the output token                                   | No       |         |
+| `amount`         | Amount to swap, as a BN in spot market precision              | No       |         |
+| `slippageBps`    | Maximum allowed slippage in basis points                                                | Yes      | 50      |
+| `onlyDirectRoutes`| If true, restricts swap to direct token pairs only              | Yes      | false   |
+| `computeUnits`   | Override for compute budget                                                                  | Yes      | |
+| `prioritizationFeeMicroLamports` | Priority fee in micro lamports                               | Yes      |  |
+| `userPublicKey`  | Override of user wallet             | Yes      | `wallet.publicKey` |
+
+
+``` ts
+import {JupiterClient} from '@drift-labs/sdk';
+const connection = new Connection("RPCurl", "confirmed");
+
+const jupiterClient = new JupiterClient({connection});
+
+const txSig = await driftClient.swap({
+  jupiterClient,
+  inMarketIndex: 0, // USDC
+  outMarketIndex: 1, // SOL
+  amount: driftClient.convertToSpotPrecision(0, 10), //This swaps 10 USDC into SOL
+  slippageBps: 50,
+  onlyDirectRoutes: false,
+});
+```
+
+### Python
+Unlike the Typescript SDK, DriftPy makes direct HTTP calls to Jupiter. The function returns a tuple of (instructions, address_lookup_tables) that can be sent using `drift_client.send_ixs()`. The Jupiter API URL is configurable via the `JUPITER_URL` environment variable
+
+| Parameter                | Description                                               | Optional | Default |
+|-------------------------|-----------------------------------------------------------|----------|---------|
+| `out_market_idx`        | Drift spot market index for the output token             | No       |         |
+| `in_market_idx`         | Drift spot market index for the input token              | No       |         |
+| `amount`                | Amount to swap, in spot market precision                 | No       |         |
+| `slippage_bps`          | Maximum allowed slippage in basis points                 | Yes      | 50      |
+| `only_direct_routes`    | If true, restricts swap to direct token pairs only       | Yes      | False   |
+| `quote`                 | Pre-fetched Jupiter quote                                | Yes      | None    |
+| `reduce_only`           | SwapReduceOnly parameter                                 | Yes      | False   |
+| `user_account_public_key`| Override of user wallet                                 | Yes      | wallet.public_key |
+| `swap_mode`             | Swap mode                             | Yes      | "ExactIn" |
+| `fee_account`           | Optional fee account                                     | Yes      | None    |
+| `platform_fee_bps`      | Platform fee in basis points                             | Yes      | None    |
+| `max_accounts`          | Maximum number of accounts                               | Yes      | 50      |
+
+```python
+# Get Jupiter swap instructions
+swap_ixs, lookup_tables = await drift_client.get_jupiter_swap_ix_v6(
+    out_market_idx=1,  # SOL
+    in_market_idx=0,   # USDC
+    amount=drift_client.convert_to_spot_precision(10, 0), # 10 USDC
+    slippage_bps=50,
+    only_direct_routes=False
+)
+
+# Send transaction
+tx_sig = await drift_client.send_ixs(
+    swap_ixs,
+    address_lookup_table_accounts=lookup_tables
+)
+```
