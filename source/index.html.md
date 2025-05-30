@@ -2283,18 +2283,6 @@ You can perform Jupiter swaps directly from DriftClient, which fetches quotes fr
 ### TypeScript
 To preview the quote before swapping, use `jupiterClient.getQuote(...)`.
 
-| Parameter         | Description                                                                                          | Optional | Default |
-|------------------|------------------------------------------------------------------------------------------------------|----------|---------|
-| `jupiterClient`  | Instance of JupiterClient used to get quotes and swap instructions                                   | No       |         |
-| `inMarketIndex`  | Drift spot market index for the input token                                    | No       |         |
-| `outMarketIndex` | Drift spot market index for the output token                                   | No       |         |
-| `amount`         | Amount to swap, as a BN in spot market precision              | No       |         |
-| `slippageBps`    | Maximum allowed slippage in basis points                                                | Yes      | 50      |
-| `onlyDirectRoutes`| If true, restricts swap to direct token pairs only              | Yes      | false   |
-| `computeUnits`   | Override for compute budget                                                                  | Yes      | |
-| `prioritizationFeeMicroLamports` | Priority fee in micro lamports                               | Yes      |  |
-| `userPublicKey`  | Override of user wallet             | Yes      | `wallet.publicKey` |
-
 
 ``` ts
 import {JupiterClient} from '@drift-labs/sdk';
@@ -2312,23 +2300,21 @@ const txSig = await driftClient.swap({
 });
 ```
 
-### Python
-Unlike the Typescript SDK, DriftPy makes direct HTTP calls to Jupiter. The function returns a tuple of (instructions, address_lookup_tables) that can be sent using `drift_client.send_ixs()`. The Jupiter API URL is configurable via the `JUPITER_URL` environment variable
+| Parameter         | Description                                                                                          | Optional | Default |
+|------------------|------------------------------------------------------------------------------------------------------|----------|---------|
+| `jupiterClient`  | Instance of JupiterClient used to get quotes and swap instructions                                   | No       |         |
+| `inMarketIndex`  | Drift spot market index for the input token                                    | No       |         |
+| `outMarketIndex` | Drift spot market index for the output token                                   | No       |         |
+| `amount`         | Amount to swap, as a BN in spot market precision              | No       |         |
+| `slippageBps`    | Maximum allowed slippage in basis points                                                | Yes      | 50      |
+| `onlyDirectRoutes`| If true, restricts swap to direct token pairs only              | Yes      | false   |
+| `computeUnits`   | Override for compute budget                                                                  | Yes      | |
+| `prioritizationFeeMicroLamports` | Priority fee in micro lamports                               | Yes      |  |
+| `userPublicKey`  | Override of user wallet             | Yes      | `wallet.publicKey` |
 
-| Parameter                | Description                                               | Optional | Default |
-|-------------------------|-----------------------------------------------------------|----------|---------|
-| `out_market_idx`        | Drift spot market index for the output token             | No       |         |
-| `in_market_idx`         | Drift spot market index for the input token              | No       |         |
-| `amount`                | Amount to swap, in spot market precision                 | No       |         |
-| `slippage_bps`          | Maximum allowed slippage in basis points                 | Yes      | 50      |
-| `only_direct_routes`    | If true, restricts swap to direct token pairs only       | Yes      | False   |
-| `quote`                 | Pre-fetched Jupiter quote                                | Yes      | None    |
-| `reduce_only`           | SwapReduceOnly parameter                                 | Yes      | False   |
-| `user_account_public_key`| Override of user wallet                                 | Yes      | wallet.public_key |
-| `swap_mode`             | Swap mode                             | Yes      | "ExactIn" |
-| `fee_account`           | Optional fee account                                     | Yes      | None    |
-| `platform_fee_bps`      | Platform fee in basis points                             | Yes      | None    |
-| `max_accounts`          | Maximum number of accounts                               | Yes      | 50      |
+
+### Python
+Unlike the Typescript SDK, DriftPy makes direct HTTP calls to Jupiter. The function returns a tuple of (instructions, address_lookup_tables) that can be sent using `drift_client.send_ixs()`. The Jupiter API URL is configurable via the `JUPITER_URL` environment variable.
 
 ```python
 # Get Jupiter swap instructions
@@ -2346,3 +2332,19 @@ tx_sig = await drift_client.send_ixs(
     address_lookup_table_accounts=lookup_tables
 )
 ```
+
+| Parameter                | Description                                               | Optional | Default |
+|-------------------------|-----------------------------------------------------------|----------|---------|
+| `out_market_idx`        | Drift spot market index for the output token             | No       |         |
+| `in_market_idx`         | Drift spot market index for the input token              | No       |         |
+| `amount`                | Amount to swap, in spot market precision                 | No       |         |
+| `slippage_bps`          | Maximum allowed slippage in basis points                 | Yes      | 50      |
+| `only_direct_routes`    | If true, restricts swap to direct token pairs only       | Yes      | False   |
+| `quote`                 | Pre-fetched Jupiter quote                                | Yes      | None    |
+| `reduce_only`           | SwapReduceOnly parameter                                 | Yes      | False   |
+| `user_account_public_key`| Override of user wallet                                 | Yes      | wallet.public_key |
+| `swap_mode`             | Swap mode                             | Yes      | "ExactIn" |
+| `fee_account`           | Optional fee account                                     | Yes      | None    |
+| `platform_fee_bps`      | Platform fee in basis points                             | Yes      | None    |
+| `max_accounts`          | Maximum number of accounts                               | Yes      | 50      |
+
