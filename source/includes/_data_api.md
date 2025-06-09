@@ -136,7 +136,7 @@ Example: [https://data.api.drift.trade/DRIFT?q=circulating-supply](https://data.
 
 ## `GET /rateHistory`
 
-Returns the tokenomics information about the Drift token.
+Returns rate information about a specified marketIndex.
 
 | Parameter        | Description                                      | Optional | Values                                              |
 | ---------------- | ------------------------------------------------ | -------- | --------------------------------------------------- |
