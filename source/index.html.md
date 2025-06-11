@@ -1346,7 +1346,7 @@ order_params = OrderParams(
 const slot = await driftClient.connection.getSlot();
 
 const orderMessage = {
-    signedMsgOrderParams: orderParams,
+    signedMsgOrderParams: orderParams as OrderParams,
     subAccountId: driftClient.activeSubAccountId,
     slot: new BN(slot),
     uuid: generateSignedMsgUuid(),
@@ -1355,9 +1355,7 @@ const orderMessage = {
 };
 
 // Sign the message
-const signedOrder = driftClient.signSignedMsgOrderParamsMessage(orderMessage);
-const message = Buffer.from(signedOrder.orderParams).toString('hex');
-const signature = Buffer.from(signedOrder.signature).toString('base64');
+const { orderParams: message, signature } = driftClient.signSignedMsgOrderParamsMessage(orderMessage);
 ```
 
 ```python
