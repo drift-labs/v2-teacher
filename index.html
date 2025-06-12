@@ -410,6 +410,9 @@
                     <a href="#cancel-and-place-orders" class="toc-h2 toc-link" data-title="Cancel and Place Orders">Cancel and Place Orders</a>
                   </li>
                   <li>
+                    <a href="#trigger-orders-stop-loss-amp-take-profit" class="toc-h2 toc-link" data-title="Trigger Orders: Stop Loss &amp; Take Profit">Trigger Orders: Stop Loss &amp; Take Profit</a>
+                  </li>
+                  <li>
                     <a href="#modify-order-params" class="toc-h2 toc-link" data-title="Modify Order Params">Modify Order Params</a>
                   </li>
                   <li>
@@ -551,10 +554,10 @@
             <a href="#jupiter-spot-swaps" class="toc-h1 toc-link" data-title="Jupiter Spot Swaps">Jupiter Spot Swaps</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#typescript-36" class="toc-h2 toc-link" data-title="TypeScript">TypeScript</a>
+                    <a href="#typescript-38" class="toc-h2 toc-link" data-title="TypeScript">TypeScript</a>
                   </li>
                   <li>
-                    <a href="#python-35" class="toc-h2 toc-link" data-title="Python">Python</a>
+                    <a href="#python-37" class="toc-h2 toc-link" data-title="Python">Python</a>
                   </li>
               </ul>
           </li>
@@ -2397,7 +2400,97 @@ localhost:8080/v2/orders/cancelAndPlace
 </tbody></table>
 
 <p>To cancel all orders, do not set any parameters.</p>
-<h2 id='modify-order-params'>Modify Order Params</h2><h3 id='typescript-18'>TypeScript</h3>
+<h2 id='trigger-orders-stop-loss-amp-take-profit'>Trigger Orders: Stop Loss &amp; Take Profit</h2>
+<p>Drift supports trigger-based orders to manage trade exits. These can be configured as:</p>
+
+<ul>
+<li><code>OrderType.TRIGGER_MARKET</code>: Triggers a <strong>Market Order</strong> when the specified price is reached.</li>
+<li><code>OrderType.TRIGGER_LIMIT</code>: Triggers a <strong>Limit Order</strong> when the specified price is reached.</li>
+</ul>
+
+<p>The most common use cases for these order types are Stop Loss Market Orders and Take Profit Limit Orders.
+In the following examples, both situations will be covered.</p>
+<h3 id='notes'>Notes</h3>
+<p>It&#39;s important to set the correct <code>triggerCondition</code> based on the position type:</p>
+
+<p>Long Positions:
+  - <strong>Stop Loss</strong>: Use <code>OrderTriggerCondition.BELOW</code>
+  - <strong>Take Profit</strong>: Use <code>OrderTriggerCondition.ABOVE</code></p>
+
+<p>Short Positions:
+  - <strong>Stop Loss</strong>: Use <code>OrderTriggerCondition.ABOVE</code>
+  - <strong>Take Profit</strong>: Use <code>OrderTriggerCondition.BELOW</code></p>
+
+<p>Additionally:</p>
+
+<ul>
+<li>Trigger orders are based on the <strong>Oracle Price</strong>, not the <strong>Mark Price</strong>.</li>
+<li>Setting <code>reduceOnly: true</code> ensures the order can only close an existing position.</li>
+</ul>
+
+<p>For a more detailed explanation of these parameters, see: <a href="https://docs.drift.trade/trading/all-order-types">All Order Types</a></p>
+
+<hr>
+<h3 id='stop-loss-market-order'>Stop Loss Market Order</h3>
+<p>A Stop Loss Market Order automatically closes a position at market price if the Oracle Price hits the specified Trigger Price.</p>
+
+<p>Here:
+- We&#39;re creating a stop loss for a <strong>long</strong> position, <code>PositionDirection.SHORT</code> to close it.
+- The order will trigger when the Oracle Price falls <strong>below $100</strong>, <code>OrderTriggerCondition.BELOW</code>.
+- Once triggered, it executes as a <strong>Market Order</strong> to close 1 unit of the position.</p>
+<h4 id='typescript-18'>TypeScript</h4><div class="highlight"><pre class="highlight typescript"><code><span class="kd">const</span> <span class="nx">stopLossMarketOrder</span> <span class="o">=</span> <span class="p">{</span>    
+  <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">TRIGGER_MARKET</span><span class="p">,</span>    
+  <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>    
+  <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">SHORT</span><span class="p">,</span> <span class="c1">// closing long    </span>
+  <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>    
+  <span class="na">triggerPrice</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>    
+  <span class="na">triggerCondition</span><span class="p">:</span> <span class="nx">OrderTriggerCondition</span><span class="p">.</span><span class="nx">BELOW</span><span class="p">,</span> <span class="c1">// trigger when price falls below 100  </span>
+<span class="p">};</span>    
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">placePerpOrder</span><span class="p">(</span><span class="nx">stopLossMarketOrder</span><span class="p">);</span>
+</code></pre></div><h4 id='python-17'>Python</h4><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">stop_loss_market_order</span> <span class="o">=</span> <span class="n">OrderParams</span><span class="p">(</span>
+    <span class="n">market_type</span> <span class="o">=</span> <span class="n">MarketType</span><span class="p">.</span><span class="n">Perp</span><span class="p">(),</span>  <span class="c1"># must specify market type in Python  
+</span>    <span class="n">order_type</span> <span class="o">=</span> <span class="n">OrderType</span><span class="p">.</span><span class="n">TriggerMarket</span><span class="p">(),</span>  
+    <span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>  
+    <span class="n">direction</span> <span class="o">=</span> <span class="n">PositionDirection</span><span class="p">.</span><span class="n">Short</span><span class="p">(),</span>  <span class="c1"># closing long position  
+</span>    <span class="n">base_asset_amount</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>  
+    <span class="n">trigger_price</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>  
+    <span class="n">trigger_condition</span> <span class="o">=</span> <span class="n">OrderTriggerCondition</span><span class="p">.</span><span class="n">Below</span><span class="p">(),</span>  <span class="c1"># trigger when price falls below 100  
+</span><span class="p">)</span>  
+
+<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">place_perp_order</span><span class="p">(</span><span class="n">stop_loss_market_order</span><span class="p">)</span>
+</code></pre></div><h3 id='take-profit-limit-order'>Take Profit Limit Order</h3>
+<p>A Take Profit Limit Order places a limit order when the Oracle Price reaches the specified Trigger Price. The limit order will execute at the given Limit Price, serving as an exit with max slippage protection.</p>
+
+<p>Here:
+- We&#39;re setting up a take profit for a long position, <code>direction: PositionDirection.SHORT</code> to close it.
+- The order triggers when the Oracle Price rises above $200, <code>OrderTriggerCondition.ABOVE</code>.
+- once triggered, a Limit Order at $200 to close 1 unit of the position is placed.
+- <code>reduceOnly: true</code> to only reduce the existing position.</p>
+<h4 id='typescript-19'>TypeScript</h4><div class="highlight"><pre class="highlight typescript"><code><span class="kd">const</span> <span class="nx">takeProfitLimitOrder</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">TRIGGER_LIMIT</span><span class="p">,</span>
+  <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">SHORT</span><span class="p">,</span> <span class="c1">// closing long</span>
+  <span class="na">baseAssetAmount</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPerpPrecision</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+  <span class="na">triggerPrice</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+  <span class="na">price</span><span class="p">:</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">convertToPricePrecision</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+  <span class="na">triggerCondition</span><span class="p">:</span> <span class="nx">OrderTriggerCondition</span><span class="p">.</span><span class="nx">ABOVE</span><span class="p">,</span> <span class="c1">// trigger when price rises above 200 </span>
+  <span class="na">reduceOnly</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="c1">// ensures this order can only reduce an existing position</span>
+<span class="p">};</span>
+<span class="k">await</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">placePerpOrder</span><span class="p">(</span><span class="nx">takeProfitLimitOrder</span><span class="p">);</span>
+</code></pre></div><h4 id='python-18'>Python</h4><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">take_profit_limit_order</span> <span class="o">=</span> <span class="n">OrderParams</span><span class="p">(</span>
+    <span class="n">market_type</span> <span class="o">=</span> <span class="n">MarketType</span><span class="p">.</span><span class="n">Perp</span><span class="p">(),</span>  <span class="c1"># must specify market type in Python  
+</span>    <span class="n">order_type</span> <span class="o">=</span> <span class="n">OrderType</span><span class="p">.</span><span class="n">TriggerLimit</span><span class="p">(),</span>  
+    <span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>  
+    <span class="n">direction</span> <span class="o">=</span> <span class="n">PositionDirection</span><span class="p">.</span><span class="n">Short</span><span class="p">(),</span>  <span class="c1"># closing long position  
+</span>    <span class="n">base_asset_amount</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_perp_precision</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>  
+    <span class="n">trigger_price</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>  
+    <span class="n">price</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">convert_to_price_precision</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>  <span class="c1"># limit price after trigger  
+</span>    <span class="n">trigger_condition</span> <span class="o">=</span> <span class="n">OrderTriggerCondition</span><span class="p">.</span><span class="n">Above</span><span class="p">(),</span>  <span class="c1"># trigger when price rises above 200  
+</span>    <span class="n">reduce_only</span> <span class="o">=</span> <span class="bp">True</span> <span class="c1"># ensures this order can only reduce an existing position
+</span><span class="p">)</span>  
+
+<span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">place_perp_order</span><span class="p">(</span><span class="n">take_profit_limit_order</span><span class="p">)</span>
+</code></pre></div><h2 id='modify-order-params'>Modify Order Params</h2><h3 id='typescript-20'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2485,7 +2578,7 @@ localhost:8080/v2/orders/cancelAndPlace
 <td></td>
 </tr>
 </tbody></table>
-<h3 id='python-17'>Python</h3>
+<h3 id='python-19'>Python</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2604,7 +2697,7 @@ localhost:8080/v2/orders/cancelAndPlace
     }]
    }'</span> <span class="se">\</span>
 localhost:8080/v2/orders
-</code></pre></div><h3 id='typescript-19'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-21'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2626,7 +2719,7 @@ localhost:8080/v2/orders
 <td></td>
 </tr>
 </tbody></table>
-<h3 id='python-18'>Python</h3>
+<h3 id='python-20'>Python</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2683,7 +2776,7 @@ localhost:8080/v2/orders
     }]
    }'</span> <span class="se">\</span>
 localhost:8080/v2/orders
-</code></pre></div><h3 id='typescript-20'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-22'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2705,7 +2798,7 @@ localhost:8080/v2/orders
 <td></td>
 </tr>
 </tbody></table>
-<h3 id='python-19'>Python</h3>
+<h3 id='python-21'>Python</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2751,7 +2844,7 @@ localhost:8080/v2/orders
    <span class="n">user</span><span class="p">.</span><span class="n">get_user_account</span><span class="p">(),</span>
    <span class="n">market_index</span>
 <span class="p">)</span>
-</code></pre></div><h3 id='typescript-21'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-23'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2779,7 +2872,7 @@ localhost:8080/v2/orders
 <td></td>
 </tr>
 </tbody></table>
-<h3 id='python-20'>Python</h3>
+<h3 id='python-22'>Python</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2812,7 +2905,7 @@ localhost:8080/v2/orders
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span>
 
 <span class="n">spot_market_account</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_spot_market_account</span><span class="p">(</span><span class="n">market_index</span><span class="p">)</span>
-</code></pre></div><h3 id='typescript-22'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-24'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2828,7 +2921,7 @@ localhost:8080/v2/orders
 <td></td>
 </tr>
 </tbody></table>
-<h3 id='python-21'>Python</h3>
+<h3 id='python-23'>Python</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2849,7 +2942,7 @@ localhost:8080/v2/orders
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">market_index</span> <span class="o">=</span> <span class="mi">0</span>
 
 <span class="n">perp_market_account</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_perp_market_account</span><span class="p">(</span><span class="n">market_index</span><span class="p">)</span>
-</code></pre></div><h3 id='typescript-23'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-25'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -2865,7 +2958,7 @@ localhost:8080/v2/orders
 <td></td>
 </tr>
 </tbody></table>
-<h3 id='python-22'>Python</h3>
+<h3 id='python-24'>Python</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3031,7 +3124,7 @@ Instead of having users submit transactions to the Solana network, users sign a 
 </aside>
 <h1 id='user'>User</h1><h2 id='get-user'>Get User</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>   <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getUser</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">user</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_user</span><span class="p">()</span>
-</code></pre></div><h3 id='typescript-24'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-26'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3053,7 +3146,7 @@ Instead of having users submit transactions to the Solana network, users sign a 
 <td>current authority</td>
 </tr>
 </tbody></table>
-<h3 id='python-23'>Python</h3>
+<h3 id='python-25'>Python</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3087,7 +3180,7 @@ Instead of having users submit transactions to the Solana network, users sign a 
   <span class="nt">-H</span> <span class="s1">'content-type: application/json'</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{"marketIndex":0,"marketType":"spot"}'</span> <span class="se">\</span>
 localhost:8080/v2/positions
-</code></pre></div><h3 id='typescript-25'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-27'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3103,7 +3196,7 @@ localhost:8080/v2/positions
 <td></td>
 </tr>
 </tbody></table>
-<h3 id='python-24'>Python</h3>
+<h3 id='python-26'>Python</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3141,7 +3234,7 @@ localhost:8080/v2/positions
   <span class="nt">-H</span> <span class="s1">'content-type: application/json'</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{"marketIndex":0,"marketType":"perp"}'</span> <span class="se">\</span>
 localhost:8080/v2/positions
-</code></pre></div><h3 id='typescript-26'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-28'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3157,7 +3250,7 @@ localhost:8080/v2/positions
 <td></td>
 </tr>
 </tbody></table>
-<h3 id='python-25'>Python</h3>
+<h3 id='python-27'>Python</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3183,7 +3276,7 @@ localhost:8080/v2/positions
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">order_id</span> <span class="o">=</span> <span class="mi">1</span>
 
 <span class="n">order</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">)</span>
-</code></pre></div><h3 id='typescript-27'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-29'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3199,7 +3292,7 @@ localhost:8080/v2/positions
 <td></td>
 </tr>
 </tbody></table>
-<h3 id='python-26'>Python</h3>
+<h3 id='python-28'>Python</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3223,7 +3316,7 @@ localhost:8080/v2/positions
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="n">user_order_id</span> <span class="o">=</span> <span class="mi">1</span>
 
 <span class="n">order</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_order_by_user_order_id</span><span class="p">(</span><span class="n">user_order_id</span><span class="p">)</span>
-</code></pre></div><h3 id='typescript-28'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-30'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3239,7 +3332,7 @@ localhost:8080/v2/positions
 <td></td>
 </tr>
 </tbody></table>
-<h3 id='python-27'>Python</h3>
+<h3 id='python-29'>Python</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3260,7 +3353,7 @@ localhost:8080/v2/positions
 </code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl localhost:8080/v2/orders
 </code></pre></div><h2 id='get-unrealized-perp-pnl'>Get Unrealized Perp Pnl</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">pnl</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getUnrealizedPNL</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">pnl</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_unrealized_pnl</span><span class="p">()</span>
-</code></pre></div><h3 id='typescript-29'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-31'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3294,7 +3387,7 @@ localhost:8080/v2/positions
 <td>false</td>
 </tr>
 </tbody></table>
-<h3 id='python-28'>Python</h3>
+<h3 id='python-30'>Python</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3330,7 +3423,7 @@ localhost:8080/v2/positions
 </tbody></table>
 <h2 id='get-unrealized-funding-pnl'>Get Unrealized Funding Pnl</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">pnl</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getUnrealizedFundingPNL</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">pnl</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_unrealized_funding_pnl</span><span class="p">()</span>
-</code></pre></div><h3 id='typescript-30'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-32'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3346,7 +3439,7 @@ localhost:8080/v2/positions
 <td></td>
 </tr>
 </tbody></table>
-<h3 id='python-29'>Python</h3>
+<h3 id='python-31'>Python</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3364,7 +3457,7 @@ localhost:8080/v2/positions
 </tbody></table>
 <h2 id='get-total-collateral'>Get Total Collateral</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">totalCollateral</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getTotalCollateral</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">total_collateral</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_total_collateral</span><span class="p">()</span>
-</code></pre></div><h3 id='typescript-31'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-33'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3386,7 +3479,7 @@ localhost:8080/v2/positions
 <td>false</td>
 </tr>
 </tbody></table>
-<h3 id='python-30'>Python</h3>
+<h3 id='python-32'>Python</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3412,7 +3505,7 @@ localhost:8080/v2/positions
 <p>Asset weights vary based on whether you&#39;re checking the initial or maintenance margin requirement. Initial is used for initial leverage extension, maintenance for determining liquidations.</p>
 <h2 id='get-margin-requirement'>Get Margin Requirement</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">marginRequirement</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getMarginRequirement</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">margin_requirement</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_margin_requirement</span><span class="p">()</span>
-</code></pre></div><h3 id='typescript-32'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-34'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3440,7 +3533,7 @@ localhost:8080/v2/positions
 <td>false</td>
 </tr>
 </tbody></table>
-<h3 id='python-31'>Python</h3>
+<h3 id='python-33'>Python</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3472,7 +3565,7 @@ localhost:8080/v2/positions
 <p>Liability weights (for borrows) and margin ratios (for perp positions) vary based on whether you&#39;re checking the initial or maintenance margin requirement. Initial is used for initial leverage extension, maintenance for determining liquidations.</p>
 <h2 id='get-free-collateral'>Get Free Collateral</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">freeCollateral</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getFreeCollateral</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">free_collateral</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_free_collateral</span><span class="p">()</span>
-</code></pre></div><h3 id='typescript-33'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-35'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3488,7 +3581,7 @@ localhost:8080/v2/positions
 <td>Initial</td>
 </tr>
 </tbody></table>
-<h3 id='python-32'>Python</h3>
+<h3 id='python-34'>Python</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3508,7 +3601,7 @@ localhost:8080/v2/positions
 <p>Free collateral is the difference between your total collateral and your margin requirement.</p>
 <h2 id='get-leverage'>Get Leverage</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">leverage</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getLeverage</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">leverage</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_leverage</span><span class="p">()</span>
-</code></pre></div><h3 id='typescript-34'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-36'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3524,7 +3617,7 @@ localhost:8080/v2/positions
 <td>true</td>
 </tr>
 </tbody></table>
-<h3 id='python-33'>Python</h3>
+<h3 id='python-35'>Python</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3611,7 +3704,7 @@ localhost:8080/v2/positions
 <span class="n">event_subscriber</span><span class="p">.</span><span class="n">subscribe</span><span class="p">()</span>
 
 <span class="n">event_subscriber</span><span class="p">.</span><span class="n">event_emitter</span><span class="p">.</span><span class="n">new_event</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
-</code></pre></div><h3 id='typescript-35'>TypeScript</h3>
+</code></pre></div><h3 id='typescript-37'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -3681,7 +3774,7 @@ localhost:8080/v2/positions
 <td>dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH</td>
 </tr>
 </tbody></table>
-<h3 id='python-34'>Python</h3>
+<h3 id='python-36'>Python</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -4251,7 +4344,7 @@ yarn cli init-vault <span class="se">\</span>
 <p>Includes built-in API routes for vault creation, snapshot indexing, and analytics.</p>
 <h1 id='jupiter-spot-swaps'>Jupiter Spot Swaps</h1>
 <p>You can perform Jupiter swaps directly from DriftClient, which fetches quotes from Jupiter and routes the transaction for the optimal rates.</p>
-<h3 id='typescript-36'>TypeScript</h3>
+<h3 id='typescript-38'>TypeScript</h3>
 <p>To preview the quote before swapping, use <code>jupiterClient.getQuote(...)</code>.</p>
 <div class="highlight"><pre class="highlight typescript"><code><span class="k">import</span> <span class="p">{</span><span class="nx">JupiterClient</span><span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@drift-labs/sdk</span><span class="dl">'</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Connection</span><span class="p">(</span><span class="dl">"</span><span class="s2">RPCurl</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">confirmed</span><span class="dl">"</span><span class="p">);</span>
@@ -4330,7 +4423,7 @@ yarn cli init-vault <span class="se">\</span>
 <td><code>wallet.publicKey</code></td>
 </tr>
 </tbody></table>
-<h3 id='python-35'>Python</h3>
+<h3 id='python-37'>Python</h3>
 <p>Unlike the Typescript SDK, DriftPy makes direct HTTP calls to Jupiter. The function returns a tuple of (instructions, address_lookup_tables) that can be sent using <code>drift_client.send_ixs()</code>. The Jupiter API URL is configurable via the <code>JUPITER_URL</code> environment variable.</p>
 <div class="highlight"><pre class="highlight python tab-python"><code><span class="c1"># Get Jupiter swap instructions
 </span><span class="n">swap_ixs</span><span class="p">,</span> <span class="n">lookup_tables</span> <span class="o">=</span> <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_jupiter_swap_ix_v6</span><span class="p">(</span>
