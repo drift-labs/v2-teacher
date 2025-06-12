@@ -1089,15 +1089,7 @@ Additionally:
 
 For a more detailed explanation of these parameters, see: [All Order Types](https://docs.drift.trade/trading/all-order-types)
 
----
-
 ### Stop Loss Market Order
-A Stop Loss Market Order automatically closes a position at market price if the Oracle Price hits the specified Trigger Price.
-
-Here:
-- We're creating a stop loss for a **long** position, `PositionDirection.SHORT` to close it.
-- The order will trigger when the Oracle Price falls **below $100**, `OrderTriggerCondition.BELOW`.
-- Once triggered, it executes as a **Market Order** to close 1 unit of the position.
 
 #### TypeScript
 ``` ts
@@ -1125,16 +1117,14 @@ stop_loss_market_order = OrderParams(
   
 await drift_client.place_perp_order(stop_loss_market_order)
 ```
-
-### Take Profit Limit Order
-A Take Profit Limit Order places a limit order when the Oracle Price reaches the specified Trigger Price. The limit order will execute at the given Limit Price, serving as an exit with max slippage protection.
+A Stop Loss Market Order automatically closes a position at market price if the Oracle Price hits the specified Trigger Price.
 
 Here:
-- We're setting up a take profit for a long position, `direction: PositionDirection.SHORT` to close it.
-- The order triggers when the Oracle Price rises above $200, `OrderTriggerCondition.ABOVE`.
-- once triggered, a Limit Order at $200 to close 1 unit of the position is placed.
-- `reduceOnly: true` to only reduce the existing position.
+- We're creating a stop loss for a **long** position, `PositionDirection.SHORT` to close it.
+- The order will trigger when the Oracle Price falls **below $100**, `OrderTriggerCondition.BELOW`.
+- Once triggered, it executes as a **Market Order** to close 1 unit of the position.
 
+### Take Profit Limit Order
 
 #### TypeScript
 ``` ts
@@ -1166,6 +1156,13 @@ take_profit_limit_order = OrderParams(
   
 await drift_client.place_perp_order(take_profit_limit_order)
 ```
+A Take Profit Limit Order places a limit order when the Oracle Price reaches the specified Trigger Price. The limit order will execute at the given Limit Price, serving as an exit with max slippage protection.
+
+Here:
+- We're setting up a take profit for a long position, `direction: PositionDirection.SHORT` to close it.
+- The order triggers when the Oracle Price rises above $200, `OrderTriggerCondition.ABOVE`.
+- once triggered, a Limit Order at $200 to close 1 unit of the position is placed.
+- `reduceOnly: true` to only reduce the existing position.
 
 ## Modify Order Params
 
