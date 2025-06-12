@@ -2429,16 +2429,7 @@ In the following examples, both situations will be covered.</p>
 </ul>
 
 <p>For a more detailed explanation of these parameters, see: <a href="https://docs.drift.trade/trading/all-order-types">All Order Types</a></p>
-
-<hr>
-<h3 id='stop-loss-market-order'>Stop Loss Market Order</h3>
-<p>A Stop Loss Market Order automatically closes a position at market price if the Oracle Price hits the specified Trigger Price.</p>
-
-<p>Here:
-- We&#39;re creating a stop loss for a <strong>long</strong> position, <code>PositionDirection.SHORT</code> to close it.
-- The order will trigger when the Oracle Price falls <strong>below $100</strong>, <code>OrderTriggerCondition.BELOW</code>.
-- Once triggered, it executes as a <strong>Market Order</strong> to close 1 unit of the position.</p>
-<h4 id='typescript-18'>TypeScript</h4><div class="highlight"><pre class="highlight typescript"><code><span class="kd">const</span> <span class="nx">stopLossMarketOrder</span> <span class="o">=</span> <span class="p">{</span>    
+<h3 id='stop-loss-market-order'>Stop Loss Market Order</h3><h4 id='typescript-18'>TypeScript</h4><div class="highlight"><pre class="highlight typescript"><code><span class="kd">const</span> <span class="nx">stopLossMarketOrder</span> <span class="o">=</span> <span class="p">{</span>    
   <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">TRIGGER_MARKET</span><span class="p">,</span>    
   <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>    
   <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">SHORT</span><span class="p">,</span> <span class="c1">// closing long    </span>
@@ -2458,15 +2449,14 @@ In the following examples, both situations will be covered.</p>
 </span><span class="p">)</span>  
 
 <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">place_perp_order</span><span class="p">(</span><span class="n">stop_loss_market_order</span><span class="p">)</span>
-</code></pre></div><h3 id='take-profit-limit-order'>Take Profit Limit Order</h3>
-<p>A Take Profit Limit Order places a limit order when the Oracle Price reaches the specified Trigger Price. The limit order will execute at the given Limit Price, serving as an exit with max slippage protection.</p>
+</code></pre></div>
+<p>A Stop Loss Market Order automatically closes a position at market price if the Oracle Price hits the specified Trigger Price.</p>
 
 <p>Here:
-- We&#39;re setting up a take profit for a long position, <code>direction: PositionDirection.SHORT</code> to close it.
-- The order triggers when the Oracle Price rises above $200, <code>OrderTriggerCondition.ABOVE</code>.
-- once triggered, a Limit Order at $200 to close 1 unit of the position is placed.
-- <code>reduceOnly: true</code> to only reduce the existing position.</p>
-<h4 id='typescript-19'>TypeScript</h4><div class="highlight"><pre class="highlight typescript"><code><span class="kd">const</span> <span class="nx">takeProfitLimitOrder</span> <span class="o">=</span> <span class="p">{</span>
+- We&#39;re creating a stop loss for a <strong>long</strong> position, <code>PositionDirection.SHORT</code> to close it.
+- The order will trigger when the Oracle Price falls <strong>below $100</strong>, <code>OrderTriggerCondition.BELOW</code>.
+- Once triggered, it executes as a <strong>Market Order</strong> to close 1 unit of the position.</p>
+<h3 id='take-profit-limit-order'>Take Profit Limit Order</h3><h4 id='typescript-19'>TypeScript</h4><div class="highlight"><pre class="highlight typescript"><code><span class="kd">const</span> <span class="nx">takeProfitLimitOrder</span> <span class="o">=</span> <span class="p">{</span>
   <span class="na">orderType</span><span class="p">:</span> <span class="nx">OrderType</span><span class="p">.</span><span class="nx">TRIGGER_LIMIT</span><span class="p">,</span>
   <span class="na">marketIndex</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
   <span class="na">direction</span><span class="p">:</span> <span class="nx">PositionDirection</span><span class="p">.</span><span class="nx">SHORT</span><span class="p">,</span> <span class="c1">// closing long</span>
@@ -2490,7 +2480,15 @@ In the following examples, both situations will be covered.</p>
 </span><span class="p">)</span>  
 
 <span class="k">await</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">place_perp_order</span><span class="p">(</span><span class="n">take_profit_limit_order</span><span class="p">)</span>
-</code></pre></div><h2 id='modify-order-params'>Modify Order Params</h2><h3 id='typescript-20'>TypeScript</h3>
+</code></pre></div>
+<p>A Take Profit Limit Order places a limit order when the Oracle Price reaches the specified Trigger Price. The limit order will execute at the given Limit Price, serving as an exit with max slippage protection.</p>
+
+<p>Here:
+- We&#39;re setting up a take profit for a long position, <code>direction: PositionDirection.SHORT</code> to close it.
+- The order triggers when the Oracle Price rises above $200, <code>OrderTriggerCondition.ABOVE</code>.
+- once triggered, a Limit Order at $200 to close 1 unit of the position is placed.
+- <code>reduceOnly: true</code> to only reduce the existing position.</p>
+<h2 id='modify-order-params'>Modify Order Params</h2><h3 id='typescript-20'>TypeScript</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
