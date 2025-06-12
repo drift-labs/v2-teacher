@@ -2401,25 +2401,28 @@ localhost:8080/v2/orders/cancelAndPlace
 
 <p>To cancel all orders, do not set any parameters.</p>
 <h2 id='trigger-orders-stop-loss-amp-take-profit'>Trigger Orders: Stop Loss &amp; Take Profit</h2>
-<p>Drift supports trigger-based orders to manage trade exits. These can be configured as:</p>
-
-<ul>
-<li><code>OrderType.TRIGGER_MARKET</code>: Triggers a <strong>Market Order</strong> when the specified price is reached.</li>
-<li><code>OrderType.TRIGGER_LIMIT</code>: Triggers a <strong>Limit Order</strong> when the specified price is reached.</li>
-</ul>
+<p>Drift supports trigger-based orders to manage trade exits. These can be configured as:
+- <code>OrderType.TRIGGER_MARKET</code>
+- <code>OrderType.TRIGGER_LIMIT</code></p>
 
 <p>The most common use cases for these order types are Stop Loss Market Orders and Take Profit Limit Orders.
 In the following examples, both situations will be covered.</p>
 <h3 id='notes'>Notes</h3>
 <p>It&#39;s important to set the correct <code>triggerCondition</code> based on the position type:</p>
 
-<p>Long Positions:
-  - <strong>Stop Loss</strong>: Use <code>OrderTriggerCondition.BELOW</code>
-  - <strong>Take Profit</strong>: Use <code>OrderTriggerCondition.ABOVE</code></p>
+<p>Long Positions:</p>
 
-<p>Short Positions:
-  - <strong>Stop Loss</strong>: Use <code>OrderTriggerCondition.ABOVE</code>
-  - <strong>Take Profit</strong>: Use <code>OrderTriggerCondition.BELOW</code></p>
+<ul>
+<li><strong>Stop Loss</strong>: Use <code>OrderTriggerCondition.BELOW</code></li>
+<li><strong>Take Profit</strong>: Use <code>OrderTriggerCondition.ABOVE</code></li>
+</ul>
+
+<p>Short Positions:</p>
+
+<ul>
+<li><strong>Stop Loss</strong>: Use <code>OrderTriggerCondition.ABOVE</code></li>
+<li><strong>Take Profit</strong>: Use <code>OrderTriggerCondition.BELOW</code></li>
+</ul>
 
 <p>Additionally:</p>
 
