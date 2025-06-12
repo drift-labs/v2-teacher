@@ -1063,9 +1063,8 @@ To cancel all orders, do not set any parameters.
 ## Trigger Orders: Stop Loss & Take Profit
 
 Drift supports trigger-based orders to manage trade exits. These can be configured as:
-
-- `OrderType.TRIGGER_MARKET`: Triggers a **Market Order** when the specified price is reached.
-- `OrderType.TRIGGER_LIMIT`: Triggers a **Limit Order** when the specified price is reached.
+- `OrderType.TRIGGER_MARKET`
+- `OrderType.TRIGGER_LIMIT`
 
 The most common use cases for these order types are Stop Loss Market Orders and Take Profit Limit Orders.
 In the following examples, both situations will be covered.
@@ -1075,12 +1074,14 @@ In the following examples, both situations will be covered.
 It's important to set the correct `triggerCondition` based on the position type:
 
 Long Positions:
-  - **Stop Loss**: Use `OrderTriggerCondition.BELOW`
-  - **Take Profit**: Use `OrderTriggerCondition.ABOVE`
+
+- **Stop Loss**: Use `OrderTriggerCondition.BELOW`
+- **Take Profit**: Use `OrderTriggerCondition.ABOVE`
   
 Short Positions:
-  - **Stop Loss**: Use `OrderTriggerCondition.ABOVE`
-  - **Take Profit**: Use `OrderTriggerCondition.BELOW`
+
+- **Stop Loss**: Use `OrderTriggerCondition.ABOVE`
+- **Take Profit**: Use `OrderTriggerCondition.BELOW`
 
 Additionally:
 
@@ -1092,7 +1093,8 @@ For a more detailed explanation of these parameters, see: [All Order Types](http
 ### Stop Loss Market Order
 
 #### TypeScript
-``` ts
+
+```ts
 const stopLossMarketOrder = {    
   orderType: OrderType.TRIGGER_MARKET,    
   marketIndex: 0,    
@@ -1103,8 +1105,10 @@ const stopLossMarketOrder = {
 };    
 await driftClient.placePerpOrder(stopLossMarketOrder);
 ```
+
 #### Python
-``` python
+
+```python
 stop_loss_market_order = OrderParams(
     market_type = MarketType.Perp(),  # must specify market type in Python  
     order_type = OrderType.TriggerMarket(),  
@@ -1117,6 +1121,7 @@ stop_loss_market_order = OrderParams(
   
 await drift_client.place_perp_order(stop_loss_market_order)
 ```
+
 A Stop Loss Market Order automatically closes a position at market price if the Oracle Price hits the specified Trigger Price.
 
 Here:
@@ -1127,7 +1132,8 @@ Here:
 ### Take Profit Limit Order
 
 #### TypeScript
-``` ts
+
+```ts
 const takeProfitLimitOrder = {
   orderType: OrderType.TRIGGER_LIMIT,
   marketIndex: 0,
@@ -1140,8 +1146,10 @@ const takeProfitLimitOrder = {
 };
 await driftClient.placePerpOrder(takeProfitLimitOrder);
 ```
+
 #### Python
-``` python
+
+```python
 take_profit_limit_order = OrderParams(
     market_type = MarketType.Perp(),  # must specify market type in Python  
     order_type = OrderType.TriggerLimit(),  
@@ -1156,6 +1164,7 @@ take_profit_limit_order = OrderParams(
   
 await drift_client.place_perp_order(take_profit_limit_order)
 ```
+
 A Take Profit Limit Order places a limit order when the Oracle Price reaches the specified Trigger Price. The limit order will execute at the given Limit Price, serving as an exit with max slippage protection.
 
 Here:
