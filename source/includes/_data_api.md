@@ -39,10 +39,10 @@ rates = get_funding_rates(market_symbol)
 
 print(f"Funding Rates for {market_symbol}:")
 for rate in rates:
-    funding_rate_pct = (float(rate['fundingRate']) / 1e9) / float(rate['oraclePriceTwap']) / 1e6
+    funding_rate_pct = (float(rate['fundingRate']) / 1e9) / (float(rate['oraclePriceTwap']) / 1e6)  
     funding_rate_pct_apr = funding_rate_pct * 24 * 365 * 100
     # ... any logic here, for example...
-    print(f"Slot: {rate['slot']}, Funding Rate: {funding_rate_ct:.9f}%/hour ({funding_rate_pct_apr:.2f}% APR)")
+    print(f"Slot: {rate['slot']}, Funding Rate: {funding_rate_pct:.9f}%/hour ({funding_rate_pct_apr:.2f}% APR)")
 
 ```
 ```typescript
