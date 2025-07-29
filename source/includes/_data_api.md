@@ -3,7 +3,7 @@
 The Drift Data API provides public access to various APIs that Drift uses, offering information about markets, contracts, and tokenomics. This API allows developers and users to retrieve data related to the Drift protocol.
 
 - mainnet-beta: `https://data.api.drift.trade`
-- devnet: `https://master-data.drift.trade`
+- devnet: `https://data-master.api.drift.trade/playground`
 
 See the [Data API Playground](https://data.api.drift.trade/playground) for more information and to try the endpoints yourself.
 
