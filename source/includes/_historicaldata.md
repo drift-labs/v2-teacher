@@ -282,7 +282,7 @@ note: 'rate' is in quote per base, to allow for async settlement
 | --- | --- | --- |
 | fundingRate | the quote asset amount (precision=1e6) per base asset amount (precision=1e9) | |
 
-to convert to the rates seen on the ui, use the following formula: `(funding_rate / BASE_PRECISION) / (oracle_twap / QUOTE_PRECISION)  * 100`
+to convert to the rates seen on the ui, use the following formula: `(funding_rate / FUNDING_RATE_PRECISION) / (oracle_twap / PRICE_PRECISION)  * 100`
 
 <!-- ### market-trades
 
