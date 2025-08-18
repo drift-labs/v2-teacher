@@ -644,6 +644,9 @@
                   <li>
                     <a href="#get-ratehistory" class="toc-h2 toc-link" data-title="GET /rateHistory"><code>GET /rateHistory</code></a>
                   </li>
+                  <li>
+                    <a href="#get-auctionparams" class="toc-h2 toc-link" data-title="GET /auctionParams"><code>GET /auctionParams</code></a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -5842,6 +5845,259 @@ fundingRatePctApr = fundingRatePct * 24 * 365
 </tbody></table>
 
 <p>Example: <a href="https://data.api.drift.trade/rateHistory?marketIndex=0">https://data.api.drift.trade/rateHistory?marketIndex=0</a></p>
+<h2 id='get-auctionparams'><code>GET /auctionParams</code></h2>
+<p>The <code>/auctionParams</code> endpoint is designed to provide SDK users with recommended auction parameters for market orders, similar to the logic used in the Drift UI. Keep in mind that this data comes from the DLOB, and therefore has a different URL.</p>
+<h3 id='url'>URL</h3><div class="highlight"><pre class="highlight plaintext"><code>https://dlob.drift.trade/auctionParams
+</code></pre></div><h3 id='query-parameters'>Query Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code>marketIndex</code></td>
+<td>int</td>
+<td>Yes</td>
+<td>Index of the market to trade.</td>
+</tr>
+<tr>
+<td><code>marketType</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Market type: <code>perp</code>, <code>spot</code>, etc.</td>
+</tr>
+<tr>
+<td><code>direction</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Order direction: <code>long</code> or <code>short</code>.</td>
+</tr>
+<tr>
+<td><code>amount</code></td>
+<td>number</td>
+<td>Yes</td>
+<td>The order size. Interpreted as to <code>assetType</code> field.</td>
+</tr>
+<tr>
+<td><code>assetType</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>One of: <code>base</code>, <code>quote</code>. Specifies the asset the <code>amount</code> refers to.</td>
+</tr>
+<tr>
+<td><code>auctionDuration</code></td>
+<td>int</td>
+<td>Optional</td>
+<td>(Default: UI default) Duration of the auction.</td>
+</tr>
+<tr>
+<td><code>reduceOnly</code></td>
+<td>boolean</td>
+<td>Optional</td>
+<td>(Default: false) If true, order will only reduce existing position.</td>
+</tr>
+<tr>
+<td><code>allowInfSlippage</code></td>
+<td>boolean</td>
+<td>Optional</td>
+<td>If true, disables slippage checks.</td>
+</tr>
+<tr>
+<td><code>slippageTolerance</code></td>
+<td>number</td>
+<td>Optional</td>
+<td>Maximum acceptable slippage for the order.</td>
+</tr>
+<tr>
+<td><code>isOracleOrder</code></td>
+<td>boolean</td>
+<td>Optional</td>
+<td>Use oracle-based order pricing.</td>
+</tr>
+<tr>
+<td><code>auctionStartPriceOffset</code></td>
+<td>number</td>
+<td>Optional</td>
+<td>Price offset for auction start.</td>
+</tr>
+<tr>
+<td><code>auctionEndPriceOffset</code></td>
+<td>number</td>
+<td>Optional</td>
+<td>Price offset for auction end.</td>
+</tr>
+<tr>
+<td><code>auctionStartPriceOffsetFrom</code></td>
+<td>string</td>
+<td>Optional</td>
+<td>Reference price for auction start offset.</td>
+</tr>
+<tr>
+<td><code>auctionEndPriceOffsetFrom</code></td>
+<td>string</td>
+<td>Optional</td>
+<td>Reference price for auction end offset.</td>
+</tr>
+<tr>
+<td><code>additionalEndPriceBuffer</code></td>
+<td>string</td>
+<td>Optional</td>
+<td>Additional buffer at auction end</td>
+</tr>
+<tr>
+<td><code>userOrderId</code></td>
+<td>int</td>
+<td>Optional</td>
+<td>User order ID.</td>
+</tr>
+</tbody></table>
+<h4 id='note'>Note:</h4>
+<p>The <code>amount</code> will need to be in base precision (ie9) or quote precision (ie6), depending on the <code>assetType</code> defined.</p>
+<h3 id='sample-request'>Sample Request</h3><div class="highlight"><pre class="highlight http tab-http"><code><span class="err">GET https://dlob.drift.trade/auctionParams?marketIndex=0&amp;marketType=perp&amp;direction=long&amp;amount=100000000&amp;assetType=base&amp;auctionDuration=45&amp;reduceOnly=true
+</span></code></pre></div><h3 id='sample-response'>Sample Response</h3><div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"params"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"orderType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"oracle"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"marketType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"perp"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"userOrderId"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"direction"</span><span class="p">:</span><span class="w"> </span><span class="s2">"long"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"baseAssetAmount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100000000000"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"marketIndex"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"reduceOnly"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"postOnly"</span><span class="p">:</span><span class="w"> </span><span class="s2">"none"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"bitFlags"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"triggerPrice"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"triggerCondition"</span><span class="p">:</span><span class="w"> </span><span class="s2">"above"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"oraclePriceOffset"</span><span class="p">:</span><span class="w"> </span><span class="mi">4807</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"auctionDuration"</span><span class="p">:</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"maxTs"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"auctionStartPrice"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-70609"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"auctionEndPrice"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4807"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"entryPrice"</span><span class="p">:</span><span class="w"> </span><span class="s2">"150936230"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"bestPrice"</span><span class="p">:</span><span class="w"> </span><span class="s2">"150889000"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"worstPrice"</span><span class="p">:</span><span class="w"> </span><span class="s2">"150941900"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"priceImpact"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.000313</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"slippageTolerance"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.05</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div><h3 id='response-fields'>Response Fields</h3>
+<table><thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code>params.orderType</code></td>
+<td>string</td>
+<td>Type of order</td>
+</tr>
+<tr>
+<td><code>params.marketType</code></td>
+<td>string</td>
+<td>Market type: <code>perp</code> or <code>spot</code>.</td>
+</tr>
+<tr>
+<td><code>params.userOrderId</code></td>
+<td>int</td>
+<td>Unique user defined order ID (default <code>0</code> if not specified).</td>
+</tr>
+<tr>
+<td><code>params.direction</code></td>
+<td>string</td>
+<td>Order direction: <code>long</code> or <code>short</code>.</td>
+</tr>
+<tr>
+<td><code>params.baseAssetAmount</code></td>
+<td>string</td>
+<td>Size of the order</td>
+</tr>
+<tr>
+<td><code>params.marketIndex</code></td>
+<td>int</td>
+<td>The index of the selected market.</td>
+</tr>
+<tr>
+<td><code>params.reduceOnly</code></td>
+<td>boolean</td>
+<td>If true, order will only reduce existing position.</td>
+</tr>
+<tr>
+<td><code>params.postOnly</code></td>
+<td>string</td>
+<td>Post-only mode</td>
+</tr>
+<tr>
+<td><code>params.bitFlags</code></td>
+<td>int</td>
+<td>Advanced options (bit flags).</td>
+</tr>
+<tr>
+<td><code>params.triggerPrice</code></td>
+<td>number\</td>
+<td>null</td>
+</tr>
+<tr>
+<td><code>params.triggerCondition</code></td>
+<td>string</td>
+<td>Condition for the trigger, e.g., <code>above</code>, <code>below</code>.</td>
+</tr>
+<tr>
+<td><code>params.oraclePriceOffset</code></td>
+<td>number</td>
+<td>Auction offset from oracle price.</td>
+</tr>
+<tr>
+<td><code>params.auctionDuration</code></td>
+<td>int</td>
+<td>How long the auction will run.</td>
+</tr>
+<tr>
+<td><code>params.maxTs</code></td>
+<td>int\</td>
+<td>null</td>
+</tr>
+<tr>
+<td><code>params.auctionStartPrice</code></td>
+<td>string</td>
+<td>Price at auction start.</td>
+</tr>
+<tr>
+<td><code>params.auctionEndPrice</code></td>
+<td>string</td>
+<td>Price at auction end.</td>
+</tr>
+<tr>
+<td><code>entryPrice</code></td>
+<td>string</td>
+<td>The expected fill price for the order</td>
+</tr>
+<tr>
+<td><code>bestPrice</code></td>
+<td>string</td>
+<td>Best case fill price</td>
+</tr>
+<tr>
+<td><code>worstPrice</code></td>
+<td>string</td>
+<td>Worst case fill price</td>
+</tr>
+<tr>
+<td><code>priceImpact</code></td>
+<td>number</td>
+<td>Estimated market impact from the order.</td>
+</tr>
+<tr>
+<td><code>slippageTolerance</code></td>
+<td>number</td>
+<td>The slippage parameter used for auction calculation.</td>
+</tr>
+</tbody></table>
 <h1 id='historical-data'>Historical Data</h1><h2 id='note-s3-flat-files-are-deprecated-and-have-stopped-updating-in-january-2025-please-use-the-data-api-going-forward'>NOTE: S3 flat files are deprecated and have stopped updating in January 2025. Please use the <a href="https://drift-labs.github.io/v2-teacher/?typescript#data-api">Data API</a> going forward.</h2>
 <p>Snapshots are collected by parsing on-chain transaction logs. For convience the below are parsed logs collected, stored as a CSV, and stored off-chain (~99% of records). Records are updated once per day.</p>
 
