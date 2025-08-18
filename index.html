@@ -5847,8 +5847,9 @@ fundingRatePctApr = fundingRatePct * 24 * 365
 <p>Example: <a href="https://data.api.drift.trade/rateHistory?marketIndex=0">https://data.api.drift.trade/rateHistory?marketIndex=0</a></p>
 <h2 id='get-auctionparams'><code>GET /auctionParams</code></h2>
 <p>The <code>/auctionParams</code> endpoint is designed to provide SDK users with recommended auction parameters for market orders, similar to the logic used in the Drift UI. Keep in mind that this data comes from the DLOB, and therefore has a different URL.</p>
-<h3 id='url'>URL</h3><div class="highlight"><pre class="highlight plaintext"><code>https://dlob.drift.trade/auctionParams
-</code></pre></div><h3 id='query-parameters'>Query Parameters</h3>
+<h3 id='url'>URL</h3>
+<p><code>https://dlob.drift.trade/auctionParams</code></p>
+<h3 id='query-parameters'>Query Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -5956,35 +5957,9 @@ fundingRatePctApr = fundingRatePct * 24 * 365
 </tbody></table>
 <h4 id='note'>Note:</h4>
 <p>The <code>amount</code> will need to be in base precision (ie9) or quote precision (ie6), depending on the <code>assetType</code> defined.</p>
-<h3 id='sample-request'>Sample Request</h3><div class="highlight"><pre class="highlight http tab-http"><code><span class="err">GET https://dlob.drift.trade/auctionParams?marketIndex=0&amp;marketType=perp&amp;direction=long&amp;amount=100000000&amp;assetType=base&amp;auctionDuration=45&amp;reduceOnly=true
-</span></code></pre></div><h3 id='sample-response'>Sample Response</h3><div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"params"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nl">"orderType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"oracle"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"marketType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"perp"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"userOrderId"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"direction"</span><span class="p">:</span><span class="w"> </span><span class="s2">"long"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"baseAssetAmount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100000000000"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"marketIndex"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"reduceOnly"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"postOnly"</span><span class="p">:</span><span class="w"> </span><span class="s2">"none"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"bitFlags"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"triggerPrice"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"triggerCondition"</span><span class="p">:</span><span class="w"> </span><span class="s2">"above"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"oraclePriceOffset"</span><span class="p">:</span><span class="w"> </span><span class="mi">4807</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"auctionDuration"</span><span class="p">:</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"maxTs"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"auctionStartPrice"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-70609"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"auctionEndPrice"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4807"</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="nl">"entryPrice"</span><span class="p">:</span><span class="w"> </span><span class="s2">"150936230"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"bestPrice"</span><span class="p">:</span><span class="w"> </span><span class="s2">"150889000"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"worstPrice"</span><span class="p">:</span><span class="w"> </span><span class="s2">"150941900"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"priceImpact"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.000313</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"slippageTolerance"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.05</span><span class="w">
-  </span><span class="p">}</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre></div><h3 id='response-fields'>Response Fields</h3>
+
+<p>Example: <a href="https://dlob.drift.trade/auctionParams?marketIndex=0&amp;marketType=perp&amp;direction=long&amp;amount=100000000&amp;assetType=base&amp;auctionDuration=45&amp;reduceOnly=true">https://dlob.drift.trade/auctionParams</a> </p>
+<h3 id='response-fields'>Response Fields</h3>
 <table><thead>
 <tr>
 <th>Field</th>
