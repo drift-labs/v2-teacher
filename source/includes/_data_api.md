@@ -150,9 +150,7 @@ Example: [https://data.api.drift.trade/rateHistory?marketIndex=0](https://data.a
 The `/auctionParams` endpoint is designed to provide SDK users with recommended auction parameters for market orders, similar to the logic used in the Drift UI. Keep in mind that this data comes from the DLOB, and therefore has a different URL.
 
 ### URL
-```
-https://dlob.drift.trade/auctionParams
-```
+`https://dlob.drift.trade/auctionParams`
 
 ### Query Parameters
 
@@ -178,44 +176,8 @@ https://dlob.drift.trade/auctionParams
 #### Note: 
 The `amount` will need to be in base precision (ie9) or quote precision (ie6), depending on the `assetType` defined.
 
-### Sample Request
-
-```http
-GET https://dlob.drift.trade/auctionParams?marketIndex=0&marketType=perp&direction=long&amount=100000000&assetType=base&auctionDuration=45&reduceOnly=true
-```
-
-### Sample Response
-
-```json
-{
-  "data": {
-    "params": {
-      "orderType": "oracle",
-      "marketType": "perp",
-      "userOrderId": 0,
-      "direction": "long",
-      "baseAssetAmount": "100000000000",
-      "marketIndex": 0,
-      "reduceOnly": true,
-      "postOnly": "none",
-      "bitFlags": 0,
-      "triggerPrice": null,
-      "triggerCondition": "above",
-      "oraclePriceOffset": 4807,
-      "auctionDuration": 45,
-      "maxTs": null,
-      "auctionStartPrice": "-70609",
-      "auctionEndPrice": "4807"
-    },
-    "entryPrice": "150936230",
-    "bestPrice": "150889000",
-    "worstPrice": "150941900",
-    "priceImpact": 0.000313,
-    "slippageTolerance": 0.05
-  }
-}
-```
-
+Example: [https://dlob.drift.trade/auctionParams](https://dlob.drift.trade/auctionParams?marketIndex=0&marketType=perp&direction=long&amount=100000000&assetType=base&auctionDuration=45&reduceOnly=true
+) 
 ### Response Fields
 
 | Field                      | Type         | Description                                                  |
