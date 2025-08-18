@@ -662,6 +662,9 @@ curl -X POST -H 'content-type: application/json' \
 localhost:8080/v2/orders
 ```
 
+### Auction Params
+The Drift UI uses the Auction params endpoint, to get the recommended parameters for a market order, based on the DLOB. This endpoint is accessible [here](https://drift-labs.github.io/v2-teacher/?typescript#get-auctionparams)
+
 ### TypeScript
 | Parameter   | Description | Optional | Default |
 | ----------- | ----------- | -------- | ------- |
