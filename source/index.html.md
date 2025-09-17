@@ -1366,7 +1366,7 @@ const { orderParams: message, signature } = driftClient.signSignedMsgOrderParams
 slot_response = json.loads((await drift_client.connection.get_slot()).to_json())
 slot = slot_response["result"]
 
-order_message = SignedMsgOrderParamsMessage(
+swift_message = SignedMsgOrderParamsMessage(
     signed_msg_order_params = order_params,
     sub_account_id = drift_client.active_sub_account_id,
     slot = slot,
