@@ -447,6 +447,20 @@
               </ul>
           </li>
           <li>
+            <a href="#buildercodes" class="toc-h1 toc-link" data-title="Buildercodes">Buildercodes</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#builder-initialization" class="toc-h2 toc-link" data-title="Builder initialization">Builder initialization</a>
+                  </li>
+                  <li>
+                    <a href="#user-initialization-2" class="toc-h2 toc-link" data-title="User initialization">User initialization</a>
+                  </li>
+                  <li>
+                    <a href="#order-placement" class="toc-h2 toc-link" data-title="Order placement">Order placement</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#user" class="toc-h1 toc-link" data-title="User">User</a>
               <ul class="toc-list-h2">
                   <li>
@@ -3034,6 +3048,37 @@ Instead of having users submit transactions to the Solana network, users sign a 
     <li>Double check that <code>taker_pubkey</code> and <code>signing_authority</code> are passed in correctly</li>
   </ol>
 </aside>
+<h1 id='buildercodes'>Buildercodes</h1>
+<p>Drift’s Builder Code (DBC) system enables any builder to build on top of Drift while earning fees for routing trades. Buildercodes are enabled by Swift, and are light to implement by design. The only difference to a normal Swift order, is that <code>builderIdx</code> and <code>builderFee</code> are added to the signed message.</p>
+
+<p>In the below examples, it is important to note the difference between <code>builderDriftClient</code> and <code>userClient</code>.</p>
+<h2 id='builder-initialization'>Builder initialization</h2><div class="highlight"><pre class="highlight typescript"><code><span class="k">await</span> <span class="nx">builderDriftClient</span><span class="p">.</span><span class="nx">initializeRevenueShare</span><span class="p">(</span><span class="nx">builderAuthority</span><span class="p">)</span>
+</code></pre></div>
+<p>In order to receive fees, builders are required to have an existing Drift account, as well as set up a <code>RevenueShareAccount</code></p>
+<h2 id='user-initialization-2'>User initialization</h2><h3 id='buildershareescrow-account'>BuilderShareEscrow Account</h3><div class="highlight"><pre class="highlight typescript"><code><span class="k">await</span> <span class="nx">userClient</span><span class="p">.</span><span class="nx">initializeRevenueShareEscrow</span><span class="p">(</span><span class="nx">takerAuthority</span><span class="p">,</span> <span class="nx">numOrders</span><span class="p">)</span>
+</code></pre></div>
+<p>Each taker/user must initialize a <code>BuilderShareEscrow</code> account before they are able to start paying builder fees. In practice this is an on boarding step provided by the builder. </p>
+
+<p><code>numOrders</code> should be large enough to hold all open orders that the taker will have at any point.</p>
+<h3 id='builder-approval'>Builder approval</h3><div class="highlight"><pre class="highlight typescript"><code><span class="c1">// 200 = 20 bps max fee</span>
+<span class="k">await</span> <span class="nx">userClient</span><span class="p">.</span><span class="nx">changeApprovedBuilder</span><span class="p">(</span><span class="nx">builderAuthority</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span>
+</code></pre></div>
+<p>Each taker must approve every builder with their max payable fee before builder fees can be charged. The max fee is expressed in tenth of a basis point (100 = 10 bps).</p>
+<h2 id='order-placement'>Order placement</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code><span class="kd">const</span> <span class="nx">orderMessage</span><span class="p">:</span> <span class="nx">SignedMsgOrderParamsMessage</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="na">signedMsgOrderParams</span><span class="p">:</span> <span class="nx">marketOrderParams</span> <span class="k">as</span> <span class="nx">OrderParams</span><span class="p">,</span>
+        <span class="na">subAccountId</span><span class="p">:</span> <span class="nx">takerClient</span><span class="p">.</span><span class="nx">activeSubAccountId</span><span class="p">,</span>
+        <span class="na">slot</span><span class="p">:</span> <span class="k">new</span> <span class="nx">BN</span><span class="p">(</span><span class="nx">slot</span> <span class="o">+</span> <span class="mi">100</span><span class="p">),</span>
+        <span class="na">uuid</span><span class="p">:</span> <span class="nx">generateSignedMsgUuid</span><span class="p">(),</span>
+        <span class="na">stopLossOrderParams</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="na">takeProfitOrderParams</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+
+        <span class="c1">/// The builder's UI must include these 2 fields</span>
+        <span class="c1">/// in order to append a builder fee.</span>
+        <span class="na">builderIdx</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>          <span class="c1">// the builder is idx 0 on the taker's RevenueShareEscrow.approved_builders list</span>
+        <span class="na">builderFeeTenthBps</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="c1">// builder fee on this order: 5 bps</span>
+    <span class="p">};</span>
+</code></pre></div>
+<p>Buildercodes are enabled by Swift, this is achieved by setting the builderIdx and builderFee in the signed message. The builder’s app constructs this place_order transaction, and sends it to the Swift server.</p>
 <h1 id='user'>User</h1><h2 id='get-user'>Get User</h2><div class="highlight"><pre class="highlight typescript tab-typescript"><code>   <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="nx">driftClient</span><span class="p">.</span><span class="nx">getUser</span><span class="p">();</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code>  <span class="n">user</span> <span class="o">=</span> <span class="n">drift_client</span><span class="p">.</span><span class="n">get_user</span><span class="p">()</span>
 </code></pre></div><h3 id='typescript-24'>TypeScript</h3>
