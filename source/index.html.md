@@ -1434,22 +1434,24 @@ print(f"Order response: {response.text}")
   </ol>
 </aside>
 
-# Buildercodes
+# Builder Codes
 
 Drift’s Builder Code (DBC) system enables any builder to build on top of Drift while earning fees for routing trades. Buildercodes are enabled by Swift, and are light to implement by design. The only difference to a normal Swift order, is that `builderIdx` and `builderFee` are added to the signed message.
 
-In the below examples, it is important to note the difference between `builderDriftClient` and `userClient`.
+<aside class="notice">
+ In the below examples, it is important to note the difference between `builderClient` and `userClient`.
+</aside>
+
 
 ## Builder initialization
 
 ```ts
-await builderDriftClient.initializeRevenueShare(builderAuthority)
+await builderClient.initializeRevenueShare(builderAuthority)
 ```
 
 In order to receive fees, builders are required to have an existing Drift account, as well as set up a `RevenueShareAccount`
 
 ## User initialization
-
 ### BuilderShareEscrow Account
 
 ```ts
@@ -1488,7 +1490,6 @@ const orderMessage: SignedMsgOrderParamsMessage = {
 ```
 
 Buildercodes are enabled by Swift, this is achieved by setting the builderIdx and builderFee in the signed message. The builder’s app constructs this place_order transaction, and sends it to the Swift server.
-
 
 # User
 
