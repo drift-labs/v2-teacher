@@ -1434,6 +1434,62 @@ print(f"Order response: {response.text}")
   </ol>
 </aside>
 
+# Buildercodes
+
+Drift’s Builder Code (DBC) system enables any builder to build on top of Drift while earning fees for routing trades. Buildercodes are enabled by Swift, and are light to implement by design. The only difference to a normal Swift order, is that `builderIdx` and `builderFee` are added to the signed message.
+
+In the below examples, it is important to note the difference between `builderDriftClient` and `userClient`.
+
+## Builder initialization
+
+```ts
+await builderDriftClient.initializeRevenueShare(builderAuthority)
+```
+
+In order to receive fees, builders are required to have an existing Drift account, as well as set up a `RevenueShareAccount`
+
+## User initialization
+
+### BuilderShareEscrow Account
+
+```ts
+await userClient.initializeRevenueShareEscrow(takerAuthority, numOrders)
+```
+
+Each taker/user must initialize a `BuilderShareEscrow` account before they are able to start paying builder fees. In practice this is an on boarding step provided by the builder. 
+
+`numOrders` should be large enough to hold all open orders that the taker will have at any point.
+
+### Builder approval
+
+```ts
+// 200 = 20 bps max fee
+await userClient.changeApprovedBuilder(builderAuthority, 200, true)
+```
+
+Each taker must approve every builder with their max payable fee before builder fees can be charged. The max fee is expressed in tenth of a basis point (100 = 10 bps).
+
+## Order placement
+
+```typescript
+const orderMessage: SignedMsgOrderParamsMessage = {
+        signedMsgOrderParams: marketOrderParams as OrderParams,
+        subAccountId: takerClient.activeSubAccountId,
+        slot: new BN(slot + 100),
+        uuid: generateSignedMsgUuid(),
+        stopLossOrderParams: null,
+        takeProfitOrderParams: null,
+
+        /// The builder's UI must include these 2 fields
+        /// in order to append a builder fee.
+        builderIdx: 0,          // the builder is idx 0 on the taker's RevenueShareEscrow.approved_builders list
+        builderFeeTenthBps: 50, // builder fee on this order: 5 bps
+    };
+```
+
+Buildercodes are enabled by Swift, this is achieved by setting the builderIdx and builderFee in the signed message. The builder’s app constructs this place_order transaction, and sends it to the Swift server.
+
+
 # User
 
 ## Get User
@@ -1747,7 +1803,6 @@ Free collateral is the difference between your total collateral and your margin 
 | include_open_orders | Whether to factor in open orders in position size  | Yes | True |
 
 Leverage is the total liability value (borrows plus total perp position) divided by net asset value (total assets plus total liabilities)
-
 
 # Events
 
