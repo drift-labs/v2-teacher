@@ -447,7 +447,7 @@
               </ul>
           </li>
           <li>
-            <a href="#buildercodes" class="toc-h1 toc-link" data-title="Buildercodes">Buildercodes</a>
+            <a href="#builder-codes" class="toc-h1 toc-link" data-title="Builder Codes">Builder Codes</a>
               <ul class="toc-list-h2">
                   <li>
                     <a href="#builder-initialization" class="toc-h2 toc-link" data-title="Builder initialization">Builder initialization</a>
@@ -3048,11 +3048,13 @@ Instead of having users submit transactions to the Solana network, users sign a 
     <li>Double check that <code>taker_pubkey</code> and <code>signing_authority</code> are passed in correctly</li>
   </ol>
 </aside>
-<h1 id='buildercodes'>Buildercodes</h1>
+<h1 id='builder-codes'>Builder Codes</h1>
 <p>Drift’s Builder Code (DBC) system enables any builder to build on top of Drift while earning fees for routing trades. Buildercodes are enabled by Swift, and are light to implement by design. The only difference to a normal Swift order, is that <code>builderIdx</code> and <code>builderFee</code> are added to the signed message.</p>
 
-<p>In the below examples, it is important to note the difference between <code>builderDriftClient</code> and <code>userClient</code>.</p>
-<h2 id='builder-initialization'>Builder initialization</h2><div class="highlight"><pre class="highlight typescript"><code><span class="k">await</span> <span class="nx">builderDriftClient</span><span class="p">.</span><span class="nx">initializeRevenueShare</span><span class="p">(</span><span class="nx">builderAuthority</span><span class="p">)</span>
+<aside class="notice">
+ In the below examples, it is important to note the difference between `builderClient` and `userClient`.
+</aside>
+<h2 id='builder-initialization'>Builder initialization</h2><div class="highlight"><pre class="highlight typescript"><code><span class="k">await</span> <span class="nx">builderClient</span><span class="p">.</span><span class="nx">initializeRevenueShare</span><span class="p">(</span><span class="nx">builderAuthority</span><span class="p">)</span>
 </code></pre></div>
 <p>In order to receive fees, builders are required to have an existing Drift account, as well as set up a <code>RevenueShareAccount</code></p>
 <h2 id='user-initialization-2'>User initialization</h2><h3 id='buildershareescrow-account'>BuilderShareEscrow Account</h3><div class="highlight"><pre class="highlight typescript"><code><span class="k">await</span> <span class="nx">userClient</span><span class="p">.</span><span class="nx">initializeRevenueShareEscrow</span><span class="p">(</span><span class="nx">takerAuthority</span><span class="p">,</span> <span class="nx">numOrders</span><span class="p">)</span>
