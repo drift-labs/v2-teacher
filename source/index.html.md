@@ -1439,7 +1439,7 @@ print(f"Order response: {response.text}")
 Drift’s Builder Code (DBC) system enables any builder to build on top of Drift while earning fees for routing trades. Buildercodes are enabled by Swift, and are light to implement by design. The only difference to a normal Swift order, is that `builderIdx` and `builderFee` are added to the signed message.
 
 <aside class="notice">
- In the below examples, it is important to note the difference between `builderClient` and `userClient`.
+ In the below examples, it is important to note the difference between `builderClient` and `userClient`. Furthermore, Builder Codes are currently limted to Swift orders only.
 </aside>
 
 
@@ -1452,15 +1452,15 @@ await builderClient.initializeRevenueShare(builderAuthority)
 In order to receive fees, builders are required to have an existing Drift account, as well as set up a `RevenueShareAccount`
 
 ## User initialization
-### BuilderShareEscrow Account
+### RevenueShareEscrow Account
 
 ```ts
 await userClient.initializeRevenueShareEscrow(takerAuthority, numOrders)
 ```
 
-Each taker/user must initialize a `BuilderShareEscrow` account before they are able to start paying builder fees. In practice this is an on boarding step provided by the builder. 
+Each taker/user must initialize a `RevenueShareEscrow` account before they are able to start paying builder fees. In practice this is an on boarding step provided by the builder. 
 
-`numOrders` should be large enough to hold all open orders that the taker will have at any point.
+`numOrders` should be large enough to hold all open orders that the taker will have at any point. Since a user can have multiple subaccounts, it's recommended for builders to set `numOrders` to be more than 8.
 
 ### Builder approval
 
