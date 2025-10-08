@@ -3052,16 +3052,16 @@ Instead of having users submit transactions to the Solana network, users sign a 
 <p>Drift’s Builder Code (DBC) system enables any builder to build on top of Drift while earning fees for routing trades. Buildercodes are enabled by Swift, and are light to implement by design. The only difference to a normal Swift order, is that <code>builderIdx</code> and <code>builderFee</code> are added to the signed message.</p>
 
 <aside class="notice">
- In the below examples, it is important to note the difference between `builderClient` and `userClient`.
+ In the below examples, it is important to note the difference between `builderClient` and `userClient`. Furthermore, Builder Codes are currently limted to Swift orders only.
 </aside>
 <h2 id='builder-initialization'>Builder initialization</h2><div class="highlight"><pre class="highlight typescript"><code><span class="k">await</span> <span class="nx">builderClient</span><span class="p">.</span><span class="nx">initializeRevenueShare</span><span class="p">(</span><span class="nx">builderAuthority</span><span class="p">)</span>
 </code></pre></div>
 <p>In order to receive fees, builders are required to have an existing Drift account, as well as set up a <code>RevenueShareAccount</code></p>
-<h2 id='user-initialization-2'>User initialization</h2><h3 id='buildershareescrow-account'>BuilderShareEscrow Account</h3><div class="highlight"><pre class="highlight typescript"><code><span class="k">await</span> <span class="nx">userClient</span><span class="p">.</span><span class="nx">initializeRevenueShareEscrow</span><span class="p">(</span><span class="nx">takerAuthority</span><span class="p">,</span> <span class="nx">numOrders</span><span class="p">)</span>
+<h2 id='user-initialization-2'>User initialization</h2><h3 id='revenueshareescrow-account'>RevenueShareEscrow Account</h3><div class="highlight"><pre class="highlight typescript"><code><span class="k">await</span> <span class="nx">userClient</span><span class="p">.</span><span class="nx">initializeRevenueShareEscrow</span><span class="p">(</span><span class="nx">takerAuthority</span><span class="p">,</span> <span class="nx">numOrders</span><span class="p">)</span>
 </code></pre></div>
-<p>Each taker/user must initialize a <code>BuilderShareEscrow</code> account before they are able to start paying builder fees. In practice this is an on boarding step provided by the builder. </p>
+<p>Each taker/user must initialize a <code>RevenueShareEscrow</code> account before they are able to start paying builder fees. In practice this is an on boarding step provided by the builder. </p>
 
-<p><code>numOrders</code> should be large enough to hold all open orders that the taker will have at any point.</p>
+<p><code>numOrders</code> should be large enough to hold all open orders that the taker will have at any point. Since a user can have multiple subaccounts, it&#39;s recommended for builders to set <code>numOrders</code> to be more than 8.</p>
 <h3 id='builder-approval'>Builder approval</h3><div class="highlight"><pre class="highlight typescript"><code><span class="c1">// 200 = 20 bps max fee</span>
 <span class="k">await</span> <span class="nx">userClient</span><span class="p">.</span><span class="nx">changeApprovedBuilder</span><span class="p">(</span><span class="nx">builderAuthority</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span>
 </code></pre></div>
