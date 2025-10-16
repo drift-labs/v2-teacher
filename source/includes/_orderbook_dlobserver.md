@@ -213,7 +213,7 @@ if __name__ == "__main__":
 
 #### Update frequency
 
-Currently, orderbook websockets send messages every 1000ms. Connections that contain frequent updates are coming soon.
+Currently, orderbook websockets send messages every 400ms. Connections that contain frequent updates are coming soon.
 
 ### Trades
 
