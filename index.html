@@ -5397,7 +5397,7 @@ devnet: <a href="https://master.dlob.drift.trade/">https://master.dlob.drift.tra
 
     <span class="n">ws</span><span class="p">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">sslopt</span><span class="o">=</span><span class="p">{</span><span class="s">"cert_reqs"</span><span class="p">:</span> <span class="n">ssl</span><span class="p">.</span><span class="n">CERT_NONE</span><span class="p">})</span>
 </code></pre></div><h4 id='update-frequency'>Update frequency</h4>
-<p>Currently, orderbook websockets send messages every 1000ms. Connections that contain frequent updates are coming soon.</p>
+<p>Currently, orderbook websockets send messages every 400ms. Connections that contain frequent updates are coming soon.</p>
 <h3 id='trades'>Trades</h3>
 <p>Trades feed subscribe messages take a similar form to orderbook data, just change the channel.</p>
 <h4 id='perp-markets-2'>Perp markets</h4>
