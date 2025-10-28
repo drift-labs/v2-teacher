@@ -33,7 +33,7 @@ Returns the top makers (currently returns an exhaustive list) for a given market
 | ---------------- | ------------------------------------------ | -------- | ------- |
 | side             | Side to return makers for (`bid` or `ask`) | No       |         |
 | limit            | Limit number of makers to return           | Yes      | all     |
-| includeUserStats | `true` to include full UserStats           | Yes      | `false` |
+| includeAccounts | `true` to include full user account data         | Yes      | `false` |
 
 Example: [https://dlob.drift.trade/topMakers?marketName=JTO-PERP&side=bid&limit=5](https://dlob.drift.trade/topMakers?marketName=JTO-PERP&side=bid&limit=5)
 
